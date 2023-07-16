@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   // codes
   SUCCESS: 200,
   CREATED: 201,
