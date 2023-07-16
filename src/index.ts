@@ -1,1 +1,3 @@
-console.log('Hello Eclinic');
+require("dotenv").config();
+
+console.log("Hello Eclinic");
