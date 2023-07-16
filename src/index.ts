@@ -1,10 +1,13 @@
 import express from "express";
 import dotenv from "dotenv";
+import routes from "./startup/routes";
 import infoLogger from "./startup/logger";
 import errorMiddleware from "./middlewares/error";
 
 dotenv.config();
 const app = express();
+
+routes(app);
 
 app.use(express.json());
 app.use(errorMiddleware);
