@@ -76,4 +76,22 @@ describe("POST /api/patients/register", () => {
     });
     expect(patientInDB.id).toBe(res.body.id);
   });
+
+  it(`Should return the patient if valid data is provided`, async () => {
+    const patient = {
+      first_name: "John",
+      last_name: "Doe",
+      email: "john@gmail.com",
+      password: "123456789",
+      birthdate: new Date(),
+    };
+    const res = await request(server)
+      .post("/api/patients/register")
+      .send(patient);
+    expect(res.body).toHaveProperty("id");
+    expect(res.body).toHaveProperty("birthdate");
+    expect(res.body).toHaveProperty("first_name");
+    expect(res.body).toHaveProperty("last_name");
+    expect(res.body).toHaveProperty("email");
+  });
 });
