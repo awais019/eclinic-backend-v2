@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import constants from "../constants";
 import prisma from "../prisma";
+import helpers from "../helpers";
 
 export default {
   create: async function (req: Request, res: Response) {
@@ -30,6 +31,6 @@ export default {
         },
       },
     });
-    return res.status(constants.CREATED_CODE).send(patient);
+    return helpers.sendAPISuccess(res, patient, constants.CREATED_CODE);
   },
 };

@@ -9,4 +9,11 @@ export default {
   ) {
     return res.status(code).send(error.message);
   },
+  sendAPISuccess: function <T>(
+    res: Response,
+    data: T,
+    code = constants.SUCCESS_CODE
+  ) {
+    return res.status(code).send(data);
+  },
 };

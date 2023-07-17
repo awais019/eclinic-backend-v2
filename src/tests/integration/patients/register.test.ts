@@ -45,4 +45,20 @@ describe("POST /api/patients/register", () => {
       });
     expect(res.status).toBe(constants.BAD_REQUEST_CODE);
   });
+
+  it(`Should return ${constants.CREATED_CODE} if valid data is provided`, async () => {
+    const patient = {
+      first_name: "John",
+      last_name: "Doe",
+      email: "john@gmail.com",
+      password: "123456789",
+      birthdate: new Date(),
+    };
+    const res = await request(server)
+      .post("/api/patients/register")
+      .send(patient);
+    console.log(res.body);
+
+    expect(res.status).toBe(constants.CREATED_CODE);
+  });
 });
