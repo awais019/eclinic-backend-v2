@@ -37,7 +37,6 @@ describe("POST /api/patients/register", () => {
         },
       },
     });
-    console.log(patient);
     const res = await request(server)
       .post("/api/patients/register")
       .send({
