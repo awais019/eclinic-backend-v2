@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from "express";
+import constants from "../constants";
 import errorLogger from "../startup/logger";
 
 export default function (
@@ -8,5 +9,5 @@ export default function (
   next: NextFunction
 ) {
   errorLogger.error(err.message, err);
-  res.status(500).send("Something failed.");
+  res.status(constants.INTERNAL_SERVER_ERROR_CODE).send("Something failed...");
 }
