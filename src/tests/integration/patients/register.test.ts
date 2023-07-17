@@ -1,4 +1,5 @@
 import request from "supertest";
+import prisma from "../../../prisma/prisma";
 import server from "../../../index";
 import constants from "../../../constants";
 
@@ -10,11 +11,40 @@ import constants from "../../../constants";
 // return the patient if valid data is provided
 
 describe("POST /api/patients/register", () => {
-  afterEach(() => {
+  afterEach(async () => {
     server.close();
+    await prisma.patient.deleteMany({});
+    await prisma.user.deleteMany({});
+    await prisma.$disconnect();
   });
   it(`Should return ${constants.BAD_REQUEST_CODE} if input is invalid`, async () => {
     const res = await request(server).post("/api/patients/register").send({});
+    expect(res.status).toBe(constants.BAD_REQUEST_CODE);
+  });
+
+  it(`Should return ${constants.BAD_REQUEST_CODE} if email is already in use`, async () => {
+    const user = {
+      first_name: "John",
+      last_name: "Doe",
+      email: "john@gmail.com",
+      phone: "123456789",
+      password: "123456789",
+    };
+    const patient = await prisma.patient.create({
+      data: {
+        birthdate: new Date(),
+        user: {
+          create: user,
+        },
+      },
+    });
+    console.log(patient);
+    const res = await request(server)
+      .post("/api/patients/register")
+      .send({
+        ...user,
+        birthdate: new Date(),
+      });
     expect(res.status).toBe(constants.BAD_REQUEST_CODE);
   });
 });

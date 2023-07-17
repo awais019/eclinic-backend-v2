@@ -4,7 +4,7 @@ import Joi from "joi";
 export default {
   create: function (patient: Patient) {
     const schema = Joi.object({
-      fist_name: Joi.string().required(),
+      first_name: Joi.string().required(),
       last_name: Joi.string().required(),
       email: Joi.string().email().required(),
       phone: Joi.string().required(),
