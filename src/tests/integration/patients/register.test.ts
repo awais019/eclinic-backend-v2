@@ -17,8 +17,21 @@ describe("POST /api/patients/register", () => {
     await prisma.user.deleteMany({});
     await prisma.$disconnect();
   });
+  let body = {};
+  const validBody = {
+    first_name: "John",
+    last_name: "Doe",
+    email: "john@gmail.com",
+    password: "123456789",
+    birthdate: new Date(),
+  };
+
+  function exec() {
+    return request(server).post("/api/patients/register").send(body);
+  }
+
   it(`Should return ${constants.BAD_REQUEST_CODE} if input is invalid`, async () => {
-    const res = await request(server).post("/api/patients/register").send({});
+    const res = await exec();
     expect(res.status).toBe(constants.BAD_REQUEST_CODE);
   });
 
@@ -29,7 +42,7 @@ describe("POST /api/patients/register", () => {
       email: "john@gmail.com",
       password: "123456789",
     };
-    const patient = await prisma.patient.create({
+    await prisma.patient.create({
       data: {
         birthdate: new Date(),
         user: {
@@ -37,40 +50,20 @@ describe("POST /api/patients/register", () => {
         },
       },
     });
-    const res = await request(server)
-      .post("/api/patients/register")
-      .send({
-        ...user,
-        birthdate: new Date(),
-      });
+    body = validBody;
+    const res = await exec();
     expect(res.status).toBe(constants.BAD_REQUEST_CODE);
   });
 
   it(`Should return ${constants.CREATED_CODE} if valid data is provided`, async () => {
-    const patient = {
-      first_name: "John",
-      last_name: "Doe",
-      email: "john@gmail.com",
-      password: "123456789",
-      birthdate: new Date(),
-    };
-    const res = await request(server)
-      .post("/api/patients/register")
-      .send(patient);
+    body = validBody;
+    const res = await exec();
     expect(res.status).toBe(constants.CREATED_CODE);
   });
 
   it(`Should save the patient to the database`, async () => {
-    const patient = {
-      first_name: "John",
-      last_name: "Doe",
-      email: "john@gmail.com",
-      password: "123456789",
-      birthdate: new Date(),
-    };
-    const res = await request(server)
-      .post("/api/patients/register")
-      .send(patient);
+    body = validBody;
+    const res = await exec();
     const patientInDB = await prisma.patient.findUnique({
       where: { id: res.body.id },
     });
@@ -78,16 +71,8 @@ describe("POST /api/patients/register", () => {
   });
 
   it(`Should return the patient if valid data is provided`, async () => {
-    const patient = {
-      first_name: "John",
-      last_name: "Doe",
-      email: "john@gmail.com",
-      password: "123456789",
-      birthdate: new Date(),
-    };
-    const res = await request(server)
-      .post("/api/patients/register")
-      .send(patient);
+    body = validBody;
+    const res = await exec();
     expect(res.body).toHaveProperty("id");
     expect(res.body).toHaveProperty("birthdate");
     expect(res.body).toHaveProperty("first_name");
