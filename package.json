@@ -9,7 +9,7 @@
     "build": "tsc -p .",
     "migrate": "prisma migrate dev --schema src/prisma/schema.prisma --name $NAME",
     "generate": "prisma generate --schema src/prisma/schema.prisma",
-    "test": "jest --watch --verbose --coverage"
+    "test": "jest --watchAll --verbose --coverage"
   },
   "devDependencies": {
     "@types/express": "^4.17.17",
