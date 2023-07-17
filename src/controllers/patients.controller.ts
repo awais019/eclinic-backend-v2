@@ -5,16 +5,17 @@ import prisma from "../prisma";
 export default {
   create: async function (req: Request, res: Response) {
     const { first_name, last_name, email, password, birthdate } = req.body;
+    const user = {
+      first_name,
+      last_name,
+      email,
+      password,
+    };
     const patient = await prisma.patient.create({
       data: {
         birthdate,
         user: {
-          create: {
-            first_name,
-            last_name,
-            email,
-            password,
-          },
+          create: user,
         },
       },
       select: {
