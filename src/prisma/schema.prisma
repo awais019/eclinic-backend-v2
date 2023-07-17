@@ -11,16 +11,20 @@ datasource db {
 }
 
 model User {
-  id         String   @id @default(uuid())
-  first_name String   @db.VarChar(255)
-  last_name  String   @db.VarChar(255)
-  email      String   @unique
-  phone      String   @unique
-  role       ROLE     @default(PATIENT)
-  password   String   @db.VarChar(1000)
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-  patient    Patient?
+  id             String   @id @default(uuid())
+  first_name     String   @db.VarChar(255)
+  last_name      String   @db.VarChar(255)
+  email          String   @unique
+  phone          String?  @unique
+  email_verified Boolean  @default(false)
+  phone_verified Boolean  @default(false)
+  role           ROLE     @default(PATIENT)
+  password       String   @db.VarChar(1000)
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
+  patient        Patient?
+
+  @@index([email, phone])
 }
 
 model Patient {
