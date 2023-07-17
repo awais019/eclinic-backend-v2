@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import constants from "../constants";
+import helpers from "../helpers";
 
 export default (req: Request, res: Response) => {
-  res.status(constants.SUCCESS_CODE).send("Server is up and running!");
+  return helpers.sendAPISuccess(res, "Server is up and Running!");
 };
