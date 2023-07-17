@@ -14,6 +14,8 @@ app.use(errorMiddleware);
 
 const port = process.env.PORT || 3000;
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
   infoLogger.info(`Server started on port ${port}`);
 });
+
+export default server;
