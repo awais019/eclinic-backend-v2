@@ -1,5 +1,5 @@
 import request from "supertest";
-import prisma from "../../../prisma/prisma";
+import prisma from "../../../prisma";
 import server from "../../../index";
 import constants from "../../../constants";
 
@@ -27,7 +27,6 @@ describe("POST /api/patients/register", () => {
       first_name: "John",
       last_name: "Doe",
       email: "john@gmail.com",
-      phone: "123456789",
       password: "123456789",
     };
     const patient = await prisma.patient.create({
