@@ -57,8 +57,23 @@ describe("POST /api/patients/register", () => {
     const res = await request(server)
       .post("/api/patients/register")
       .send(patient);
-    console.log(res.body);
-
     expect(res.status).toBe(constants.CREATED_CODE);
+  });
+
+  it(`Should save the patient to the database`, async () => {
+    const patient = {
+      first_name: "John",
+      last_name: "Doe",
+      email: "john@gmail.com",
+      password: "123456789",
+      birthdate: new Date(),
+    };
+    const res = await request(server)
+      .post("/api/patients/register")
+      .send(patient);
+    const patientInDB = await prisma.patient.findUnique({
+      where: { id: res.body.id },
+    });
+    expect(patientInDB.id).toBe(res.body.id);
   });
 });
