@@ -7,7 +7,6 @@ export default {
       first_name: Joi.string().required(),
       last_name: Joi.string().required(),
       email: Joi.string().email().required(),
-      phone: Joi.string().required(),
       birthdate: Joi.date().required(),
       password: Joi.string().required(),
     });
