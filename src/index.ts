@@ -7,9 +7,8 @@ import errorMiddleware from "./middlewares/error";
 dotenv.config();
 const app = express();
 
-routes(app);
-
 app.use(express.json());
+routes(app);
 app.use(errorMiddleware);
 
 const port = process.env.PORT || 3000;
