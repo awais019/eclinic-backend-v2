@@ -8,6 +8,7 @@ export default {
     let { first_name, last_name, email, gender, password, birthdate } =
       req.body;
     gender = gender.toUpperCase();
+    birthdate = new Date(birthdate);
     const user = {
       first_name,
       last_name,
