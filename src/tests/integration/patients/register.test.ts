@@ -23,6 +23,7 @@ describe("POST /api/patients/register", () => {
     last_name: "Doe",
     email: "john@gmail.com",
     password: "123456789",
+    gender: "MALE",
     birthdate: new Date(),
   };
 
@@ -36,17 +37,17 @@ describe("POST /api/patients/register", () => {
   });
 
   it(`Should return ${constants.BAD_REQUEST_CODE} if email is already in use`, async () => {
-    const user = {
-      first_name: "John",
-      last_name: "Doe",
-      email: "john@gmail.com",
-      password: "123456789",
-    };
     await prisma.patient.create({
       data: {
         birthdate: new Date(),
         user: {
-          create: user,
+          create: {
+            first_name: "John",
+            last_name: "Doe",
+            email: "john@gmail.com",
+            gender: "MALE",
+            password: "123456789",
+          },
         },
       },
     });

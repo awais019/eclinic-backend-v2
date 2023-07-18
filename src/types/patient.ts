@@ -4,6 +4,7 @@ type Patient = {
   email: string;
   phone: string;
   birthdate: Date;
+  gender: string;
   password: string;
 };
 
