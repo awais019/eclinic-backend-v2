@@ -5,8 +5,9 @@ import helpers from "../helpers";
 
 export default {
   create: async function (req: Request, res: Response) {
-    const { first_name, last_name, email, gender, password, birthdate } =
+    let { first_name, last_name, email, gender, password, birthdate } =
       req.body;
+    gender = gender.toUpperCase();
     const user = {
       first_name,
       last_name,

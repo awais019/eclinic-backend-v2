@@ -23,7 +23,7 @@ describe("POST /api/patients/register", () => {
     last_name: "Doe",
     email: "john@gmail.com",
     password: "123456789",
-    gender: "MALE",
+    gender: "male",
     birthdate: new Date(),
   };
 
