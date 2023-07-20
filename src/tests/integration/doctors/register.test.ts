@@ -18,6 +18,7 @@ describe("POST /api/doctors/register", () => {
     email: "john@gmail.com",
     password: "123456789",
     gender: "male",
+    specialization: "specialization",
     hospital_clinic_name: "hospital_clinic_name",
     location: {
       latitude: 0,
@@ -34,5 +35,11 @@ describe("POST /api/doctors/register", () => {
   it("Should return 400 if input is invalid", async () => {
     const res = await exec();
     expect(res.status).toBe(400);
+  });
+
+  it("Should return 201 if input is valid", async () => {
+    body = validBody;
+    const res = await exec();
+    expect(res.status).toBe(201);
   });
 });
