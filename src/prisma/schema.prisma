@@ -40,7 +40,6 @@ model Doctor {
   id                      String   @id @default(uuid())
   specialization          String   @db.VarChar(255)
   hospital_clinic_name    String   @db.VarChar(255)
-  hospital_clinic_address String   @db.VarChar(255)
   location                Location @relation(fields: [locationId], references: [id])
   locationId              String   @unique
   user                    User     @relation(fields: [userId], references: [id])
