@@ -60,4 +60,11 @@ describe("POST /api/doctors/register", () => {
     });
     expect(doctor).toHaveProperty("specialization", validBody.specialization);
   });
+
+  it("Should return 400 if email is already registered", async () => {
+    body = validBody;
+    await exec();
+    const res = await exec();
+    expect(res.status).toBe(400);
+  });
 });
