@@ -67,4 +67,17 @@ describe("POST /api/doctors/register", () => {
     const res = await exec();
     expect(res.status).toBe(400);
   });
+
+  it("Should return doctor if input is valid", async () => {
+    body = validBody;
+    const res = await exec();
+    expect(res.body).toHaveProperty("id");
+    expect(res.body).toHaveProperty("userId");
+    expect(res.body).toHaveProperty("locationId");
+    expect(res.body).toHaveProperty(
+      "hospital_clinic_name",
+      validBody.hospital_clinic_name
+    );
+    expect(res.body).toHaveProperty("specialization", validBody.specialization);
+  });
 });
