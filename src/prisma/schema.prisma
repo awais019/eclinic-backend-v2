@@ -24,6 +24,7 @@ model User {
   created_at     DateTime @default(now())
   updated_at     DateTime @updatedAt
   patient        Patient?
+  Doctor         Doctor?
 
   @@index([email, phone])
 }
@@ -33,6 +34,27 @@ model Patient {
   birthdate DateTime
   user      User     @relation(fields: [userId], references: [id])
   userId    String   @unique
+}
+
+model Doctor {
+  id                      String   @id @default(uuid())
+  specialization          String   @db.VarChar(255)
+  hospital_clinic_name    String   @db.VarChar(255)
+  hospital_clinic_address String   @db.VarChar(255)
+  location                Location @relation(fields: [locationId], references: [id])
+  locationId              String   @unique
+  user                    User     @relation(fields: [userId], references: [id])
+  userId                  String   @unique
+}
+
+model Location {
+  id        String  @id @default(uuid())
+  latitude  Float   @db.DoublePrecision
+  longitude Float   @db.DoublePrecision
+  address   String  @db.VarChar(255)
+  city      String  @db.VarChar(255)
+  state     String  @db.VarChar(255)
+  Doctor    Doctor?
 }
 
 enum GENDER {
