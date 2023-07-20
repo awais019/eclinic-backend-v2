@@ -1,5 +1,6 @@
 import request from "supertest";
 import server from "../../../index";
+import prisma from "../../../prisma";
 
 // test1: should return 400 if input is invalid
 // test2: should return 201 if input is valid
@@ -8,8 +9,13 @@ import server from "../../../index";
 // test5: should return doctor if input is valid
 
 describe("POST /api/doctors/register", () => {
-  afterEach(() => {
+  afterEach(async () => {
     server.close();
+    await prisma.patient.deleteMany({});
+    await prisma.doctor.deleteMany({});
+    await prisma.user.deleteMany({});
+    await prisma.location.deleteMany({});
+    await prisma.$disconnect();
   });
   let body = {};
   const validBody = {
@@ -41,5 +47,17 @@ describe("POST /api/doctors/register", () => {
     body = validBody;
     const res = await exec();
     expect(res.status).toBe(201);
+  });
+
+  it("Should create a new doctor in the database", async () => {
+    body = validBody;
+    await exec();
+    const user = await prisma.user.findUnique({
+      where: { email: validBody.email },
+    });
+    const doctor = await prisma.doctor.findUnique({
+      where: { userId: user.id },
+    });
+    expect(doctor).toHaveProperty("specialization", validBody.specialization);
   });
 });

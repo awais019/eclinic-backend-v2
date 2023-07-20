@@ -14,6 +14,7 @@ describe("POST /api/patients/register", () => {
   afterEach(async () => {
     server.close();
     await prisma.patient.deleteMany({});
+    await prisma.doctor.deleteMany({});
     await prisma.user.deleteMany({});
     await prisma.$disconnect();
   });
