@@ -12,7 +12,7 @@ export default function (
   errorLogger.error(err.message, err);
   return helpers.sendAPIError(
     res,
-    new Error("Something failed..."),
+    new Error(constants.INTERNAL_SERVER_ERROR_MSG),
     constants.INTERNAL_SERVER_ERROR_CODE
   );
 }

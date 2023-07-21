@@ -42,6 +42,11 @@ export default {
     });
     patient = { ...patient, ...patient.user };
     delete patient.user;
-    return helpers.sendAPISuccess(res, patient, constants.CREATED_CODE);
+    return helpers.sendAPISuccess(
+      res,
+      null,
+      constants.CREATED_CODE,
+      constants.SUCCESS_MSG
+    );
   },
 };

@@ -1,6 +1,7 @@
 import request from "supertest";
 import server from "../../../index";
 import prisma from "../../../prisma";
+import constants from "../../../constants";
 
 // test1: should return 400 if input is invalid
 // test2: should return 201 if input is valid
@@ -38,15 +39,15 @@ describe("POST /api/doctors/register", () => {
     return request(server).post("/api/doctors/register").send(body);
   }
 
-  it("Should return 400 if input is invalid", async () => {
+  it(`Should return ${constants.BAD_REQUEST_CODE} if input is invalid`, async () => {
     const res = await exec();
-    expect(res.status).toBe(400);
+    expect(res.status).toBe(constants.BAD_REQUEST_CODE);
   });
 
-  it("Should return 201 if input is valid", async () => {
+  it(`Should return ${constants.CREATED_CODE} if input is valid`, async () => {
     body = validBody;
     const res = await exec();
-    expect(res.status).toBe(201);
+    expect(res.status).toBe(constants.CREATED_CODE);
   });
 
   it("Should create a new doctor in the database", async () => {
@@ -70,23 +71,16 @@ describe("POST /api/doctors/register", () => {
     expect(user).toHaveProperty("role", "DOCTOR");
   });
 
-  it("Should return 400 if email is already registered", async () => {
+  it(`Should return ${constants.BAD_REQUEST_CODE}  if email is already registered`, async () => {
     body = validBody;
     await exec();
     const res = await exec();
-    expect(res.status).toBe(400);
+    expect(res.status).toBe(constants.BAD_REQUEST_CODE);
   });
 
-  it("Should return doctor if input is valid", async () => {
+  it(`Should return ${constants.SUCCESS_MSG} msg if input is valid`, async () => {
     body = validBody;
     const res = await exec();
-    expect(res.body).toHaveProperty("id");
-    expect(res.body).toHaveProperty("userId");
-    expect(res.body).toHaveProperty("locationId");
-    expect(res.body).toHaveProperty(
-      "hospital_clinic_name",
-      validBody.hospital_clinic_name
-    );
-    expect(res.body).toHaveProperty("specialization", validBody.specialization);
+    expect(res.body).toHaveProperty("message", constants.SUCCESS_MSG);
   });
 });

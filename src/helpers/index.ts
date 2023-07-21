@@ -11,9 +11,15 @@ export default {
   },
   sendAPISuccess: function <T>(
     res: Response,
-    data: T,
-    code = constants.SUCCESS_CODE
+    data: T | null,
+    code = constants.SUCCESS_CODE,
+    message = ""
   ) {
-    return res.status(code).send(data);
+    if (message && !data) {
+      return res.status(code).send({ message });
+    } else if (!message) {
+      return res.status(code).send(data);
+    }
+    return res.status(code).send({ message, data });
   },
 };

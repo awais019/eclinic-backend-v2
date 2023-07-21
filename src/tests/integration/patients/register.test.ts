@@ -63,22 +63,21 @@ describe("POST /api/patients/register", () => {
     expect(res.status).toBe(constants.CREATED_CODE);
   });
 
-  it(`Should save the patient to the database`, async () => {
+  it("Should save the patient to the database", async () => {
     body = validBody;
-    const res = await exec();
-    const patientInDB = await prisma.patient.findUnique({
-      where: { id: res.body.id },
+    await exec();
+    const user = await prisma.user.findUnique({
+      where: { email: validBody.email },
     });
-    expect(patientInDB.id).toBe(res.body.id);
+    const patientInDB = await prisma.patient.findUnique({
+      where: { userId: user.id },
+    });
+    expect(patientInDB.id).toBeTruthy();
   });
 
-  it(`Should return the patient if valid data is provided`, async () => {
+  it(`Should return the ${constants.SUCCESS_MSG} if valid data is provided`, async () => {
     body = validBody;
     const res = await exec();
-    expect(res.body).toHaveProperty("id");
-    expect(res.body).toHaveProperty("birthdate");
-    expect(res.body).toHaveProperty("first_name");
-    expect(res.body).toHaveProperty("last_name");
-    expect(res.body).toHaveProperty("email");
+    expect(res.body).toHaveProperty("message", constants.SUCCESS_MSG);
   });
 });

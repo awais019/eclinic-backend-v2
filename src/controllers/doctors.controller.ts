@@ -39,6 +39,11 @@ export default {
         },
       },
     });
-    return helpers.sendAPISuccess(res, doctor, constants.CREATED_CODE);
+    return helpers.sendAPISuccess(
+      res,
+      null,
+      constants.CREATED_CODE,
+      constants.SUCCESS_MSG
+    );
   },
 };
