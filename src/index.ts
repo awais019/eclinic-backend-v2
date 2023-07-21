@@ -1,5 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
+import fileUpload from "express-fileupload";
 import routes from "./startup/routes";
 import infoLogger from "./startup/logger";
 import cors from "./startup/cors";
@@ -9,6 +10,7 @@ dotenv.config();
 const app = express();
 
 app.use(express.json());
+app.use(fileUpload());
 cors(app);
 routes(app);
 app.use(errorMiddleware);
