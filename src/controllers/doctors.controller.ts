@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import constants from "../constants";
 import prisma from "../prisma";
+import { ROLE } from "@prisma/client";
 import helpers from "../helpers";
 import cryptoHelpers from "../helpers/crypto";
 
@@ -24,6 +25,7 @@ export default {
       email,
       gender,
       password,
+      role: ROLE.DOCTOR,
     };
     const doctor = await prisma.doctor.create({
       data: {

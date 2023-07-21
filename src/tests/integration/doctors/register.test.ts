@@ -61,6 +61,15 @@ describe("POST /api/doctors/register", () => {
     expect(doctor).toHaveProperty("specialization", validBody.specialization);
   });
 
+  it("Should add ROLE DOCTOR to the user", async () => {
+    body = validBody;
+    await exec();
+    const user = await prisma.user.findUnique({
+      where: { email: validBody.email },
+    });
+    expect(user).toHaveProperty("role", "DOCTOR");
+  });
+
   it("Should return 400 if email is already registered", async () => {
     body = validBody;
     await exec();
