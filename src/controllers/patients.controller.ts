@@ -18,30 +18,14 @@ export default {
       gender,
       password,
     };
-    let patient = await prisma.patient.create({
+    await prisma.patient.create({
       data: {
         birthdate,
         user: {
           create: user,
         },
       },
-      select: {
-        id: true,
-        birthdate: true,
-        user: {
-          select: {
-            first_name: true,
-            last_name: true,
-            email: true,
-            phone: true,
-            email_verified: true,
-            phone_verified: true,
-          },
-        },
-      },
     });
-    patient = { ...patient, ...patient.user };
-    delete patient.user;
     return helpers.sendAPISuccess(
       res,
       null,
