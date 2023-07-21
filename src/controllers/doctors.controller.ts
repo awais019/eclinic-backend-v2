@@ -27,10 +27,11 @@ export default {
       password,
       role: ROLE.DOCTOR,
     };
-    const doctor = await prisma.doctor.create({
+    await prisma.doctor.create({
       data: {
         specialization,
         hospital_clinic_name,
+        degree_url: "",
         user: {
           create: user,
         },
