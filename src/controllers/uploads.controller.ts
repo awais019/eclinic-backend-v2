@@ -6,7 +6,5 @@ import helpers from "../helpers";
 import cryptoHelpers from "../helpers/crypto";
 
 export default {
-  upload: async (req: Request, res: Response) => {
-    res.send();
-  },
+  upload: async (req: Request, res: Response) => {},
 };
