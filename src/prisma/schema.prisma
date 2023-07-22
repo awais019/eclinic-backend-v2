@@ -50,10 +50,12 @@ model Doctor {
 
 model Document {
   id       String       @id @default(uuid())
-  type     DOCUMENTTYPE
+  type     DOCUMENTTYPE @default(DEGREE)
   url      String       @db.VarChar(255)
   Doctor   Doctor       @relation(fields: [doctorId], references: [id])
   doctorId String       @unique
+
+  @@index([doctorId, type], name: "doctorId_type")
 }
 
 model Location {
