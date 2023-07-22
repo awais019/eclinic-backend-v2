@@ -79,4 +79,10 @@ describe("POST /api/doctors/register", () => {
     const res = await exec();
     expect(res.body).toHaveProperty("message", constants.SUCCESS_MSG);
   });
+
+  it("Should return doctorId if input is valid", async () => {
+    body = validBody;
+    const res = await exec();
+    expect(res.body.data).toHaveProperty("doctorId");
+  });
 });
