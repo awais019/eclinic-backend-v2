@@ -32,4 +32,7 @@ export default {
 
   // document
   VALID_DOCUMENT_FILE_TYPES: ["pdf", "doc", "docx"],
+
+  // MAX_FILE_SIZE: 2 * 1024 * 1024, // 2MB
+  MAX_FILE_SIZE: 2 * 1024 * 1024,
 };
