@@ -11,8 +11,6 @@ export default {
       password: Joi.string().required(),
       specialization: Joi.string().required(),
       hospital_clinic_name: Joi.string().required(),
-      latitude: Joi.number().required(),
-      longitude: Joi.number().required(),
       address: Joi.string().required(),
       city: Joi.string().required(),
       state: Joi.string().required(),

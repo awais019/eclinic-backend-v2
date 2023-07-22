@@ -27,8 +27,6 @@ describe("POST /api/doctors/register", () => {
     gender: "male",
     specialization: "specialization",
     hospital_clinic_name: "hospital_clinic_name",
-    latitude: 0,
-    longitude: 0,
     address: "address",
     city: "Cairo",
     state: "Cairo",

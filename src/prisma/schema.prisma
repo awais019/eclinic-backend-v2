@@ -49,8 +49,6 @@ model Doctor {
 
 model Location {
   id        String  @id @default(uuid())
-  latitude  Float   @db.DoublePrecision
-  longitude Float   @db.DoublePrecision
   address   String  @db.VarChar(255)
   city      String  @db.VarChar(255)
   state     String  @db.VarChar(255)

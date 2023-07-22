@@ -16,8 +16,6 @@ export default {
       password,
       specialization,
       hospital_clinic_name,
-      latitude,
-      longitude,
       address,
       city,
       state,
@@ -34,8 +32,6 @@ export default {
     };
 
     const location = {
-      latitude,
-      longitude,
       address,
       city,
       state,
