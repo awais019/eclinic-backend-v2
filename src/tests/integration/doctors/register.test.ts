@@ -27,18 +27,11 @@ describe("POST /api/doctors/register", () => {
     gender: "male",
     specialization: "specialization",
     hospital_clinic_name: "hospital_clinic_name",
-    file: {
-      name: "name",
-      size: 123,
-      mimetype: "document/doc",
-    },
-    location: {
-      latitude: 0,
-      longitude: 0,
-      address: "address",
-      city: "Cairo",
-      state: "Cairo",
-    },
+    latitude: 0,
+    longitude: 0,
+    address: "address",
+    city: "Cairo",
+    state: "Cairo",
   };
   function exec() {
     return request(server).post("/api/doctors/register").send(body);
