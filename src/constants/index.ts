@@ -29,4 +29,7 @@ export default {
   AUTH_SUCCESS: "Authentication successful",
   AUTH_FAILED: "Authentication failed",
   AUTH_REQUIRED: "Authentication required",
+
+  // document
+  VALID_DOCUMENT_FILE_TYPES: ["pdf", "doc", "docx"],
 };
