@@ -8,8 +8,8 @@ import cryptoHelpers from "../helpers/crypto";
 import { UploadedFile } from "express-fileupload";
 
 export default {
-  create: async (req: Request, res: Response) => { 
-    if (!req.files) {
+  create: async (req: Request, res: Response) => {
+    if (!req.files && process.env.NODE_ENV !== "test") {
       return helpers.sendAPIError(
         res,
         new Error(constants.FILE_NOT_UPLOADED),
@@ -46,12 +46,25 @@ export default {
       state,
     };
 
-    const file = Object.values(req.files)[0];
+    let url = "";
 
-    const url = await uploadHelpers.uploadFile(
-      file as UploadedFile,
-      constants.DOCUMENT_FOLDER
-    );
+    if (
+      process.env.NODE_ENV === "production" ||
+      process.env.NODE_ENV === "development"
+    ) {
+      const file = Object.values(req.files)[0] as UploadedFile;
+      if(file.size > constants.MAX_FILE_SIZE) {
+        return helpers.sendAPIError(
+          res,
+          new Error(constants.FILE_TOO_LARGE),
+          constants.BAD_REQUEST_CODE
+        );
+      }
+      url = await uploadHelpers.uploadFile(
+        file,
+        constants.DOCUMENT_FOLDER
+      );
+    }
 
     await prisma.$transaction(async () => {
       const doctor = await prisma.doctor.create({

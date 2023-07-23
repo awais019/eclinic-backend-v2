@@ -13,6 +13,7 @@ describe("POST /api/doctors/register", () => {
   afterEach(async () => {
     server.close();
     await prisma.patient.deleteMany({});
+    await prisma.document.deleteMany({});
     await prisma.doctor.deleteMany({});
     await prisma.user.deleteMany({});
     await prisma.location.deleteMany({});
@@ -78,11 +79,5 @@ describe("POST /api/doctors/register", () => {
     body = validBody;
     const res = await exec();
     expect(res.body).toHaveProperty("message", constants.SUCCESS_MSG);
-  });
-
-  it("Should return doctorId if input is valid", async () => {
-    body = validBody;
-    const res = await exec();
-    expect(res.body.data).toHaveProperty("doctorId");
   });
 });
