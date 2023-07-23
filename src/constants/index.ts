@@ -35,4 +35,8 @@ export default {
 
   // MAX_FILE_SIZE: 2 * 1024 * 1024, // 2MB
   MAX_FILE_SIZE: 2 * 1024 * 1024,
+
+  // cloud folders
+  DOCUMENT_FOLDER: "documents",
+  IMAGES_FOLDER: "images",
 };
