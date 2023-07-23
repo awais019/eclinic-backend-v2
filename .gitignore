@@ -27,3 +27,6 @@ migrations
 
 # logs
 logs
+
+# google cloud credentials
+google-cloud-credentials.json
