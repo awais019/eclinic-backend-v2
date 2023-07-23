@@ -14,6 +14,7 @@ export default {
   UNAUTHORIZED_MSG: "Unauthorized",
   NOT_FOUND_MSG: "Not Found",
   INTERNAL_SERVER_ERROR_MSG: "Internal Server Error",
+  FILE_NOT_UPLOADED: "File not uploaded",
 
   // error messages
   INVALID_EMAIL: "Invalid email",

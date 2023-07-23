@@ -1,6 +1,6 @@
 # Build
 public/css/main.css
-public/uploads
+src/public/uploads
 
 # Coverage reports
 coverage
