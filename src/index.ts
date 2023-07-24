@@ -11,7 +11,8 @@ const app = express();
 
 app.use(express.json());
 app.use(fileUpload());
-app.use(express.static("src/public"));
+app.use(express.static("public"));
+app.set("view engine", "pug");
 cors(app);
 routes(app);
 app.use(errorMiddleware);
