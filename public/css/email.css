@@ -1,0 +1,90 @@
+* {
+  padding: 0;
+  margin: 0;
+}
+
+::root {
+  font-size: 16px;
+}
+
+body {
+  font-family: "Poppins", "Roboto", sans-serif;
+}
+
+.header {
+  background: #f5f8ff;
+  padding: 3rem 6rem;
+}
+
+.content {
+  display: flex;
+  padding: 3rem 6rem;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+  align-self: stretch;
+}
+
+h1 {
+  color: #166fff;
+  font-size: 1.5rem;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 2rem;
+  letter-spacing: -0.0225rem;
+}
+
+.grettings {
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1.5rem;
+  letter-spacing: 0.0015rem;
+}
+
+.button-wrapper {
+  width: 100%;
+}
+
+.button {
+  display: inline-block;
+  color: #ffffff;
+  padding: 1rem 2rem;
+  text-decoration: none;
+  border-radius: 0.5rem;
+  background: #166fff;
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 1.5rem;
+}
+
+.text-primary {
+  color: #166fff;
+}
+
+.footer {
+  margin: 6rem 3rem;
+  background: #f5f8ff;
+  padding: 2rem;
+  font-size: 0.875rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1.25rem;
+}
+
+.contacts {
+  margin-top: 1.5rem;
+  display: flex;
+  gap: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .header,
+  .content {
+    padding: 2rem 3rem;
+  }
+  .footer {
+    margin: 2rem 3rem;
+  }
+}

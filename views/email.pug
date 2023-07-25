@@ -1,0 +1,26 @@
+link(rel="stylesheet", href="css/email.css", type="text/css")
+div(class="header")
+        block header
+        img(src='images/logo.svg' alt="E-clinic")
+div(class="content")
+    block body
+    h1 Verify Your E-Clinic Account 
+    span(class="grettings") Hi #{name},
+    p(class="grettings") Thank you for joining eClinic, your go-to doctor appointment platform. We're excited to have you onboard! Before we get started, we need to verify your email address to ensure the security of your account. To complete the verification process and gain full access to eClinic's features, please click the button below:
+    div(class="button-wrapper")
+        a(href=link class="button") Verify email address
+    p(class="grettings") If you did not create an account with eClinic, please ignore this email.
+    p(class="grettings") If the link above does not work, you can copy and paste the following URL into your web browser:
+    span(class="text-primary")= link
+    span Best regards,
+    span(class="text-primary") E-clinic team
+div(class="footer")
+    block footer
+    span Need help? 
+    span(class="text-primary") Contact our support
+    p Copyright &copy 2023 | E-clinic | All rights reserved
+    div(class="contacts")
+        img(src="images/fb.svg" alt="Facebook")
+        img(src="images/ig.svg" alt="Instagram")
+        img(src="images/tw.svg" alt="Twitter")
+        img(src="images/ln.svg" alt="LinkedIn")
