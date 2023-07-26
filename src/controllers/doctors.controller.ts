@@ -32,6 +32,21 @@ export default {
       city,
       state,
     } = req.body;
+
+    const userExists = await prisma.user.findUnique({
+      where: {
+        email,
+      },
+    });
+
+    if (userExists) {
+      return helpers.sendAPIError(
+        res,
+        new Error("Account already exists with this email."),
+        constants.BAD_REQUEST_CODE
+      );
+    }
+
     gender = gender.toUpperCase();
     password = cryptoHelpers.encryptPassword(password);
     const user = {

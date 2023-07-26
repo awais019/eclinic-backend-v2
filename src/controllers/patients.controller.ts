@@ -11,6 +11,21 @@ export default {
   create: async function (req: Request, res: Response) {
     let { first_name, last_name, email, gender, password, birthdate } =
       req.body;
+
+    const userExists = await prisma.user.findUnique({
+      where: {
+        email,
+      },
+    });
+
+    if (userExists) {
+      return helpers.sendAPIError(
+        res,
+        new Error("Account already exists with this email."),
+        constants.BAD_REQUEST_CODE
+      );
+    }
+
     gender = gender.toUpperCase();
     birthdate = new Date(birthdate);
     password = cryptoHelpers.encryptPassword(password);
