@@ -32,6 +32,13 @@ export default {
   AUTH_FAILED: "Authentication failed",
   AUTH_REQUIRED: "Authentication required",
 
+  // email verification
+  EMAIL_VERIFIED: "Email verified successfully",
+  EMAIL_ALREADY_VERIFIED: "Email already verified",
+
+  // jwt
+  INVALID_TOKEN: "Invalid token",
+
   // document
   VALID_DOCUMENT_FILE_TYPES: ["pdf", "doc", "docx"],
 

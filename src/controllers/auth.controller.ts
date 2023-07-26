@@ -13,7 +13,7 @@ export default {
     } catch (error) {
       return APIHelpers.sendAPIError(
         res,
-        new Error("Invalid token."),
+        new Error(constants.INVALID_TOKEN),
         constants.BAD_REQUEST_CODE
       );
     }
@@ -25,18 +25,24 @@ export default {
     });
 
     if (user.email_verified) {
-      APIHelpers.sendAPIError(res, new Error("Email already verified."));
+      return APIHelpers.sendAPISuccess(
+        res,
+        null,
+        constants.SUCCESS_CODE,
+        constants.EMAIL_ALREADY_VERIFIED
+      );
     }
 
+    console.log(user);
     await prisma.user.update({
       where: { id: _id },
       data: { email_verified: true },
     });
-    APIHelpers.sendAPISuccess(
+    return APIHelpers.sendAPISuccess(
       res,
       null,
       constants.SUCCESS_CODE,
-      "Email verified."
+      constants.EMAIL_VERIFIED
     );
   },
 };
