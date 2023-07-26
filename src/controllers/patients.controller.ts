@@ -3,6 +3,9 @@ import constants from "../constants";
 import prisma from "../prisma";
 import helpers from "../helpers";
 import cryptoHelpers from "../helpers/crypto";
+import jwtHelpers from "../helpers/jwt";
+import emailHelpers from "../helpers/email";
+import ejsHelpers from "../helpers/ejs";
 
 export default {
   create: async function (req: Request, res: Response) {
@@ -18,7 +21,7 @@ export default {
       gender,
       password,
     };
-    await prisma.patient.create({
+    const patient = await prisma.patient.create({
       data: {
         birthdate,
         user: {
@@ -26,6 +29,16 @@ export default {
         },
       },
     });
+
+    const token = jwtHelpers.sign({ _id: patient.userId, email });
+
+    const html = await ejsHelpers.renderHTMLFile("email", {
+      name: first_name,
+      link: `${process.env.CLIENT_URL}/auth/verifyemail/?token=${token}`,
+    });
+
+    await emailHelpers.sendMail(email, "Welcome to Eclinic", null, null, html);
+
     return helpers.sendAPISuccess(
       res,
       null,

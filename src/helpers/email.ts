@@ -7,7 +7,7 @@ export default {
     subject: string,
     text: string | null,
     attachments: any[] | null = null,
-    html: string | null = null
+    html: string | null
   ) => {
     const transporter = createTransport({
       service: "gmail",

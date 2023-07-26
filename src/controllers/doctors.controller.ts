@@ -2,10 +2,13 @@ import { Request, Response } from "express";
 import constants from "../constants";
 import prisma from "../prisma";
 import { ROLE } from "@prisma/client";
+import { UploadedFile } from "express-fileupload";
 import helpers from "../helpers";
 import uploadHelpers from "../helpers/upload";
 import cryptoHelpers from "../helpers/crypto";
-import { UploadedFile } from "express-fileupload";
+import jwtHelpers from "../helpers/jwt";
+import emailHelpers from "../helpers/email";
+import ejsHelpers from "../helpers/ejs";
 
 export default {
   create: async (req: Request, res: Response) => {
@@ -53,17 +56,14 @@ export default {
       process.env.NODE_ENV === "development"
     ) {
       const file = Object.values(req.files)[0] as UploadedFile;
-      if(file.size > constants.MAX_FILE_SIZE) {
+      if (file.size > constants.MAX_FILE_SIZE) {
         return helpers.sendAPIError(
           res,
           new Error(constants.FILE_TOO_LARGE),
           constants.BAD_REQUEST_CODE
         );
       }
-      url = await uploadHelpers.uploadFile(
-        file,
-        constants.DOCUMENT_FOLDER
-      );
+      url = await uploadHelpers.uploadFile(file, constants.DOCUMENT_FOLDER);
     }
 
     await prisma.$transaction(async () => {
@@ -85,6 +85,20 @@ export default {
           doctorId: doctor.id,
         },
       });
+      const token = jwtHelpers.sign({ _id: doctor.userId, email });
+
+      const html = await ejsHelpers.renderHTMLFile("email", {
+        name: first_name,
+        link: `${process.env.CLIENT_URL}/auth/verifyemail/?token=${token}`,
+      });
+
+      await emailHelpers.sendMail(
+        email,
+        "Welcome to Eclinic",
+        null,
+        null,
+        html
+      );
     });
 
     return helpers.sendAPISuccess(
