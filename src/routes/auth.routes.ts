@@ -12,4 +12,10 @@ router.post(
   trycatchMiddleware(authController.verifyEmail)
 );
 
+router.post(
+  "/resend/verifyEmail",
+  valiateMiddleware(valiadators.verifyEmail),
+  trycatchMiddleware(authController.requestNewEmailVerification)
+);
+
 export default router;

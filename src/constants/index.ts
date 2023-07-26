@@ -35,6 +35,7 @@ export default {
   // email verification
   EMAIL_VERIFIED: "Email verified successfully",
   EMAIL_ALREADY_VERIFIED: "Email already verified",
+  VERIFICATION_EMAIL_SENT: "Verification email sent",
 
   // jwt
   INVALID_TOKEN: "Invalid token",
