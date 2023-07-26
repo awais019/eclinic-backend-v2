@@ -49,7 +49,7 @@ export default {
 
     const html = await ejsHelpers.renderHTMLFile("email", {
       name: first_name,
-      link: `${process.env.CLIENT_URL}/auth/verifyemail/?token=${token}`,
+      link: `${process.env.CLIENT_URL}/?token=${token}`,
     });
 
     await emailHelpers.sendMail(email, "Welcome to Eclinic", null, null, html);
