@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="x-apple-disable-message-reformatting" />
+    <title></title>
+    <style>
+      * {
+        padding: 0;
+        margin: 0;
+      }
+      ::root {
+        font-size: 16px;
+      }
+      body {
+        font-family: "Poppins", "Roboto", sans-serif;
+      }
+
+      .header {
+        background: #f5f8ff;
+        padding: 3rem 6rem;
+      }
+
+      .content {
+        padding: 3rem 6rem 1rem 6rem;
+      }
+      .content > * {
+        margin-bottom: 1rem;
+      }
+
+      h1 {
+        color: #166fff;
+        font-size: 1.5rem;
+        font-style: normal;
+        font-weight: 600;
+        line-height: 2rem;
+        letter-spacing: -0.0225rem;
+      }
+
+      .grettings {
+        font-size: 1rem;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 1.5rem;
+        letter-spacing: 0.0015rem;
+      }
+
+      .button-wrapper {
+        width: 100%;
+      }
+
+      .button {
+        display: inline-block;
+        color: #ffffff !important;
+        padding: 1rem 2rem;
+        text-decoration: none;
+        border-radius: 0.5rem;
+        background: #166fff;
+        font-size: 1rem;
+        font-style: normal;
+        font-weight: 600;
+        line-height: 1.5rem;
+      }
+
+      .text-primary {
+        color: #166fff;
+      }
+
+      .footer {
+        margin: 0 6rem;
+        background: #f5f8ff;
+        padding: 2rem;
+        font-size: 0.875rem;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 1.25rem;
+      }
+
+      .contacts {
+        margin-top: 1.5rem;
+        display: flex;
+        gap: 1.5rem;
+      }
+
+      @media (max-width: 639px) {
+        .header,
+        .content {
+          padding: 2rem 3rem;
+        }
+        .footer {
+          margin: 2rem 3rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>E-Clinic</h1>
+    </div>
+    <div class="content">
+      <h1>Verfiy Your E-Clinic Account</h1>
+      <span class="grettings">Hi <%=name%>,</span>
+      <p class="greetings">
+        Thank you for joining eClinic, your go-to doctor appointment platform.
+        We're excited to have you onboard! Before we get started, we need to
+        verify your email address to ensure the security of your account. To
+        complete the verification process and gain full access to eClinic's
+        features, please click the button below:
+      </p>
+      <div class="button-wrapper">
+        <a href="<%=link%>" class="button">Verify email address</a>
+      </div>
+      <p class="greetings">
+        If you did not create an account with eClinic, please ignore this email.
+      </p>
+      <p class="greetings">
+        If the link above does not work, you can copy and paste the following
+        URL into your web browser: <br />
+        <a class="text-primary"><%=link%></a>
+      </p>
+      <div>
+        <span>Best regards,</span> <br />
+        <span class="text-primary"> <strong>E-Clinic team</strong> </span>
+      </div>
+    </div>
+    <div class="footer">
+      <p>
+        Need help?
+        <span class="text-primary">Contact our support</span>
+      </p>
+      <p>Eclinic &copy; 2023 | E-clinic | All rights reserved</p>
+    </div>
+  </body>
+</html>
