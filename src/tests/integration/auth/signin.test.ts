@@ -29,10 +29,16 @@ describe("POST /auth/signin", () => {
   beforeEach(async () => {
     server.close();
     await prisma.clearDB();
+    await createUser();
   });
   afterEach(async () => {
     server.close();
     await prisma.clearDB();
+  });
+
+  afterAll(async () => {
+    await prisma.clearDB();
+    await prisma.$disconnect();
   });
 
   const validBody = {
@@ -47,5 +53,12 @@ describe("POST /auth/signin", () => {
   it(`Should return ${constants.BAD_REQUEST_CODE} if input is invalid`, async () => {
     const res = await exec();
     expect(res.status).toBe(constants.BAD_REQUEST_CODE);
+  });
+
+  it(`Should return ${constants.UNAUTHORIZED_CODE} if email is not registered`, async () => {
+    body = { ...validBody, email: "johndoe@gmail.com" };
+    
+    const res = await exec();
+    expect(res.status).toBe(constants.UNAUTHORIZED_CODE);
   });
 });
