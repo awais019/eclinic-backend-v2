@@ -75,4 +75,18 @@ describe("POST /auth/signin", () => {
     const res = await exec();
     expect(res.status).toBe(constants.FORBIDDEN_CODE);
   });
+
+  it(`Should return ${constants.SUCCESS_CODE} if input is valid and user is verified`, async () => {
+    await prisma.user.update({
+      where: { email: validBody.email },
+      data: {
+        email_verified: true,
+      },
+    });
+
+    body = validBody;
+
+    const res = await exec();
+    expect(res.status).toBe(constants.SUCCESS_CODE);
+  });
 });
