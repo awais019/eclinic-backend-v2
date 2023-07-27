@@ -68,4 +68,11 @@ describe("POST /auth/signin", () => {
     const res = await exec();
     expect(res.status).toBe(constants.UNAUTHORIZED_CODE);
   });
+
+  it(`Should return ${constants.FORBIDDEN_CODE} if input is valid but user is not verified`, async () => {
+    body = validBody;
+
+    const res = await exec();
+    expect(res.status).toBe(constants.FORBIDDEN_CODE);
+  });
 });
