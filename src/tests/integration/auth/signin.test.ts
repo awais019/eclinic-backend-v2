@@ -57,7 +57,14 @@ describe("POST /auth/signin", () => {
 
   it(`Should return ${constants.UNAUTHORIZED_CODE} if email is not registered`, async () => {
     body = { ...validBody, email: "johndoe@gmail.com" };
-    
+
+    const res = await exec();
+    expect(res.status).toBe(constants.UNAUTHORIZED_CODE);
+  });
+
+  it(`Should return ${constants.UNAUTHORIZED_CODE} if password is incorrect`, async () => {
+    body = { ...validBody, password: "wrongpassword" };
+
     const res = await exec();
     expect(res.status).toBe(constants.UNAUTHORIZED_CODE);
   });

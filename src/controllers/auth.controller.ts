@@ -3,6 +3,7 @@ import prisma from "../prisma";
 import { JwtPayload } from "jsonwebtoken";
 import constants from "../constants";
 import jwtHelpers from "../helpers/jwt";
+import cryptoHelpers from "../helpers/crypto";
 import APIHelpers from "../helpers";
 import ejsHelpers from "../helpers/ejs";
 import emailHelpers from "../helpers/email";
@@ -104,6 +105,19 @@ export default {
     const user = await prisma.user.findUnique({ where: { email } });
 
     if (!user) {
+      return APIHelpers.sendAPIError(
+        res,
+        new Error("Invalid credentials."),
+        constants.UNAUTHORIZED_CODE
+      );
+    }
+
+    const isPasswordValid = await cryptoHelpers.comparePassword(
+      user.password,
+      password
+    );
+
+    if (!isPasswordValid) {
       return APIHelpers.sendAPIError(
         res,
         new Error("Invalid credentials."),
