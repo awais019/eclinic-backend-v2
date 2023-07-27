@@ -1,5 +1,5 @@
 import express from "express";
-import valiadators from "../validators/auth.validators";
+import validators from "../validators/auth.validators";
 import valiateMiddleware from "../middlewares/validate";
 import trycatchMiddleware from "../middlewares/trycatch";
 import authController from "../controllers/auth.controller";
@@ -8,14 +8,20 @@ const router = express.Router();
 
 router.post(
   "/verifyEmail",
-  valiateMiddleware(valiadators.verifyEmail),
+  valiateMiddleware(validators.verifyEmail),
   trycatchMiddleware(authController.verifyEmail)
 );
 
 router.post(
   "/resend/verifyEmail",
-  valiateMiddleware(valiadators.verifyEmail),
+  valiateMiddleware(validators.verifyEmail),
   trycatchMiddleware(authController.requestNewEmailVerification)
+);
+
+router.post(
+  "/signin",
+  valiateMiddleware(validators.signin),
+  trycatchMiddleware(authController.signin)
 );
 
 export default router;

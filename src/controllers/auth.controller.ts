@@ -98,4 +98,7 @@ export default {
       constants.VERIFICATION_EMAIL_SENT
     );
   },
+  signin: async function (req: Request, res: Response) {
+    return APIHelpers.sendAPISuccess(res, null, constants.SUCCESS_CODE);
+  },
 };

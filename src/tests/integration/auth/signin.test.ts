@@ -41,7 +41,7 @@ describe("POST /auth/signin", () => {
   };
   let body = {};
   function exec() {
-    return request(server).post("/auth/signin").send(body);
+    return request(server).post("/api/auth/signin").send(body);
   }
 
   it(`Should return ${constants.BAD_REQUEST_CODE} if input is invalid`, async () => {
