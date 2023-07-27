@@ -45,14 +45,22 @@ export default {
       },
     });
 
-    const token = jwtHelpers.sign({ _id: patient.userId, email });
+    if (process.env.NODE_ENV !== "test") {
+      const token = jwtHelpers.sign({ _id: patient.userId, email });
 
-    const html = await ejsHelpers.renderHTMLFile("email", {
-      name: first_name,
-      link: `${process.env.CLIENT_URL}/?token=${token}`,
-    });
+      const html = await ejsHelpers.renderHTMLFile("email", {
+        name: first_name,
+        link: `${process.env.CLIENT_URL}/?token=${token}`,
+      });
 
-    await emailHelpers.sendMail(email, "Welcome to Eclinic", null, null, html);
+      await emailHelpers.sendMail(
+        email,
+        "Welcome to Eclinic",
+        null,
+        null,
+        html
+      );
+    }
 
     return helpers.sendAPISuccess(
       res,

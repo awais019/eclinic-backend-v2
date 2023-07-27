@@ -100,20 +100,22 @@ export default {
           doctorId: doctor.id,
         },
       });
-      const token = jwtHelpers.sign({ _id: doctor.userId, email });
 
-      const html = await ejsHelpers.renderHTMLFile("email", {
-        name: first_name,
-        link: `${process.env.CLIENT_URL}/?token=${token}`,
-      });
+      if (process.env.NODE_ENV != "test") {
+        const token = jwtHelpers.sign({ _id: doctor.userId, email });
 
-      await emailHelpers.sendMail(
-        email,
-        "Welcome to Eclinic",
-        null,
-        null,
-        html
-      );
+        const html = await ejsHelpers.renderHTMLFile("email", {
+          name: first_name,
+          link: `${process.env.CLIENT_URL}/?token=${token}`,
+        });
+        await emailHelpers.sendMail(
+          email,
+          "Welcome to Eclinic",
+          null,
+          null,
+          html
+        );
+      }
     });
 
     return helpers.sendAPISuccess(

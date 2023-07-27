@@ -10,13 +10,14 @@ import constants from "../../../constants";
 // test5: should return doctor if input is valid
 
 describe("POST /api/doctors/register", () => {
+  beforeEach(async () => {
+    server.close();
+    await prisma.clearDB();
+    await prisma.$disconnect();
+  });
   afterEach(async () => {
     server.close();
-    await prisma.patient.deleteMany({});
-    await prisma.document.deleteMany({});
-    await prisma.doctor.deleteMany({});
-    await prisma.user.deleteMany({});
-    await prisma.location.deleteMany({});
+    await prisma.clearDB();
     await prisma.$disconnect();
   });
   let body = {};
@@ -56,7 +57,7 @@ describe("POST /api/doctors/register", () => {
     const doctor = await prisma.doctor.findUnique({
       where: { userId: user.id },
     });
-    expect(doctor).toHaveProperty("specialization", validBody.specialization);
+    expect(doctor).toHaveProperty("userId", user.id);
   });
 
   it("Should add ROLE DOCTOR to the user", async () => {

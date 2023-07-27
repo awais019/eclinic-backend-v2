@@ -11,12 +11,14 @@ import constants from "../../../constants";
 // return the patient if valid data is provided
 
 describe("POST /api/patients/register", () => {
+  beforeEach(async () => {
+    server.close();
+    await prisma.clearDB();
+    await prisma.$disconnect();
+  });
   afterEach(async () => {
     server.close();
-    await prisma.patient.deleteMany({});
-    await prisma.document.deleteMany({});
-    await prisma.doctor.deleteMany({});
-    await prisma.user.deleteMany({});
+    await prisma.clearDB();
     await prisma.$disconnect();
   });
   let body = {};
