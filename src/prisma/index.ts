@@ -1,5 +1,17 @@
 import { PrismaClient } from "@prisma/client";
 
-const prisma = new PrismaClient();
+class PrismaService extends PrismaClient {
+  constructor() {
+    super();
+  }
+  clearDB() {
+    return Promise.all([
+      this.$queryRaw`TRUNCATE TABLE "User" CASCADE;`,
+      this.$queryRaw`TRUNCATE TABLE "Location" CASCADE;`,
+    ]);
+  }
+}
+
+const prisma = new PrismaService();
 
 export default prisma;
