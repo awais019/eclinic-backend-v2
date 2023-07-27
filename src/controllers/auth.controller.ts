@@ -99,6 +99,18 @@ export default {
     );
   },
   signin: async function (req: Request, res: Response) {
+    const { email, password } = req.body;
+
+    const user = await prisma.user.findUnique({ where: { email } });
+
+    if (!user) {
+      return APIHelpers.sendAPIError(
+        res,
+        new Error("Invalid credentials."),
+        constants.UNAUTHORIZED_CODE
+      );
+    }
+
     return APIHelpers.sendAPISuccess(res, null, constants.SUCCESS_CODE);
   },
 };
