@@ -136,6 +136,13 @@ export default {
       );
     }
 
-    return APIHelpers.sendAPISuccess(res, null, constants.SUCCESS_CODE);
+    const token = jwtHelpers.sign({ _id: user.id, email: user.email });
+
+    return APIHelpers.sendAPISuccess(
+      res,
+      { token },
+      constants.SUCCESS_CODE,
+      constants.LOGIN_SUCCESS
+    );
   },
 };

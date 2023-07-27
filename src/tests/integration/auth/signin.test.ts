@@ -37,6 +37,7 @@ describe("POST /auth/signin", () => {
   });
 
   afterAll(async () => {
+    server.close();
     await prisma.clearDB();
     await prisma.$disconnect();
   });
@@ -88,5 +89,20 @@ describe("POST /auth/signin", () => {
 
     const res = await exec();
     expect(res.status).toBe(constants.SUCCESS_CODE);
+  });
+
+  it(`Should return a valid JWT if input is valid and user is verified`, async () => {
+    await prisma.user.update({
+      where: { email: validBody.email },
+      data: {
+        email_verified: true,
+      },
+    });
+
+    body = validBody;
+
+    const res = await exec();
+    expect(res.status).toBe(constants.SUCCESS_CODE);
+    expect(res.body.data).toHaveProperty("token");
   });
 });

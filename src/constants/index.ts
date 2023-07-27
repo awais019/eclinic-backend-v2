@@ -17,6 +17,7 @@ export default {
   INTERNAL_SERVER_ERROR_MSG: "Internal Server Error",
   FILE_NOT_UPLOADED: "File not uploaded",
   FILE_TOO_LARGE: "File too large",
+  LOGIN_SUCCESS: "Login successful",
 
   // error messages
   INVALID_EMAIL: "Invalid email",
