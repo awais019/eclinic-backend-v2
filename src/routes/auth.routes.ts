@@ -43,4 +43,6 @@ router.post(
   trycatchMiddleware(authController.uploadImage)
 );
 
+router.get("/me", authMiddleware(), trycatchMiddleware(authController.me));
+
 export default router;

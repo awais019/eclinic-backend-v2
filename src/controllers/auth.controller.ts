@@ -9,6 +9,7 @@ import ejsHelpers from "../helpers/ejs";
 import emailHelpers from "../helpers/email";
 import uploadHelpers from "../helpers/upload";
 import { UploadedFile } from "express-fileupload";
+import { ROLE } from "@prisma/client";
 
 export default {
   verifyEmail: async function (req: Request, res: Response) {
@@ -235,5 +236,39 @@ export default {
     });
 
     return APIHelpers.sendAPISuccess(res, { url }, constants.SUCCESS_CODE);
+  },
+  me: async function (req: Request, res: Response) {
+    const token = req.header(constants.AUTH_HEADER_NAME);
+    const { _id } = jwtHelpers.decode(token) as JwtPayload;
+
+    const user = await prisma.user.findUnique({
+      where: { id: _id },
+      select: {
+        id: true,
+        first_name: true,
+        last_name: true,
+        email: true,
+        phone: true,
+        role: true,
+        imageUrl: true,
+      },
+    });
+
+    let additionalData;
+
+    if (user.role == ROLE.PATIENT) {
+      additionalData = await prisma.patient.findUnique({
+        where: { userId: user.id },
+        select: {
+          birthdate: true,
+        },
+      });
+    }
+
+    return APIHelpers.sendAPISuccess(
+      res,
+      { ...user, ...additionalData },
+      constants.SUCCESS_CODE
+    );
   },
 };
