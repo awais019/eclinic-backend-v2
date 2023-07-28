@@ -161,7 +161,7 @@ export default {
 
     const html = await ejsHelpers.renderHTMLFile("resetpassword", {
       name: user.first_name,
-      link: `${process.env.CLIENT_URL}/resetpassword?token=${token}`,
+      link: `${process.env.CLIENT_URL}/forgotpassword/resetpassword?token=${token}`,
     });
 
     await emailHelpers.sendMail(
