@@ -164,19 +164,46 @@ export default {
       link: `${process.env.CLIENT_URL}/forgotpassword/resetpassword?token=${token}`,
     });
 
-    await emailHelpers.sendMail(
-      user.email,
-      "Reset password",
-      null,
-      null,
-      html
-    );
+    await emailHelpers.sendMail(user.email, "Reset password", null, null, html);
 
     return APIHelpers.sendAPISuccess(
       res,
       null,
       constants.SUCCESS_CODE,
       constants.RESET_PASSWORD_EMAIL_SENT
+    );
+  },
+  resetPassword: async function (req: Request, res: Response) {
+    const { token, password } = req.body;
+
+    try {
+      jwtHelpers.verify(token);
+    } catch (error) {
+      return APIHelpers.sendAPIError(
+        res,
+        new Error(constants.INVALID_TOKEN),
+        constants.BAD_REQUEST_CODE
+      );
+    }
+
+    const { _id } = jwtHelpers.decode(token) as JwtPayload;
+
+    const user = await prisma.user.findUnique({
+      where: { id: _id },
+    });
+
+    const hashedPassword = cryptoHelpers.encryptPassword(password);
+
+    await prisma.user.update({
+      where: { id: _id },
+      data: { password: hashedPassword },
+    });
+
+    return APIHelpers.sendAPISuccess(
+      res,
+      null,
+      constants.SUCCESS_CODE,
+      constants.PASSWORD_RESET_SUCCESS
     );
   },
 };

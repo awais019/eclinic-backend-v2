@@ -19,6 +19,7 @@ export default {
   FILE_TOO_LARGE: "File too large",
   LOGIN_SUCCESS: "Login successful",
   RESET_PASSWORD_EMAIL_SENT: "Reset password email sent",
+  PASSWORD_RESET_SUCCESS: "Password reset successful",
 
   // error messages
   INVALID_EMAIL: "Invalid email",

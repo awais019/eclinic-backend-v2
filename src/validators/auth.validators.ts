@@ -20,4 +20,17 @@ export default {
     });
     return schema.validate({ email });
   },
+  resetPassword: function ({
+    token,
+    password,
+  }: {
+    token: string;
+    password: string;
+  }) {
+    const schema = Joi.object({
+      token: Joi.string().required(),
+      password: Joi.string().required(),
+    });
+    return schema.validate({ token, password });
+  },
 };
