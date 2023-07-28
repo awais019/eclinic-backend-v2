@@ -2,6 +2,7 @@ import express from "express";
 import validators from "../validators/auth.validators";
 import valiateMiddleware from "../middlewares/validate";
 import trycatchMiddleware from "../middlewares/trycatch";
+import authMiddleware from "../middlewares/auth";
 import authController from "../controllers/auth.controller";
 
 const router = express.Router();
@@ -34,6 +35,12 @@ router.post(
   "/resetpassword",
   valiateMiddleware(validators.resetPassword),
   trycatchMiddleware(authController.resetPassword)
+);
+
+router.post(
+  "/uploadimage",
+  authMiddleware(),
+  trycatchMiddleware(authController.uploadImage)
 );
 
 export default router;

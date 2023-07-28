@@ -7,6 +7,8 @@ import cryptoHelpers from "../helpers/crypto";
 import APIHelpers from "../helpers";
 import ejsHelpers from "../helpers/ejs";
 import emailHelpers from "../helpers/email";
+import uploadHelpers from "../helpers/upload";
+import { UploadedFile } from "express-fileupload";
 
 export default {
   verifyEmail: async function (req: Request, res: Response) {
@@ -205,5 +207,33 @@ export default {
       constants.SUCCESS_CODE,
       constants.PASSWORD_RESET_SUCCESS
     );
+  },
+  uploadImage: async function (req: Request, res: Response) {
+    if (!req.files) {
+      return APIHelpers.sendAPIError(
+        res,
+        new Error(constants.FILE_NOT_UPLOADED),
+        constants.BAD_REQUEST_CODE
+      );
+    }
+    const file = Object.values(req.files)[0] as UploadedFile;
+    if (file.size > constants.MAX_FILE_SIZE) {
+      return APIHelpers.sendAPIError(
+        res,
+        new Error(constants.FILE_TOO_LARGE),
+        constants.BAD_REQUEST_CODE
+      );
+    }
+    const url = await uploadHelpers.uploadFile(file, constants.IMAGES_FOLDER);
+
+    const token = req.header(constants.AUTH_HEADER_NAME);
+    const { _id } = jwtHelpers.decode(token) as JwtPayload;
+
+    await prisma.user.update({
+      where: { id: _id },
+      data: { imageUrl: url },
+    });
+
+    return APIHelpers.sendAPISuccess(res, { url }, constants.SUCCESS_CODE);
   },
 };

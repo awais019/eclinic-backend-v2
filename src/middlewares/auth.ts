@@ -5,7 +5,7 @@ import jwtHelpers from "../helpers/jwt";
 
 export default function () {
   return function (req: Request, res: Response, next: NextFunction) {
-    const token = req.header("X-Auth-Token");
+    const token = req.header(constants.AUTH_HEADER_NAME);
     if (!token) {
       return helpers.sendAPIError(
         res,

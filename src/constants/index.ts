@@ -35,6 +35,7 @@ export default {
   AUTH_SUCCESS: "Authentication successful",
   AUTH_FAILED: "Authentication failed",
   AUTH_REQUIRED: "Authentication required",
+  AUTH_HEADER_NAME: "X-Auth-Token",
 
   // email verification
   EMAIL_VERIFIED: "Email verified successfully",
