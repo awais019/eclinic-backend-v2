@@ -269,7 +269,8 @@ export default {
     return APIHelpers.sendAPISuccess(
       res,
       { ...user, ...additionalData },
-      constants.SUCCESS_CODE
+      constants.SUCCESS_CODE,
+      constants.SUCCESS_MSG
     );
   },
 };
