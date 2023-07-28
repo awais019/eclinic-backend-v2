@@ -14,4 +14,10 @@ export default {
     });
     return schema.validate({ email, password });
   },
+  forgotPassword: function ({ email }: { email: string }) {
+    const schema = Joi.object({
+      email: Joi.string().email().required(),
+    });
+    return schema.validate({ email });
+  },
 };

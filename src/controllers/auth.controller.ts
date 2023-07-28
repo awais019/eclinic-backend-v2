@@ -144,4 +144,39 @@ export default {
       constants.LOGIN_SUCCESS
     );
   },
+  forgotPassword: async function (req: Request, res: Response) {
+    const { email } = req.body;
+
+    const user = await prisma.user.findUnique({ where: { email } });
+
+    if (!user) {
+      return APIHelpers.sendAPIError(
+        res,
+        new Error(constants.USER_NOT_FOUND),
+        constants.NOT_FOUND_CODE
+      );
+    }
+
+    const token = jwtHelpers.sign({ _id: user.id, email: user.email });
+
+    const html = await ejsHelpers.renderHTMLFile("resetpassword", {
+      name: user.first_name,
+      link: `${process.env.CLIENT_URL}/resetpassword?token=${token}`,
+    });
+
+    await emailHelpers.sendMail(
+      user.email,
+      "Reset password",
+      null,
+      null,
+      html
+    );
+
+    return APIHelpers.sendAPISuccess(
+      res,
+      null,
+      constants.SUCCESS_CODE,
+      constants.RESET_PASSWORD_EMAIL_SENT
+    );
+  },
 };

@@ -24,4 +24,10 @@ router.post(
   trycatchMiddleware(authController.signin)
 );
 
+router.post(
+  "/forgotpassword",
+  valiateMiddleware(validators.forgotPassword),
+  trycatchMiddleware(authController.forgotPassword)
+);
+
 export default router;

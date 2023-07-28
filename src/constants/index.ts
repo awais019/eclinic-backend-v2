@@ -18,6 +18,7 @@ export default {
   FILE_NOT_UPLOADED: "File not uploaded",
   FILE_TOO_LARGE: "File too large",
   LOGIN_SUCCESS: "Login successful",
+  RESET_PASSWORD_EMAIL_SENT: "Reset password email sent",
 
   // error messages
   INVALID_EMAIL: "Invalid email",
