@@ -36,7 +36,6 @@ export default {
       );
     }
 
-    console.log(user);
     await prisma.user.update({
       where: { id: _id },
       data: { email_verified: true },
