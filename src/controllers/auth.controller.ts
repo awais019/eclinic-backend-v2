@@ -249,6 +249,7 @@ export default {
         last_name: true,
         email: true,
         phone: true,
+        gender: true,
         role: true,
         imageUrl: true,
       },
