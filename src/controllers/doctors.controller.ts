@@ -64,7 +64,7 @@ export default {
       state,
     };
 
-    let url = "";
+    let fileName = "";
 
     if (
       process.env.NODE_ENV === "production" ||
@@ -78,7 +78,10 @@ export default {
           constants.BAD_REQUEST_CODE
         );
       }
-      url = await uploadHelpers.uploadFile(file, constants.DOCUMENT_FOLDER);
+      fileName = await uploadHelpers.uploadFile(
+        file,
+        constants.DOCUMENT_FOLDER
+      );
     }
 
     await prisma.$transaction(async () => {
@@ -96,7 +99,7 @@ export default {
       });
       await prisma.document.create({
         data: {
-          url,
+          name: fileName,
           doctorId: doctor.id,
         },
       });

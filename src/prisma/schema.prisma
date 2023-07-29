@@ -17,7 +17,7 @@ model User {
   email          String   @unique
   phone          String?  @unique
   gender         GENDER
-  imageUrl       String?  @db.VarChar(255)
+  image          String?  @db.VarChar(255)
   email_verified Boolean  @default(false)
   phone_verified Boolean  @default(false)
   role           ROLE     @default(PATIENT)
@@ -52,7 +52,7 @@ model Doctor {
 model Document {
   id       String       @id @default(uuid())
   type     DOCUMENTTYPE @default(DEGREE)
-  url      String       @db.VarChar(255)
+  name     String       @db.VarChar(255)
   Doctor   Doctor       @relation(fields: [doctorId], references: [id])
   doctorId String       @unique
 

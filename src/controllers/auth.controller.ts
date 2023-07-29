@@ -225,17 +225,24 @@ export default {
         constants.BAD_REQUEST_CODE
       );
     }
-    const url = await uploadHelpers.uploadFile(file, constants.IMAGES_FOLDER);
+    const imageName = await uploadHelpers.uploadFile(
+      file,
+      constants.IMAGES_FOLDER
+    );
 
     const token = req.header(constants.AUTH_HEADER_NAME);
     const { _id } = jwtHelpers.decode(token) as JwtPayload;
 
     await prisma.user.update({
       where: { id: _id },
-      data: { imageUrl: url },
+      data: { image: imageName },
     });
 
-    return APIHelpers.sendAPISuccess(res, { url }, constants.SUCCESS_CODE);
+    return APIHelpers.sendAPISuccess(
+      res,
+      { imageName },
+      constants.SUCCESS_CODE
+    );
   },
   me: async function (req: Request, res: Response) {
     const token = req.header(constants.AUTH_HEADER_NAME);
@@ -251,7 +258,7 @@ export default {
         phone: true,
         gender: true,
         role: true,
-        imageUrl: true,
+        image: true,
       },
     });
 
