@@ -26,7 +26,6 @@ model User {
   updated_at     DateTime @updatedAt
   patient        Patient?
   Doctor         Doctor?
-  Image          Image?
 
   @@index([email, phone])
 }
@@ -66,13 +65,6 @@ model Location {
   city    String  @db.VarChar(255)
   state   String  @db.VarChar(255)
   Doctor  Doctor?
-}
-
-model Image {
-  id     String @id @default(uuid())
-  url    String @db.VarChar(255)
-  User   User   @relation(fields: [userId], references: [id])
-  userId String @unique
 }
 
 enum GENDER {
