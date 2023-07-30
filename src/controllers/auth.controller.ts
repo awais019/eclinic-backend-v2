@@ -240,8 +240,9 @@ export default {
 
     return APIHelpers.sendAPISuccess(
       res,
-      { imageName },
-      constants.SUCCESS_CODE
+      null,
+      constants.SUCCESS_CODE,
+      constants.IMAGE_UPLOADED
     );
   },
   me: async function (req: Request, res: Response) {
