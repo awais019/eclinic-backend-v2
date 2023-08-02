@@ -70,7 +70,7 @@ model Location {
 
 model Schedule {
   id                   String    @id @default(uuid())
-  day                  DAY
+  day                  String
   startTime            DateTime
   endTime              DateTime
   break_start          DateTime?
@@ -105,14 +105,4 @@ enum VERIFICATION_STATUS {
   PENDING
   VERIFIED
   REJECTED
-}
-
-enum DAY {
-  MONDAY
-  TUESDAY
-  WEDNESDAY
-  THURSDAY
-  FRIDAY
-  SATURDAY
-  SUNDAY
 }

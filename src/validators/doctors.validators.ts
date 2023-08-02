@@ -1,4 +1,4 @@
-import Doctor from "../types/doctor";
+import { Doctor, DoctorSchedule } from "../types/doctor";
 import Joi from "joi";
 
 export default {
@@ -16,5 +16,21 @@ export default {
       state: Joi.string().required(),
     });
     return schema.validate(doctor);
+  },
+  schedule: function (schedule: DoctorSchedule[]) {
+    const schema = Joi.array()
+      .items({
+        day: Joi.string().required(),
+        startTime: Joi.string().required(),
+        endTime: Joi.string().required(),
+        is_active: Joi.boolean().required(),
+        break_start: Joi.string(),
+        break_end: Joi.string(),
+        appointment_interval: Joi.number().required(),
+        buffer: Joi.number().required(),
+      })
+      .length(7)
+      .required();
+    return schema.validate(schedule);
   },
 };

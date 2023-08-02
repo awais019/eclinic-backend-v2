@@ -16,4 +16,15 @@ type Doctor = {
   };
 };
 
-export default Doctor;
+type DoctorSchedule = {
+  day: string;
+  startTime: string;
+  endTime: string;
+  is_active: boolean;
+  break_start?: string;
+  break_end?: string;
+  appointment_interval: number;
+  buffer: number;
+};
+
+export { Doctor, DoctorSchedule };

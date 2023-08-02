@@ -9,6 +9,8 @@ import cryptoHelpers from "../helpers/crypto";
 import jwtHelpers from "../helpers/jwt";
 import emailHelpers from "../helpers/email";
 import ejsHelpers from "../helpers/ejs";
+import { JwtPayload } from "jsonwebtoken";
+import { DoctorSchedule } from "doctor";
 
 export default {
   create: async (req: Request, res: Response) => {
@@ -120,6 +122,53 @@ export default {
         );
       }
     });
+
+    return helpers.sendAPISuccess(
+      res,
+      null,
+      constants.CREATED_CODE,
+      constants.SUCCESS_MSG
+    );
+  },
+  setSchedule: async (req: Request, res: Response) => {
+    const token = req.header(constants.AUTH_HEADER_NAME);
+    let schedule = req.body;
+    const { _id } = jwtHelpers.decode(token) as JwtPayload;
+    const doctor = await prisma.doctor.findUnique({
+      where: {
+        userId: _id,
+      },
+    });
+
+    schedule = schedule.map((s: DoctorSchedule) => {
+      return {
+        ...s,
+        day: s.day.toUpperCase(),
+        doctorId: doctor.id,
+      };
+    });
+
+    if (!doctor) {
+      return helpers.sendAPIError(
+        res,
+        new Error(constants.UNAUTHORIZED_MSG),
+        constants.UNAUTHORIZED_CODE
+      );
+    }
+
+    try {
+      await prisma.schedule.createMany({
+        data: schedule,
+      });
+    } catch (error) {
+      console.log(error);
+
+      return helpers.sendAPIError(
+        res,
+        new Error(constants.INTERNAL_SERVER_ERROR_MSG),
+        constants.INTERNAL_SERVER_ERROR_CODE
+      );
+    }
 
     return helpers.sendAPISuccess(
       res,

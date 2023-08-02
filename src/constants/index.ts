@@ -14,7 +14,7 @@ export default {
   BAD_REQUEST_MSG: "Bad Request",
   UNAUTHORIZED_MSG: "Unauthorized",
   NOT_FOUND_MSG: "Not Found",
-  INTERNAL_SERVER_ERROR_MSG: "Internal Server Error",
+  INTERNAL_SERVER_ERROR_MSG: "Something went wrong...",
   FILE_NOT_UPLOADED: "File not uploaded",
   FILE_TOO_LARGE: "File too large",
   LOGIN_SUCCESS: "Login successful",
