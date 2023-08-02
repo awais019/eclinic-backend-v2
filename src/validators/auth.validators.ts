@@ -33,4 +33,17 @@ export default {
     });
     return schema.validate({ token, password });
   },
+  sendPhoneCode: function ({ phone }: { phone: string }) {
+    const schema = Joi.object({
+      phone: Joi.string().required(),
+    });
+    return schema.validate({ phone });
+  },
+  verifyPhoneCode: function ({ phone, code }: { phone: string; code: string }) {
+    const schema = Joi.object({
+      phone: Joi.string().required(),
+      code: Joi.string().required(),
+    });
+    return schema.validate({ phone, code });
+  },
 };

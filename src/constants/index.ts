@@ -21,10 +21,13 @@ export default {
   RESET_PASSWORD_EMAIL_SENT: "Reset password email sent",
   PASSWORD_RESET_SUCCESS: "Password reset successful",
   IMAGE_UPLOADED: "Image uploaded",
+  VERIFICATION_CODE_SENT: "Verification code sent",
+  PHONE_VERIFIED: "Phone verified",
 
   // error messages
   INVALID_EMAIL: "Invalid email",
   INVALID_PASSWORD: "Invalid password",
+  INVALID_CODE: "Invalid code",
 
   // user
   USER_NOT_FOUND: "User not found",
@@ -55,4 +58,8 @@ export default {
   // cloud folders
   DOCUMENT_FOLDER: "documents",
   IMAGES_FOLDER: "images",
+
+  // Twilio
+  TWILIO_CHANNEL: "sms",
+  COMPANY_NAME: "E-Clinic",
 };

@@ -45,4 +45,16 @@ router.post(
 
 router.get("/me", authMiddleware(), trycatchMiddleware(authController.me));
 
+router.post(
+  "/send/phonecode",
+  [valiateMiddleware(validators.sendPhoneCode), authMiddleware()],
+  trycatchMiddleware(authController.sendPhoneCode)
+);
+
+router.post(
+  "/verify/phonecode",
+  [valiateMiddleware(validators.verifyPhoneCode), authMiddleware()],
+  trycatchMiddleware(authController.verifyPhoneCode)
+);
+
 export default router;

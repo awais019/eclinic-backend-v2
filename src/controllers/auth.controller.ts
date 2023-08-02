@@ -8,6 +8,7 @@ import APIHelpers from "../helpers";
 import ejsHelpers from "../helpers/ejs";
 import emailHelpers from "../helpers/email";
 import uploadHelpers from "../helpers/upload";
+import twilioHelpers from "../helpers/twilio";
 import { UploadedFile } from "express-fileupload";
 import { ROLE } from "@prisma/client";
 
@@ -279,6 +280,40 @@ export default {
       { ...user, ...additionalData },
       constants.SUCCESS_CODE,
       constants.SUCCESS_MSG
+    );
+  },
+  sendPhoneCode: async function (req: Request, res: Response) {
+    const { phone } = req.body;
+
+    await twilioHelpers.sendCode(phone);
+
+    return APIHelpers.sendAPISuccess(
+      res,
+      {
+        phone,
+      },
+      constants.SUCCESS_CODE,
+      constants.VERIFICATION_CODE_SENT
+    );
+  },
+  verifyPhoneCode: async (req: Request, res: Response) => {
+    const { phone, code } = req.body;
+
+    const verificationCheck = await twilioHelpers.verifyCode(phone, code);
+
+    if (!verificationCheck.valid) {
+      return APIHelpers.sendAPIError(
+        res,
+        new Error(constants.INVALID_CODE),
+        constants.BAD_REQUEST_CODE
+      );
+    }
+
+    return APIHelpers.sendAPISuccess(
+      res,
+      null,
+      constants.SUCCESS_CODE,
+      constants.PHONE_VERIFIED
     );
   },
 };
