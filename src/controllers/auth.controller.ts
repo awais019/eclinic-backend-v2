@@ -10,7 +10,7 @@ import emailHelpers from "../helpers/email";
 import uploadHelpers from "../helpers/upload";
 import twilioHelpers from "../helpers/twilio";
 import { UploadedFile } from "express-fileupload";
-import { ROLE } from "@prisma/client";
+import { ROLE, VERIFICATION_STATUS } from "@prisma/client";
 
 export default {
   verifyEmail: async function (req: Request, res: Response) {
@@ -137,6 +137,22 @@ export default {
         new Error("Email not verified."),
         constants.FORBIDDEN_CODE
       );
+    }
+
+    if (user.role == ROLE.DOCTOR) {
+      const doctor = await prisma.doctor.findUnique({
+        where: { userId: user.id },
+      });
+      if (
+        doctor.verification == VERIFICATION_STATUS.PENDING ||
+        doctor.verification == VERIFICATION_STATUS.REJECTED
+      ) {
+        return APIHelpers.sendAPIError(
+          res,
+          new Error(constants.ACCOUNT_NOT_APPROVED),
+          constants.FORBIDDEN_CODE
+        );
+      }
     }
 
     const token = jwtHelpers.sign({ _id: user.id, email: user.email });

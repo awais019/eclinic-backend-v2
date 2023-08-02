@@ -23,6 +23,7 @@ export default {
   IMAGE_UPLOADED: "Image uploaded",
   VERIFICATION_CODE_SENT: "Verification code sent",
   PHONE_VERIFIED: "Phone verified",
+  ACCOUNT_NOT_APPROVED: "Account not approved",
 
   // error messages
   INVALID_EMAIL: "Invalid email",
