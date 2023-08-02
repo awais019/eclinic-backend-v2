@@ -19,4 +19,10 @@ router.post(
   trycatchMiddleware(doctors.setSchedule)
 );
 
+router.post(
+  "/schedule/update",
+  [authMiddleware(), validateMiddleware(validators.schedule)],
+  trycatchMiddleware(doctors.updateSchedule)
+);
+
 export default router;
