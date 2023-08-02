@@ -47,6 +47,7 @@ model Doctor {
   user                 User                @relation(fields: [userId], references: [id])
   userId               String              @unique
   degree               Document[]
+  schedule             Schedule[]
 }
 
 model Document {
@@ -65,6 +66,19 @@ model Location {
   city    String  @db.VarChar(255)
   state   String  @db.VarChar(255)
   Doctor  Doctor?
+}
+
+model Schedule {
+  id        String   @id @default(uuid())
+  day       DAY
+  startTime DateTime
+  endTime   DateTime
+  breakTime DateTime
+  buffer    Int
+  Doctor    Doctor   @relation(fields: [doctorId], references: [id])
+  doctorId  String
+
+  @@unique([doctorId, day], name: "doctorId_day")
 }
 
 enum GENDER {
@@ -88,4 +102,14 @@ enum VERIFICATION_STATUS {
   PENDING
   VERIFIED
   REJECTED
+}
+
+enum DAY {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
 }
