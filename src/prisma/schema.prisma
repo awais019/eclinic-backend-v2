@@ -31,10 +31,11 @@ model User {
 }
 
 model Patient {
-  id        String   @id @default(uuid())
-  birthdate DateTime
-  user      User     @relation(fields: [userId], references: [id])
-  userId    String   @unique
+  id          String        @id @default(uuid())
+  birthdate   DateTime
+  user        User          @relation(fields: [userId], references: [id])
+  userId      String        @unique
+  Appointment Appointment[]
 }
 
 model Doctor {
@@ -50,6 +51,7 @@ model Doctor {
   degree                   Document[]
   schedule                 Schedule[]
   charges                  Charges[]
+  Appointment              Appointment[]
 }
 
 model Document {
@@ -96,6 +98,21 @@ model Charges {
   @@unique([doctorId, appointment_type], name: "doctorId_appointment_type")
 }
 
+model Appointment {
+  id        String             @id @default(uuid())
+  date      DateTime
+  time      DateTime
+  duration  Int
+  charges   Int
+  Doctor    Doctor             @relation(fields: [doctorId], references: [id])
+  doctorId  String
+  Patient   Patient            @relation(fields: [patientId], references: [id])
+  patientId String
+  status    APPOINTMENT_STATUS @default(PENDING)
+
+  @@unique([doctorId, patientId, date], name: "doctorId_patientId_date")
+}
+
 enum GENDER {
   MALE
   FEMALE
@@ -117,4 +134,11 @@ enum VERIFICATION_STATUS {
   PENDING
   VERIFIED
   REJECTED
+}
+
+enum APPOINTMENT_STATUS {
+  PENDING
+  ACCEPTED
+  REJECTED
+  CANCELLED
 }
