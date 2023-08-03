@@ -27,4 +27,9 @@ type DoctorSchedule = {
   buffer: number;
 };
 
-export { Doctor, DoctorSchedule };
+type Charges = {
+  appointment_type: string;
+  amount: number;
+};
+
+export { Doctor, DoctorSchedule, Charges };

@@ -1,4 +1,4 @@
-import { Doctor, DoctorSchedule } from "../types/doctor";
+import { Doctor, DoctorSchedule, Charges } from "../types/doctor";
 import Joi from "joi";
 
 export default {
@@ -32,5 +32,15 @@ export default {
       .length(7)
       .required();
     return schema.validate(schedule);
+  },
+  charges: function (charges: Charges[]) {
+    const schema = Joi.array()
+      .items({
+        appointment_type: Joi.string().required(),
+        amount: Joi.number().required(),
+      })
+      .required()
+      .min(1);
+    return schema.validate(charges);
   },
 };

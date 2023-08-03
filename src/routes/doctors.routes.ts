@@ -25,4 +25,10 @@ router.post(
   trycatchMiddleware(doctors.updateSchedule)
 );
 
+router.post(
+  "/charges/set",
+  [authMiddleware(), validateMiddleware(validators.charges)],
+  trycatchMiddleware(doctors.setCharges)
+);
+
 export default router;

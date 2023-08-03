@@ -92,6 +92,8 @@ model Charges {
   appointment_type String
   Doctor           Doctor @relation(fields: [doctorId], references: [id])
   doctorId         String
+
+  @@unique([doctorId, appointment_type], name: "doctorId_appointment_type")
 }
 
 enum GENDER {

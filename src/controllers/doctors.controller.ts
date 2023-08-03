@@ -225,4 +225,59 @@ export default {
       constants.SUCCESS_MSG
     );
   },
+  setCharges: async (req: Request, res: Response) => {
+    const token = req.header(constants.AUTH_HEADER_NAME);
+    let charges = req.body;
+    const { _id } = jwtHelpers.decode(token) as JwtPayload;
+    const doctor = await prisma.doctor.findUnique({
+      where: {
+        userId: _id,
+      },
+    });
+
+    charges = charges.map((c: any) => {
+      return {
+        ...c,
+        doctorId: doctor.id,
+      };
+    });
+
+    if (!doctor) {
+      return helpers.sendAPIError(
+        res,
+        new Error(constants.UNAUTHORIZED_MSG),
+        constants.UNAUTHORIZED_CODE
+      );
+    }
+
+    if (charges.length == 2) {
+      await prisma.doctor.update({
+        where: {
+          id: doctor.id,
+        },
+        data: {
+          appoinment_types_allowed: ["PHYSICAL", "VIRTUAL"],
+        },
+      });
+    }
+
+    try {
+      await prisma.charges.createMany({
+        data: charges,
+      });
+    } catch (error) {
+      return helpers.sendAPIError(
+        res,
+        new Error(constants.INTERNAL_SERVER_ERROR_MSG),
+        constants.INTERNAL_SERVER_ERROR_CODE
+      );
+    }
+
+    return helpers.sendAPISuccess(
+      res,
+      null,
+      constants.CREATED_CODE,
+      constants.SUCCESS_MSG
+    );
+  },
 };
