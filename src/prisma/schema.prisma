@@ -104,6 +104,7 @@ model Appointment {
   time      DateTime
   duration  Int
   charges   Int
+  type      String
   Doctor    Doctor             @relation(fields: [doctorId], references: [id])
   doctorId  String
   Patient   Patient            @relation(fields: [patientId], references: [id])
