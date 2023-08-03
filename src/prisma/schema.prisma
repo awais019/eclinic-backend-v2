@@ -38,16 +38,18 @@ model Patient {
 }
 
 model Doctor {
-  id                   String              @id @default(uuid())
-  specialization       String              @db.VarChar(255)
-  hospital_clinic_name String              @db.VarChar(255)
-  verification         VERIFICATION_STATUS @default(PENDING)
-  location             Location            @relation(fields: [locationId], references: [id])
-  locationId           String              @unique
-  user                 User                @relation(fields: [userId], references: [id])
-  userId               String              @unique
-  degree               Document[]
-  schedule             Schedule[]
+  id                       String              @id @default(uuid())
+  specialization           String              @db.VarChar(255)
+  hospital_clinic_name     String              @db.VarChar(255)
+  verification             VERIFICATION_STATUS @default(PENDING)
+  location                 Location            @relation(fields: [locationId], references: [id])
+  locationId               String              @unique
+  user                     User                @relation(fields: [userId], references: [id])
+  userId                   String              @unique
+  appoinment_types_allowed String[]            @default(["PHYSIAL"])
+  degree                   Document[]
+  schedule                 Schedule[]
+  charges                  Charges[]
 }
 
 model Document {
@@ -82,6 +84,14 @@ model Schedule {
   doctorId             String
 
   @@unique([doctorId, day], name: "doctorId_day")
+}
+
+model Charges {
+  id               String @id @default(uuid())
+  amount           Int
+  appointment_type String
+  Doctor           Doctor @relation(fields: [doctorId], references: [id])
+  doctorId         String
 }
 
 enum GENDER {
