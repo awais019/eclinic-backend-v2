@@ -8,4 +8,13 @@ type Patient = {
   password: string;
 };
 
-export default Patient;
+type Appointment = {
+  doctorId: string;
+  date: Date;
+  time: string;
+  duration: number;
+  charges: number;
+  type: string;
+};
+
+export { Patient, Appointment };

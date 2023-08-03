@@ -1,4 +1,4 @@
-import Patient from "../types/patient";
+import { Patient, Appointment } from "../types/patient";
 import Joi from "joi";
 
 export default {
@@ -12,5 +12,16 @@ export default {
       password: Joi.string().required(),
     });
     return schema.validate(patient);
+  },
+  bookAppointment: function (appointment: Appointment) {
+    const schema = Joi.object({
+      doctorId: Joi.string().required(),
+      date: Joi.date().required(),
+      time: Joi.string().required(),
+      duration: Joi.number().required(),
+      charges: Joi.number().required(),
+      type: Joi.string().required(),
+    });
+    return schema.validate(appointment);
   },
 };

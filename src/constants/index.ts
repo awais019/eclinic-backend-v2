@@ -24,6 +24,7 @@ export default {
   VERIFICATION_CODE_SENT: "Verification code sent",
   PHONE_VERIFIED: "Phone verified",
   ACCOUNT_NOT_APPROVED: "Account not approved",
+  DOCTOR_NOT_AVAILABLE: "Doctor not available at this time",
 
   // error messages
   INVALID_EMAIL: "Invalid email",
