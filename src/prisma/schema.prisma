@@ -39,19 +39,19 @@ model Patient {
 }
 
 model Doctor {
-  id                       String              @id @default(uuid())
-  specialization           String              @db.VarChar(255)
-  hospital_clinic_name     String              @db.VarChar(255)
-  verification             VERIFICATION_STATUS @default(PENDING)
-  location                 Location            @relation(fields: [locationId], references: [id])
-  locationId               String              @unique
-  user                     User                @relation(fields: [userId], references: [id])
-  userId                   String              @unique
-  appoinment_types_allowed String[]            @default(["PHYSIAL"])
-  degree                   Document[]
-  schedule                 Schedule[]
-  charges                  Charges[]
-  Appointment              Appointment[]
+  id                        String              @id @default(uuid())
+  specialization            String              @db.VarChar(255)
+  hospital_clinic_name      String              @db.VarChar(255)
+  verification              VERIFICATION_STATUS @default(PENDING)
+  location                  Location            @relation(fields: [locationId], references: [id])
+  locationId                String              @unique
+  user                      User                @relation(fields: [userId], references: [id])
+  userId                    String              @unique
+  appointment_types_allowed String[]            @default(["PHYSICAL"])
+  degree                    Document[]
+  schedule                  Schedule[]
+  charges                   Charges[]
+  Appointment               Appointment[]
 }
 
 model Document {

@@ -256,7 +256,7 @@ export default {
           id: doctor.id,
         },
         data: {
-          appoinment_types_allowed: ["PHYSICAL", "VIRTUAL"],
+          appointment_types_allowed: ["PHYSICAL", "VIRTUAL"],
         },
       });
     }
@@ -311,7 +311,7 @@ export default {
           id: doctor.id,
         },
         data: {
-          appoinment_types_allowed: ["PHYSICAL", "VIRTUAL"],
+          appointment_types_allowed: ["PHYSICAL", "VIRTUAL"],
         },
       });
     } else {
@@ -320,7 +320,7 @@ export default {
           id: doctor.id,
         },
         data: {
-          appoinment_types_allowed: ["PHYSICAL"],
+          appointment_types_allowed: ["PHYSICAL"],
         },
       });
     }
