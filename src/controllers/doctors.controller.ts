@@ -370,6 +370,14 @@ export default {
         },
       });
 
+      const location = await prisma.location.findMany({
+        where: {
+          id: {
+            in: doctors.map((d) => d.locationId),
+          },
+        },
+      });
+
       const workingHours = await prisma.schedule.findFirst({
         where: {
           doctorId: {
@@ -411,6 +419,9 @@ export default {
             first_name: user.find((u) => u.id === d.userId).first_name,
             last_name: user.find((u) => u.id === d.userId).last_name,
             image: user.find((u) => u.id === d.userId).image,
+            address: location.find((l) => l.id === d.locationId).address,
+            city: location.find((l) => l.id === d.locationId).city,
+            state: location.find((l) => l.id === d.locationId).state,
             workingHours: {
               startTime: workingHours.startTime,
               endTime: workingHours.endTime,
