@@ -410,6 +410,7 @@ export default {
             ...d,
             first_name: user.find((u) => u.id === d.userId).first_name,
             last_name: user.find((u) => u.id === d.userId).last_name,
+            image: user.find((u) => u.id === d.userId).image,
             workingHours: {
               startTime: workingHours.startTime,
               endTime: workingHours.endTime,
