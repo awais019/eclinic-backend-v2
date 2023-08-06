@@ -36,6 +36,7 @@ model Patient {
   user        User          @relation(fields: [userId], references: [id])
   userId      String        @unique
   Appointment Appointment[]
+  Reviews     Reviews[]
 }
 
 model Doctor {
@@ -52,6 +53,7 @@ model Doctor {
   schedule                  Schedule[]
   charges                   Charges[]
   Appointment               Appointment[]
+  Reviews                   Reviews[]
 }
 
 model Document {
@@ -112,6 +114,17 @@ model Appointment {
   status    APPOINTMENT_STATUS @default(PENDING)
 
   @@unique([doctorId, patientId, date], name: "doctorId_patientId_date")
+}
+
+model Reviews {
+  id        String   @id @default(uuid())
+  rating    Int
+  review    String
+  date      DateTime
+  Doctor    Doctor   @relation(fields: [doctorId], references: [id])
+  doctorId  String
+  Patient   Patient  @relation(fields: [patientId], references: [id])
+  patientId String
 }
 
 enum GENDER {
