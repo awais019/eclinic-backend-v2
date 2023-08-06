@@ -52,8 +52,8 @@ model Doctor {
   degree                    Document[]
   schedule                  Schedule[]
   charges                   Charges[]
-  Appointment               Appointment[]
-  Reviews                   Reviews[]
+  appointment               Appointment[]
+  reviews                   Reviews[]
 }
 
 model Document {
