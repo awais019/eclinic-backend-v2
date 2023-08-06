@@ -349,4 +349,94 @@ export default {
       constants.SUCCESS_MSG
     );
   },
+  getDoctors: async (req: Request, res: Response) => {
+    let page = 0;
+    if (req.query.page) {
+      page = parseInt(req.query.page as string);
+    }
+    const skip = (page + 1) * constants.PAGE_SIZE;
+
+    const doctors = await prisma.$transaction(async () => {
+      const doctors = await prisma.doctor.findMany({
+        skip,
+        take: constants.PAGE_SIZE,
+      });
+
+      const user = await prisma.user.findMany({
+        where: {
+          id: {
+            in: doctors.map((d) => d.userId),
+          },
+        },
+      });
+
+      const workingHours = await prisma.schedule.findFirst({
+        where: {
+          doctorId: {
+            in: doctors.map((d) => d.id),
+          },
+        },
+      });
+
+      const charges = await prisma.charges.findMany({
+        where: {
+          doctorId: {
+            in: doctors.map((d) => d.id),
+          },
+        },
+      });
+
+      const reviewsCount = await prisma.reviews.count({
+        where: {
+          doctorId: {
+            in: doctors.map((d) => d.id),
+          },
+        },
+      });
+      const rating = await prisma.reviews.aggregate({
+        where: {
+          doctorId: {
+            in: doctors.map((d) => d.id),
+          },
+        },
+        _avg: {
+          rating: true,
+        },
+      });
+
+      return [
+        ...doctors.map((d) => {
+          return {
+            ...d,
+            first_name: user.find((u) => u.id === d.userId).first_name,
+            last_name: user.find((u) => u.id === d.userId).last_name,
+            workingHours: {
+              startTime: workingHours.startTime,
+              endTime: workingHours.endTime,
+            },
+            charges: {
+              physical: charges.find((c) => c.appointment_type === "PHYSICAL")
+                .amount,
+              virtual: charges.find((c) => c.appointment_type === "VIRTUAL")
+                ? charges.find((c) => c.appointment_type === "VIRTUAL").amount
+                : null,
+            },
+            reviewsCount,
+            rating: rating._avg.rating,
+          };
+        }),
+      ];
+    });
+
+    return helpers.sendAPISuccess(
+      res,
+      {
+        page,
+        pageSize: constants.PAGE_SIZE,
+        doctors,
+      },
+      constants.SUCCESS_CODE,
+      constants.SUCCESS_MSG
+    );
+  },
 };

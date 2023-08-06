@@ -37,4 +37,6 @@ router.post(
   trycatchMiddleware(doctors.updateCharges)
 );
 
+router.get("/", trycatchMiddleware(doctors.getDoctors));
+
 export default router;

@@ -64,4 +64,7 @@ export default {
   // Twilio
   TWILIO_CHANNEL: "sms",
   COMPANY_NAME: "E-Clinic",
+
+  // pagination
+  PAGE_SIZE: 10,
 };
