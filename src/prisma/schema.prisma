@@ -75,16 +75,16 @@ model Location {
 }
 
 model Schedule {
-  id                   String    @id @default(uuid())
+  id                   String  @id @default(uuid())
   day                  String
-  startTime            DateTime
-  endTime              DateTime
-  break_start          DateTime?
-  break_end            DateTime?
+  startTime            String
+  endTime              String
+  break_start          String?
+  break_end            String?
   buffer               Int
-  is_active            Boolean   @default(true)
+  is_active            Boolean @default(true)
   appointment_interval Int
-  Doctor               Doctor    @relation(fields: [doctorId], references: [id])
+  Doctor               Doctor  @relation(fields: [doctorId], references: [id])
   doctorId             String
 
   @@unique([doctorId, day], name: "doctorId_day")
