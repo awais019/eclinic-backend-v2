@@ -39,4 +39,6 @@ router.post(
 
 router.get("/", trycatchMiddleware(doctors.getDoctors));
 
+router.get("/specializations", trycatchMiddleware(doctors.getSpecializations));
+
 export default router;

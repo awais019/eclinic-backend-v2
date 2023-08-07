@@ -451,4 +451,23 @@ export default {
       constants.SUCCESS_MSG
     );
   },
+  getSpecializations: async (req: Request, res: Response) => {
+    const s = await prisma.doctor.findMany({
+      select: {
+        specialization: true,
+      },
+      distinct: ["specialization"],
+    });
+
+    const specializations = s.map((s) => s.specialization);
+
+    return helpers.sendAPISuccess(
+      res,
+      {
+        specializations,
+      },
+      constants.SUCCESS_CODE,
+      constants.SUCCESS_MSG
+    );
+  },
 };
