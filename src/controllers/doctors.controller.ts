@@ -369,6 +369,7 @@ export default {
       const doctors = await prisma.doctor.findMany({
         where: {
           specialization: {
+            contains: specialization,
             mode: "insensitive",
           },
           verification: "VERIFIED",
