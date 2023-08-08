@@ -351,17 +351,68 @@ export default {
   },
   getDoctors: async (req: Request, res: Response) => {
     let page = 0;
+    let totalPages = 0;
     if (req.query.page) {
       page = parseInt(req.query.page as string);
     }
-    const skip = (page + 1) * constants.PAGE_SIZE;
+    let q = "";
+    let specialization = "";
+    if (req.query.q) {
+      q = req.query.q as string;
+    }
+    if (req.query.specialization) {
+      specialization = req.query.specialization as string;
+    }
+    const skip = page * constants.PAGE_SIZE;
 
     const doctors = await prisma.$transaction(async () => {
       const doctors = await prisma.doctor.findMany({
-        skip,
-        take: constants.PAGE_SIZE,
+        where: {
+          specialization: {
+            mode: "insensitive",
+          },
+          verification: "VERIFIED",
+          OR: [
+            {
+              user: {
+                first_name: {
+                  contains: q,
+                  mode: "insensitive",
+                },
+              },
+            },
+            {
+              user: {
+                last_name: {
+                  contains: q,
+                  mode: "insensitive",
+                },
+              },
+            },
+            {
+              location: {
+                city: {
+                  contains: q,
+                  mode: "insensitive",
+                },
+              },
+            },
+            {
+              location: {
+                state: {
+                  contains: q,
+                  mode: "insensitive",
+                },
+              },
+            },
+          ],
+        },
       });
-
+      totalPages = Math.ceil(doctors.length / constants.PAGE_SIZE);
+      if (page >= totalPages) {
+        return [];
+      }
+      doctors.splice(0, skip);
       const user = await prisma.user.findMany({
         where: {
           id: {
@@ -445,6 +496,7 @@ export default {
       {
         page,
         pageSize: constants.PAGE_SIZE,
+        totalPages,
         doctors,
       },
       constants.SUCCESS_CODE,
