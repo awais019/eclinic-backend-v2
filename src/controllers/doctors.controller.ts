@@ -363,7 +363,7 @@ export default {
     if (req.query.specialization) {
       specialization = req.query.specialization as string;
     }
-    const skip = page * constants.PAGE_SIZE;
+    const skip = (page + 1) * constants.PAGE_SIZE;
 
     const doctors = await prisma.$transaction(async () => {
       const doctors = await prisma.doctor.findMany({
@@ -413,7 +413,8 @@ export default {
       if (page >= totalPages) {
         return [];
       }
-      doctors.splice(0, skip);
+      doctors.splice(0, doctors.length - skip);
+
       const user = await prisma.user.findMany({
         where: {
           id: {
