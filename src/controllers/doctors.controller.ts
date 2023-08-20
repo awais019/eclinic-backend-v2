@@ -613,4 +613,61 @@ export default {
       constants.SUCCESS_MSG
     );
   },
+  getReviews: async (req: Request, res: Response) => {
+    const doctorId = req.params.id;
+
+    const reviews = await prisma.reviews.findMany({
+      where: {
+        doctorId,
+      },
+      select: {
+        id: true,
+        rating: true,
+        review: true,
+        date: true,
+        patientId: true,
+      },
+      orderBy: {
+        date: "desc",
+      },
+    });
+
+    const patients = await prisma.patient.findMany({
+      where: {
+        id: {
+          in: reviews.map((r) => r.patientId),
+        },
+      },
+      include: {
+        user: {
+          select: {
+            first_name: true,
+            last_name: true,
+            image: true,
+          },
+        },
+      },
+    });
+
+    const data = reviews.map((r) => {
+      return {
+        id: r.id,
+        rating: r.rating,
+        review: r.review,
+        date: r.date,
+        user: {
+          firstName: patients.find((p) => p.id === r.patientId).user.first_name,
+          lastName: patients.find((p) => p.id === r.patientId).user.last_name,
+          image: patients.find((p) => p.id === r.patientId).user.image,
+        },
+      };
+    });
+
+    return helpers.sendAPISuccess(
+      res,
+      data,
+      constants.SUCCESS_CODE,
+      constants.SUCCESS_MSG
+    );
+  },
 };
