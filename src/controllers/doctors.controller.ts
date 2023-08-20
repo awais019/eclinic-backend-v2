@@ -528,4 +528,87 @@ export default {
       constants.SUCCESS_MSG
     );
   },
+  getDoctor: async (req: Request, res: Response) => {
+    const doctorId = req.params.id;
+
+    const doctor = await prisma.doctor.findUnique({
+      where: {
+        id: doctorId,
+      },
+    });
+
+    if (!doctor) {
+      return helpers.sendAPIError(
+        res,
+        new Error(constants.NOT_FOUND_MSG),
+        constants.NOT_FOUND_CODE
+      );
+    }
+
+    const user = await prisma.user.findUnique({
+      where: {
+        id: doctor.userId,
+      },
+    });
+
+    const location = await prisma.location.findUnique({
+      where: {
+        id: doctor.locationId,
+      },
+    });
+
+    const workingHours = await prisma.schedule.findFirst({
+      where: {
+        doctorId,
+      },
+    });
+
+    const charges = await prisma.charges.findMany({
+      where: {
+        doctorId,
+      },
+    });
+
+    const reviewsCount = await prisma.reviews.count({
+      where: {
+        doctorId,
+      },
+    });
+    const rating = await prisma.reviews.aggregate({
+      where: {
+        doctorId,
+      },
+      _avg: {
+        rating: true,
+      },
+    });
+
+    return helpers.sendAPISuccess(
+      res,
+      {
+        first_name: user.first_name,
+        last_name: user.last_name,
+        specialization: doctor.specialization,
+        image: user.image,
+        hospital_clinic_name: doctor.hospital_clinic_name,
+        address: location.address,
+        city: location.city,
+        state: location.state,
+        workingHours: {
+          startTime: workingHours.startTime,
+          endTime: workingHours.endTime,
+        },
+        charges: {
+          physical: charges.find((c) => c.appointment_type === "PHYSICAL")
+            .amount,
+          virtual: charges.find((c) => c.appointment_type === "VIRTUAL")
+            ? charges.find((c) => c.appointment_type === "VIRTUAL").amount
+            : null,
+        },
+        reviewsCount,
+        rating: Math.round(rating._avg.rating),
+      },
+      constants.SUCCESS_CODE
+    );
+  },
 };
