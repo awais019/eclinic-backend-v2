@@ -608,7 +608,8 @@ export default {
         reviewsCount,
         rating: Math.round(rating._avg.rating),
       },
-      constants.SUCCESS_CODE
+      constants.SUCCESS_CODE,
+      constants.SUCCESS_MSG
     );
   },
 };
