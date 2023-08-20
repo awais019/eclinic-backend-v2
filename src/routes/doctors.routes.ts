@@ -47,4 +47,6 @@ router.get("/specializations", trycatchMiddleware(doctors.getSpecializations));
 
 router.get("/:id/schedule", trycatchMiddleware(doctors.getSchedule));
 
+router.post("/:id/timeSlots", trycatchMiddleware(doctors.getTimeSlots));
+
 export default router;

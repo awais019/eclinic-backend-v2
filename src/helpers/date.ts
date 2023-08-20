@@ -11,4 +11,59 @@ export default {
     }
     return dates;
   },
+  getTimeSlots: (
+    startTime: string,
+    endTime: string,
+    break_start: string,
+    break_end: string,
+    duration: number
+  ) => {
+    const slots = [];
+
+    const start =
+      parseInt(startTime.split(":")[0]) * 60 +
+      parseInt(startTime.split(":")[1]);
+    const end =
+      parseInt(endTime.split(":")[0]) * 60 + parseInt(endTime.split(":")[1]);
+    const breakStart =
+      parseInt(break_start.split(":")[0]) * 60 +
+      parseInt(break_start.split(":")[1]);
+    const breakEnd =
+      parseInt(break_end.split(":")[0]) * 60 +
+      parseInt(break_end.split(":")[1]);
+
+    const slotsCount = Math.floor((end - start) / duration);
+
+    let slotStart = start;
+
+    let slotEnd = slotStart + duration;
+
+    for (let i = 0; i < slotsCount; i++) {
+      if (slotStart >= breakStart && slotEnd <= breakEnd) {
+        slotStart += duration;
+        slotEnd += duration;
+        continue;
+      }
+
+      const startHour = Math.floor(slotStart / 60);
+      const startMinute = slotStart % 60;
+      const endHour = Math.floor(slotEnd / 60);
+      const endMinute = slotEnd % 60;
+
+      slots.push({
+        start: `${startHour < 10 ? "0" + startHour : startHour}:${
+          startMinute < 10 ? "0" + startMinute : startMinute
+        }`,
+        end: `${endHour < 10 ? "0" + endHour : endHour}:${
+          endMinute < 10 ? "0" + endMinute : endMinute
+        }`,
+        disable: false,
+      });
+
+      slotStart += duration;
+      slotEnd += duration;
+    }
+
+    return slots;
+  },
 };

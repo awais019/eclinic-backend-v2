@@ -712,4 +712,41 @@ export default {
       constants.SUCCESS_MSG
     );
   },
+
+  getTimeSlots: async (req: Request, res: Response) => {
+    const { date, day } = req.body;
+    const doctorId = req.params.id;
+
+    // return all time slots of divided into duration equal to appointment duration
+    const schedule = await prisma.schedule.findFirst({
+      where: {
+        doctorId,
+        day,
+      },
+    });
+
+    const appointments = await prisma.appointment.findMany({
+      where: {
+        doctorId,
+        date,
+      },
+    });
+
+    const timeSlots = dateHelpers.getTimeSlots(
+      schedule.startTime,
+      schedule.endTime,
+      schedule.break_start,
+      schedule.break_end,
+      schedule.appointment_interval
+    );
+
+    timeSlots.forEach((slot) => {
+      const a = appointments.find((a) => a.time === slot.start);
+      if (a) {
+        slot.disable = true;
+      }
+    });
+
+    return res.send(timeSlots);
+  },
 };
