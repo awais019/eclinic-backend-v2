@@ -589,6 +589,7 @@ export default {
         first_name: user.first_name,
         last_name: user.last_name,
         specialization: doctor.specialization,
+        about: doctor.about,
         image: user.image,
         hospital_clinic_name: doctor.hospital_clinic_name,
         address: location.address,
