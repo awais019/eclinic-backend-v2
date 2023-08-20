@@ -69,5 +69,13 @@ export default {
   PAGE_SIZE: 10,
 
   // Days of the week
-  DAYS: ["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY"],
+  DAYS: [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ],
 };

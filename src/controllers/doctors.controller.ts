@@ -671,11 +671,45 @@ export default {
       constants.SUCCESS_MSG
     );
   },
-  getSchedule: (req: Request, res: Response) => {
-    // send next two weeks schedule from today
+  getSchedule: async (req: Request, res: Response) => {
     const doctorId = req.params.id;
 
     const nextTwoWeeks = dateHelpers.getNextTwoWeeks();
-    return res.send(nextTwoWeeks);
+
+    const schedule = await prisma.schedule.findMany({
+      where: {
+        doctorId,
+      },
+    });
+
+    nextTwoWeeks.forEach((day) => {
+      const s = schedule.find((s) => s.day === day.day);
+      if (!s || !s.is_active) {
+        day.disable = true;
+      }
+    });
+
+    const appointments = await prisma.appointment.findMany({
+      where: {
+        doctorId,
+        date: {
+          in: nextTwoWeeks.map((d) => d.date),
+        },
+      },
+    });
+
+    nextTwoWeeks.forEach((day) => {
+      const a = appointments.filter((a) => a.date === day.date);
+      if (a.length >= 10) {
+        day.disable = true;
+      }
+    });
+
+    return helpers.sendAPISuccess(
+      res,
+      nextTwoWeeks,
+      constants.SUCCESS_CODE,
+      constants.SUCCESS_MSG
+    );
   },
 };
