@@ -41,7 +41,7 @@ router.get("/", trycatchMiddleware(doctors.getDoctors));
 
 router.get("/:id", trycatchMiddleware(doctors.getDoctor));
 
-router.get("/reviews/:id", trycatchMiddleware(doctors.getReviews));
+router.get("/:id/reviews", trycatchMiddleware(doctors.getReviews));
 
 router.get("/specializations", trycatchMiddleware(doctors.getSpecializations));
 
