@@ -67,4 +67,7 @@ export default {
 
   // pagination
   PAGE_SIZE: 10,
+
+  // Days of the week
+  DAYS: ["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY"],
 };

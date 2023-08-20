@@ -9,6 +9,7 @@ import cryptoHelpers from "../helpers/crypto";
 import jwtHelpers from "../helpers/jwt";
 import emailHelpers from "../helpers/email";
 import ejsHelpers from "../helpers/ejs";
+import dateHelpers from "../helpers/date";
 import { JwtPayload } from "jsonwebtoken";
 import { DoctorSchedule } from "doctor";
 
@@ -669,5 +670,12 @@ export default {
       constants.SUCCESS_CODE,
       constants.SUCCESS_MSG
     );
+  },
+  getSchedule: (req: Request, res: Response) => {
+    // send next two weeks schedule from today
+    const doctorId = req.params.id;
+
+    const nextTwoWeeks = dateHelpers.getNextTwoWeeks();
+    return res.send(nextTwoWeeks);
   },
 };
