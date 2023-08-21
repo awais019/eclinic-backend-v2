@@ -607,6 +607,7 @@ export default {
             ? charges.find((c) => c.appointment_type === "VIRTUAL").amount
             : null,
         },
+        appointment_types_allowed: doctor.appointment_types_allowed,
         reviewsCount,
         rating: Math.round(rating._avg.rating),
       },
