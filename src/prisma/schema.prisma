@@ -102,17 +102,20 @@ model Charges {
 }
 
 model Appointment {
-  id        String             @id @default(uuid())
-  date      DateTime
-  time      String
-  duration  Int
-  charges   Int
-  type      String
-  Doctor    Doctor             @relation(fields: [doctorId], references: [id])
-  doctorId  String
-  Patient   Patient            @relation(fields: [patientId], references: [id])
-  patientId String
-  status    APPOINTMENT_STATUS @default(PENDING)
+  id             String             @id @default(uuid())
+  date           DateTime
+  time           String
+  duration       Int
+  charges        Int
+  type           String
+  patient_name   String
+  message        String             @db.Text
+  Doctor         Doctor             @relation(fields: [doctorId], references: [id])
+  doctorId       String
+  Patient        Patient            @relation(fields: [patientId], references: [id])
+  patientId      String
+  status         APPOINTMENT_STATUS @default(PENDING)
+  payment_status PAYMENT_STATUS     @default(PENDING)
 
   @@unique([doctorId, patientId, date], name: "doctorId_patientId_date")
 }
@@ -156,4 +159,9 @@ enum APPOINTMENT_STATUS {
   ACCEPTED
   REJECTED
   CANCELLED
+}
+
+enum PAYMENT_STATUS {
+  PENDING
+  PAID
 }
