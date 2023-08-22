@@ -65,7 +65,7 @@ export default {
     await prisma.appointment.create({
       data: {
         doctorId,
-        patientId: _id,
+        patientId: patient.id,
         patient_name,
         date,
         time,
