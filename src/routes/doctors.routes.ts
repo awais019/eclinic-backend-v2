@@ -38,23 +38,19 @@ router.post(
 );
 
 router.get("/", trycatchMiddleware(doctors.getDoctors));
+router.get("/specializations", trycatchMiddleware(doctors.getSpecializations));
 
 router.get("/:id", authMiddleware(), trycatchMiddleware(doctors.getDoctor));
-
 router.get(
   "/:id/reviews",
   authMiddleware(),
   trycatchMiddleware(doctors.getReviews)
 );
-
-router.get("/specializations", trycatchMiddleware(doctors.getSpecializations));
-
 router.get(
   "/:id/schedule",
   authMiddleware(),
   trycatchMiddleware(doctors.getSchedule)
 );
-
 router.post(
   "/:id/timeSlots",
   authMiddleware(),
