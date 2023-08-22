@@ -39,14 +39,26 @@ router.post(
 
 router.get("/", trycatchMiddleware(doctors.getDoctors));
 
-router.get("/:id", trycatchMiddleware(doctors.getDoctor));
+router.get("/:id", authMiddleware(), trycatchMiddleware(doctors.getDoctor));
 
-router.get("/:id/reviews", trycatchMiddleware(doctors.getReviews));
+router.get(
+  "/:id/reviews",
+  authMiddleware(),
+  trycatchMiddleware(doctors.getReviews)
+);
 
 router.get("/specializations", trycatchMiddleware(doctors.getSpecializations));
 
-router.get("/:id/schedule", trycatchMiddleware(doctors.getSchedule));
+router.get(
+  "/:id/schedule",
+  authMiddleware(),
+  trycatchMiddleware(doctors.getSchedule)
+);
 
-router.post("/:id/timeSlots", trycatchMiddleware(doctors.getTimeSlots));
+router.post(
+  "/:id/timeSlots",
+  authMiddleware(),
+  trycatchMiddleware(doctors.getTimeSlots)
+);
 
 export default router;
