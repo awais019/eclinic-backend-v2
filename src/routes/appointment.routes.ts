@@ -5,6 +5,10 @@ import appointments from "../controllers/appointments.controller";
 
 const router = express.Router();
 
-router.post("/create", authMiddleware(), trycatchMiddleware(appointments));
+router.post(
+  "/create",
+  authMiddleware(),
+  trycatchMiddleware(appointments.create)
+);
 
 export default router;

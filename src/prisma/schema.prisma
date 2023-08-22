@@ -105,7 +105,6 @@ model Appointment {
   id             String             @id @default(uuid())
   date           DateTime
   time           String
-  duration       Int
   charges        Int
   type           String
   patient_name   String
