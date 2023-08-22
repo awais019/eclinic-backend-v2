@@ -6,8 +6,14 @@ export default {
     const today = new Date();
     for (let i = 1; i < 15; i++) {
       const date = new Date(today.getTime() + i * 24 * 60 * 60 * 1000);
+      date.setHours(0, 0, 0, 0);
       const day = constants.DAYS[date.getDay()];
-      dates.push({ date, day, disable: false });
+
+      dates.push({
+        date,
+        day,
+        disable: false,
+      });
     }
     return dates;
   },
