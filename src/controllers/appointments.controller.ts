@@ -5,6 +5,7 @@ import stripeHelpers from "../helpers/stripe";
 import constants from "../constants";
 import { JwtPayload } from "jsonwebtoken";
 import prisma from "../prisma";
+import { PAYMENT_STATUS } from "@prisma/client";
 
 export default {
   create: async function (req: Request, res: Response) {
@@ -87,6 +88,7 @@ export default {
         type: appointment_type,
         message,
         charges: charges.amount,
+        payment_status: PAYMENT_STATUS.PAID,
       },
     });
 
