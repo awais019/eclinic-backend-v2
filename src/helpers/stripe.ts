@@ -6,37 +6,43 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 });
 
 export default {
-  createDoctor: (
+  createAppointment: async (
     doctorName: string,
-    doctorId: string,
-    image: string,
-    charges: number,
-    charges_type: string
+    patientName: string,
+    appointmentId: string,
+    charges: number
   ) => {
-    stripe.products
-      .create({
-        name: doctorName,
-        id: doctorId,
-        description: "Doctor charges",
-        type: "service",
-        images: [image],
-        metadata: {
-          appointment_type: charges_type,
+    const appointment = await stripe.products.create({
+      name: doctorName,
+      id: appointmentId,
+      description: "Doctor charges",
+      type: "service",
+      metadata: {
+        patientName,
+      },
+    });
+
+    const price = await stripe.prices.create({
+      unit_amount: charges * 300,
+      currency: "pkr",
+      product: appointment.id,
+    });
+
+    return price;
+  },
+  createPaymentLink: async (price: Stripe.Price) => {
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items: [
+        {
+          price: price.id,
+          quantity: 1,
         },
-      })
-      .then((doctor) => {
-        stripe.prices
-          .create({
-            unit_amount: charges * 100,
-            currency: "pkr",
-            product: doctor.id,
-          })
-          .then((price) => {
-            logger.info(`Doctor ${doctorName} created successfully in stripe`);
-          });
-      })
-      .catch((error) => {
-        logger.error(`Error creating doctor ${doctorName} in stripe` + error);
-      });
+      ],
+      mode: "payment",
+      success_url: `${process.env.CLIENT_URL}/success`,
+      cancel_url: `${process.env.CLIENT_URL}/cancel`,
+    });
+    return session;
   },
 };

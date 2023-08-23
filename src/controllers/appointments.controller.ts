@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import APIHelpers from "../helpers";
 import JWTHelpers from "../helpers/jwt";
+import stripeHelpers from "../helpers/stripe";
 import constants from "../constants";
 import { JwtPayload } from "jsonwebtoken";
 import prisma from "../prisma";
@@ -62,7 +63,21 @@ export default {
       );
     }
 
-    await prisma.appointment.create({
+    const doctor = await prisma.doctor.findUnique({
+      where: {
+        id: doctorId,
+      },
+      select: {
+        user: {
+          select: {
+            first_name: true,
+            last_name: true,
+          },
+        },
+      },
+    });
+
+    const appointment = await prisma.appointment.create({
       data: {
         doctorId,
         patientId: patient.id,
@@ -75,9 +90,18 @@ export default {
       },
     });
 
+    const price = await stripeHelpers.createAppointment(
+      `${doctor.user.first_name} ${doctor.user.last_name}`,
+      patient_name,
+      appointment.id,
+      charges.amount
+    );
+
+    const session = await stripeHelpers.createPaymentLink(price);
+
     APIHelpers.sendAPISuccess(
       res,
-      null,
+      { paymentLink: session.url },
       constants.SUCCESS_CODE,
       constants.SUCCESS_MSG
     );
