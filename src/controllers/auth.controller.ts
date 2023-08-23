@@ -277,6 +277,7 @@ export default {
         gender: true,
         role: true,
         image: true,
+        profile_setup: true,
       },
     });
 
