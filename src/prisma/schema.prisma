@@ -20,6 +20,7 @@ model User {
   image          String?  @db.VarChar(255)
   email_verified Boolean  @default(false)
   phone_verified Boolean  @default(false)
+  profile_setup  Boolean  @default(false)
   role           ROLE     @default(PATIENT)
   password       String   @db.VarChar(1000)
   created_at     DateTime @default(now())
