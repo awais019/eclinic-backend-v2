@@ -693,7 +693,9 @@ export default {
     });
 
     nextTwoWeeks.forEach((day) => {
-      const s = schedule.find((s) => s.day === day.day);
+      const s = schedule.find(
+        (s) => s.day.toLowerCase() === day.day.toLowerCase()
+      );
       if (!s || !s.is_active) {
         day.disable = true;
       }
@@ -727,11 +729,10 @@ export default {
     const { date, day } = req.body;
     const doctorId = req.params.id;
 
-    // return all time slots of divided into duration equal to appointment duration
     const schedule = await prisma.schedule.findFirst({
       where: {
         doctorId,
-        day,
+        day: day.toUpperCase(),
       },
     });
 
