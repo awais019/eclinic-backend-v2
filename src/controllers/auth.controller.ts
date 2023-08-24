@@ -316,6 +316,10 @@ export default {
   verifyPhoneCode: async (req: Request, res: Response) => {
     const { phone, code } = req.body;
 
+    const { _id } = jwtHelpers.decode(
+      req.header(constants.AUTH_HEADER_NAME)
+    ) as JwtPayload;
+
     const verificationCheck = await twilioHelpers.verifyCode(phone, code);
 
     if (!verificationCheck.valid) {
@@ -325,6 +329,11 @@ export default {
         constants.BAD_REQUEST_CODE
       );
     }
+
+    await prisma.user.update({
+      where: { id: _id },
+      data: { phone_verified: true, phone },
+    });
 
     return APIHelpers.sendAPISuccess(
       res,
