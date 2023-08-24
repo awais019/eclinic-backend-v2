@@ -274,6 +274,15 @@ export default {
       );
     }
 
+    await prisma.user.update({
+      where: {
+        id: doctor.userId,
+      },
+      data: {
+        profile_setup: true,
+      },
+    });
+
     return helpers.sendAPISuccess(
       res,
       null,
