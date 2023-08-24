@@ -27,7 +27,7 @@ export default {
         break_start: Joi.string(),
         break_end: Joi.string(),
         appointment_interval: Joi.number().required(),
-        buffer: Joi.number().required(),
+        buffer: Joi.number(),
       })
       .length(7)
       .required();

@@ -281,13 +281,28 @@ export default {
       },
     });
 
-    let additionalData;
+    let additionalData = {};
 
     if (user.role == ROLE.PATIENT) {
       additionalData = await prisma.patient.findUnique({
         where: { userId: user.id },
         select: {
           birthdate: true,
+        },
+      });
+    } else if (user.role == ROLE.DOCTOR) {
+      additionalData = await prisma.doctor.findUnique({
+        where: { userId: user.id },
+        select: {
+          hospital_clinic_name: true,
+          location: {
+            select: {
+              address: true,
+              city: true,
+              state: true,
+            },
+          },
+          schedule: true,
         },
       });
     }
