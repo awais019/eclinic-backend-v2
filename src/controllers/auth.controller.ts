@@ -295,6 +295,7 @@ export default {
         where: { userId: user.id },
         select: {
           hospital_clinic_name: true,
+          specialization: true,
           location: {
             select: {
               address: true,
