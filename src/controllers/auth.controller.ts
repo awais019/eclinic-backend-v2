@@ -315,6 +315,48 @@ export default {
       constants.SUCCESS_MSG
     );
   },
+
+  updateInfo: async (req: Request, res: Response) => {
+    const { first_name, last_name, gender, specialization, birthdate } =
+      req.body;
+
+    const token = req.header(constants.AUTH_HEADER_NAME);
+
+    const { _id } = jwtHelpers.decode(token) as JwtPayload;
+
+    const user = await prisma.user.findUnique({
+      where: { id: _id },
+    });
+
+    if (user.role == ROLE.PATIENT) {
+      await prisma.patient.update({
+        where: { userId: _id },
+        data: { birthdate },
+      });
+    } else if (user.role == ROLE.DOCTOR) {
+      await prisma.doctor.update({
+        where: { userId: _id },
+        data: { specialization },
+      });
+    }
+
+    await prisma.user.update({
+      where: { id: _id },
+      data: {
+        first_name,
+        last_name,
+        gender,
+      },
+    });
+
+    return APIHelpers.sendAPISuccess(
+      res,
+      null,
+      constants.SUCCESS_CODE,
+      constants.SUCCESS_MSG
+    );
+  },
+
   sendPhoneCode: async function (req: Request, res: Response) {
     const { phone } = req.body;
 
