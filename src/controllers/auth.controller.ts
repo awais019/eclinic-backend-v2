@@ -391,7 +391,7 @@ export default {
         },
       });
     } else if (user.role == ROLE.DOCTOR) {
-      additionalData = await prisma.doctor.findUnique({
+      const moreDate = await prisma.doctor.findUnique({
         where: { userId: user.id },
         select: {
           hospital_clinic_name: true,
@@ -406,6 +406,14 @@ export default {
           schedule: true,
         },
       });
+      additionalData = {
+        hospital_clinic_name: moreDate.hospital_clinic_name,
+        specialization: moreDate.specialization,
+        schedule: moreDate.schedule,
+        address: moreDate.location.address,
+        city: moreDate.location.city,
+        state: moreDate.location.state,
+      };
     }
 
     return APIHelpers.sendAPISuccess(
@@ -446,6 +454,35 @@ export default {
         first_name,
         last_name,
         gender,
+      },
+    });
+
+    return APIHelpers.sendAPISuccess(
+      res,
+      null,
+      constants.SUCCESS_CODE,
+      constants.SUCCESS_MSG
+    );
+  },
+
+  updateHospitalInfo: async (req: Request, res: Response) => {
+    const { hospital_clinic_name, address, city, state } = req.body;
+
+    const token = req.header(constants.AUTH_HEADER_NAME);
+
+    const { _id } = jwtHelpers.decode(token) as JwtPayload;
+
+    await prisma.doctor.update({
+      where: { userId: _id },
+      data: {
+        hospital_clinic_name,
+        location: {
+          update: {
+            address,
+            city,
+            state,
+          },
+        },
       },
     });
 

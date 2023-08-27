@@ -64,6 +64,12 @@ router.put(
 );
 
 router.post(
+  "/updatehospital",
+  authMiddleware(),
+  trycatchMiddleware(authController.updateHospitalInfo)
+);
+
+router.post(
   "/send/phonecode",
   [valiateMiddleware(validators.sendPhoneCode), authMiddleware()],
   trycatchMiddleware(authController.sendPhoneCode)
