@@ -25,11 +25,24 @@ export default {
       );
     }
 
-    const { _id } = jwtHelpers.decode(token) as JwtPayload;
+    const { _id, email } = jwtHelpers.decode(token) as JwtPayload;
 
     const user = await prisma.user.findUnique({
       where: { id: _id },
     });
+
+    if (email) {
+      await prisma.user.update({
+        where: { id: _id },
+        data: { email, email_verified: true },
+      });
+      return APIHelpers.sendAPISuccess(
+        res,
+        email,
+        constants.SUCCESS_CODE,
+        constants.EMAIL_VERIFIED
+      );
+    }
 
     if (user.email_verified) {
       return APIHelpers.sendAPISuccess(
@@ -102,6 +115,42 @@ export default {
       constants.VERIFICATION_EMAIL_SENT
     );
   },
+
+  sendUpdateEmail: async function (req: Request, res: Response) {
+    const { email } = req.body;
+    const token = req.header(constants.AUTH_HEADER_NAME);
+    const { _id } = jwtHelpers.decode(token) as JwtPayload;
+
+    const user = await prisma.user.findUnique({
+      where: { id: _id },
+    });
+
+    if (user.email == email) {
+      return APIHelpers.sendAPISuccess(
+        res,
+        null,
+        constants.SUCCESS_CODE,
+        constants.EMAIL_ALREADY_VERIFIED
+      );
+    }
+
+    const newToken = jwtHelpers.sign({ _id, email });
+
+    const html = await ejsHelpers.renderHTMLFile("email", {
+      name: user.first_name,
+      link: `${process.env.CLIENT_URL}/?token=${newToken}`,
+    });
+
+    await emailHelpers.sendMail(email, "Welcome to Eclinic", null, null, html);
+
+    return APIHelpers.sendAPISuccess(
+      res,
+      null,
+      constants.SUCCESS_CODE,
+      constants.VERIFICATION_EMAIL_SENT
+    );
+  },
+
   signin: async function (req: Request, res: Response) {
     const { email, password } = req.body;
 

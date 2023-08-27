@@ -20,6 +20,12 @@ router.post(
 );
 
 router.post(
+  "/sendUpdateEmail",
+  authMiddleware(),
+  trycatchMiddleware(authController.sendUpdateEmail)
+);
+
+router.post(
   "/signin",
   valiateMiddleware(validators.signin),
   trycatchMiddleware(authController.signin)
@@ -46,7 +52,7 @@ router.post(
 router.get("/me", authMiddleware(), trycatchMiddleware(authController.me));
 
 router.put(
-  "/me/",
+  "/me",
   authMiddleware(),
   trycatchMiddleware(authController.updateInfo)
 );
