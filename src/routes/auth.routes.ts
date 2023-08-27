@@ -44,6 +44,12 @@ router.post(
 );
 
 router.post(
+  "/updatepassword",
+  authMiddleware(),
+  trycatchMiddleware(authController.updatePassword)
+);
+
+router.post(
   "/uploadimage",
   authMiddleware(),
   trycatchMiddleware(authController.uploadImage)

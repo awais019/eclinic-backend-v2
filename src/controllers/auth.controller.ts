@@ -275,6 +275,57 @@ export default {
       constants.PASSWORD_RESET_SUCCESS
     );
   },
+
+  updatePassword: async function (req: Request, res: Response) {
+    const { current_password, new_password } = req.body;
+    const token = req.header(constants.AUTH_HEADER_NAME);
+
+    const { _id } = jwtHelpers.decode(token) as JwtPayload;
+
+    const user = await prisma.user.findUnique({
+      where: { id: _id },
+    });
+
+    let isPasswordValid;
+
+    if (process.env.NODE_ENV === "test") {
+      isPasswordValid = current_password === user.password;
+    } else {
+      isPasswordValid = cryptoHelpers.comparePassword(
+        current_password,
+        user.password
+      );
+    }
+
+    if (!isPasswordValid) {
+      return APIHelpers.sendAPIError(
+        res,
+        new Error(constants.INVALID_PASSWORD),
+        constants.BAD_REQUEST_CODE
+      );
+    }
+
+    let hashedPassword;
+
+    if (process.env.NODE_ENV === "test") {
+      hashedPassword = new_password;
+    } else {
+      hashedPassword = cryptoHelpers.encryptPassword(new_password);
+    }
+
+    await prisma.user.update({
+      where: { id: _id },
+      data: { password: hashedPassword },
+    });
+
+    return APIHelpers.sendAPISuccess(
+      res,
+      null,
+      constants.SUCCESS_CODE,
+      constants.SUCCESS_MSG
+    );
+  },
+
   uploadImage: async function (req: Request, res: Response) {
     if (!req.files) {
       return APIHelpers.sendAPIError(
