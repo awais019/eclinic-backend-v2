@@ -172,4 +172,66 @@ export default {
       constants.SUCCESS_MSG
     );
   },
+  getAppointmentRequests: async (req: Request, res: Response) => {
+    const token = req.header(constants.AUTH_HEADER_NAME);
+
+    const { _id } = JWTHelpers.decode(token) as JwtPayload;
+
+    const doctor = await prisma.doctor.findUnique({
+      where: {
+        userId: _id,
+      },
+    });
+
+    if (!doctor) {
+      APIHelpers.sendAPIError(
+        res,
+        new Error(constants.UNAUTHORIZED_MSG),
+        constants.UNAUTHORIZED_CODE
+      );
+    }
+
+    const appointments = await prisma.appointment.findMany({
+      where: {
+        doctorId: doctor.id,
+        status: APPOINTMENT_STATUS.PENDING,
+      },
+      select: {
+        patient_name: true,
+        date: true,
+        time: true,
+        type: true,
+        charges: true,
+        message: true,
+        Patient: {
+          select: {
+            user: {
+              select: {
+                image: true,
+              },
+            },
+          },
+        },
+      },
+      orderBy: {
+        date: "asc",
+      },
+    });
+
+    const _appointments = appointments.map((appointment) => ({
+      ...appointment,
+      image: appointment.Patient.user.image,
+    }));
+
+    _appointments.forEach((appointment) => {
+      delete appointment.Patient;
+    });
+
+    APIHelpers.sendAPISuccess(
+      res,
+      _appointments,
+      constants.SUCCESS_CODE,
+      constants.SUCCESS_MSG
+    );
+  },
 };

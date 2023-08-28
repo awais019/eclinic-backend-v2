@@ -17,4 +17,10 @@ router.get(
   trycatchMiddleware(appointments.getAppointments)
 );
 
+router.get(
+  "/requests",
+  authMiddleware(),
+  trycatchMiddleware(appointments.getAppointmentRequests)
+);
+
 export default router;
