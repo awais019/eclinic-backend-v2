@@ -625,7 +625,20 @@ export default {
     );
   },
   getReviews: async (req: Request, res: Response) => {
-    const doctorId = req.params.id;
+    let doctorId;
+
+    if (req.params.id == "") {
+      doctorId = req.params.id;
+    } else {
+      const token = req.header(constants.AUTH_HEADER_NAME);
+      const { _id } = jwtHelpers.decode(token) as JwtPayload;
+      const doctor = await prisma.doctor.findUnique({
+        where: {
+          userId: _id,
+        },
+      });
+      doctorId = doctor.id;
+    }
 
     const reviews = await prisma.reviews.findMany({
       where: {
