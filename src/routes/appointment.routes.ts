@@ -23,4 +23,16 @@ router.get(
   trycatchMiddleware(appointments.getAppointmentRequests)
 );
 
+router.post(
+  "/requests/accept",
+  authMiddleware(),
+  trycatchMiddleware(appointments.acceptAppointmentRequest)
+);
+
+router.post(
+  "/requests/reject",
+  authMiddleware(),
+  trycatchMiddleware(appointments.rejectAppointmentRequest)
+);
+
 export default router;

@@ -627,9 +627,9 @@ export default {
   getReviews: async (req: Request, res: Response) => {
     let doctorId;
 
-    if (req.params.id == "") {
+    if (req.params.id != "undefined") {
       doctorId = req.params.id;
-    } else {
+    } else if (req.params.id == "undefined") {
       const token = req.header(constants.AUTH_HEADER_NAME);
       const { _id } = jwtHelpers.decode(token) as JwtPayload;
       const doctor = await prisma.doctor.findUnique({

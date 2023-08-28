@@ -197,6 +197,7 @@ export default {
         status: APPOINTMENT_STATUS.PENDING,
       },
       select: {
+        id: true,
         patient_name: true,
         date: true,
         time: true,
@@ -230,6 +231,54 @@ export default {
     APIHelpers.sendAPISuccess(
       res,
       _appointments,
+      constants.SUCCESS_CODE,
+      constants.SUCCESS_MSG
+    );
+  },
+  acceptAppointmentRequest: async (req: Request, res: Response) => {
+    const { appointmentId } = req.body;
+    const date = new Date();
+    date.setHours(0, 0, 0, 0);
+
+    await prisma.appointment.update({
+      where: {
+        id: appointmentId,
+        date: {
+          gt: date,
+        },
+      },
+      data: {
+        status: APPOINTMENT_STATUS.ACCEPTED,
+      },
+    });
+
+    APIHelpers.sendAPISuccess(
+      res,
+      null,
+      constants.SUCCESS_CODE,
+      constants.SUCCESS_MSG
+    );
+  },
+  rejectAppointmentRequest: async (req: Request, res: Response) => {
+    const { appointmentId } = req.body;
+    const date = new Date();
+    date.setHours(0, 0, 0, 0);
+
+    await prisma.appointment.update({
+      where: {
+        id: appointmentId,
+        date: {
+          gt: date,
+        },
+      },
+      data: {
+        status: APPOINTMENT_STATUS.REJECTED,
+      },
+    });
+
+    APIHelpers.sendAPISuccess(
+      res,
+      null,
       constants.SUCCESS_CODE,
       constants.SUCCESS_MSG
     );
