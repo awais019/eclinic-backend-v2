@@ -1,11 +1,11 @@
-import { Request, Response } from "express";
+import e, { Request, Response } from "express";
 import APIHelpers from "../helpers";
 import JWTHelpers from "../helpers/jwt";
 import stripeHelpers from "../helpers/stripe";
 import constants from "../constants";
 import { JwtPayload } from "jsonwebtoken";
 import prisma from "../prisma";
-import { PAYMENT_STATUS } from "@prisma/client";
+import { PAYMENT_STATUS, APPOINTMENT_STATUS } from "@prisma/client";
 
 export default {
   create: async function (req: Request, res: Response) {
@@ -104,6 +104,70 @@ export default {
     APIHelpers.sendAPISuccess(
       res,
       { paymentLink: session.url },
+      constants.SUCCESS_CODE,
+      constants.SUCCESS_MSG
+    );
+  },
+  getAppointments: async (req: Request, res: Response) => {
+    const { date } = req.query;
+    const _date = new Date(date as string);
+    _date.setHours(0, 0, 0, 0);
+
+    const token = req.header(constants.AUTH_HEADER_NAME);
+
+    const { _id } = JWTHelpers.decode(token) as JwtPayload;
+
+    const doctor = await prisma.doctor.findUnique({
+      where: {
+        userId: _id,
+      },
+    });
+
+    if (!doctor) {
+      APIHelpers.sendAPIError(
+        res,
+        new Error(constants.UNAUTHORIZED_MSG),
+        constants.UNAUTHORIZED_CODE
+      );
+    }
+
+    const appointments = await prisma.appointment.findMany({
+      where: {
+        doctorId: doctor.id,
+        date: _date,
+        status: APPOINTMENT_STATUS.ACCEPTED,
+        payment_status: PAYMENT_STATUS.PAID,
+      },
+      select: {
+        patient_name: true,
+        date: true,
+        time: true,
+        type: true,
+        charges: true,
+        Patient: {
+          select: {
+            user: {
+              select: {
+                image: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    const _appointments = appointments.map((appointment) => ({
+      ...appointment,
+      image: appointment.Patient.user.image,
+    }));
+
+    _appointments.forEach((appointment) => {
+      delete appointment.Patient;
+    });
+
+    APIHelpers.sendAPISuccess(
+      res,
+      _appointments,
       constants.SUCCESS_CODE,
       constants.SUCCESS_MSG
     );

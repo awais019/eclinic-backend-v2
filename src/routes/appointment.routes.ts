@@ -11,4 +11,10 @@ router.post(
   trycatchMiddleware(appointments.create)
 );
 
+router.get(
+  "/",
+  authMiddleware(),
+  trycatchMiddleware(appointments.getAppointments)
+);
+
 export default router;
