@@ -18,6 +18,12 @@ router.get(
 );
 
 router.get(
+  "/completed",
+  authMiddleware(),
+  trycatchMiddleware(appointments.getCompletedAppointments)
+);
+
+router.get(
   "/requests",
   authMiddleware(),
   trycatchMiddleware(appointments.getAppointmentRequests)
