@@ -13,6 +13,11 @@ router.post(
   trycatchMiddleware(doctors.create)
 );
 
+router.get(
+  "/schedule",
+  authMiddleware(),
+  trycatchMiddleware(doctors.getFullSchedule)
+);
 router.post(
   "/schedule/set",
   [authMiddleware(), validateMiddleware(validators.schedule)],

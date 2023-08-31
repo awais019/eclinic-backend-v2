@@ -773,4 +773,44 @@ export default {
 
     return res.send(timeSlots);
   },
+  getFullSchedule: async (req: Request, res: Response) => {
+    const token = req.header(constants.AUTH_HEADER_NAME);
+    const { _id } = jwtHelpers.decode(token) as JwtPayload;
+
+    const doctor = await prisma.doctor.findUnique({
+      where: {
+        userId: _id,
+      },
+    });
+
+    if (!doctor) {
+      return helpers.sendAPIError(
+        res,
+        new Error(constants.UNAUTHORIZED_MSG),
+        constants.UNAUTHORIZED_CODE
+      );
+    }
+
+    const schedule = await prisma.schedule.findMany({
+      where: {
+        doctorId: doctor.id,
+      },
+      select: {
+        is_active: true,
+        day: true,
+        startTime: true,
+        endTime: true,
+        break_start: true,
+        break_end: true,
+        appointment_interval: true,
+      },
+    });
+
+    return helpers.sendAPISuccess(
+      res,
+      schedule,
+      constants.SUCCESS_CODE,
+      constants.SUCCESS_MSG
+    );
+  },
 };
