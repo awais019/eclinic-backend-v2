@@ -394,6 +394,7 @@ export default {
       const moreDate = await prisma.doctor.findUnique({
         where: { userId: user.id },
         select: {
+          id: true,
           hospital_clinic_name: true,
           specialization: true,
           location: {
@@ -406,6 +407,13 @@ export default {
           schedule: true,
         },
       });
+      const rating = await prisma.reviews.aggregate({
+        where: { doctorId: moreDate.id },
+        _avg: {
+          rating: true,
+        },
+      });
+
       additionalData = {
         hospital_clinic_name: moreDate.hospital_clinic_name,
         specialization: moreDate.specialization,
@@ -413,6 +421,7 @@ export default {
         address: moreDate.location.address,
         city: moreDate.location.city,
         state: moreDate.location.state,
+        rating: rating._avg.rating,
       };
     }
 
