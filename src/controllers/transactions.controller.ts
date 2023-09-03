@@ -53,7 +53,8 @@ export default {
           created_at: t.created_at,
         };
       }),
-      constants.SUCCESS_CODE
+      constants.SUCCESS_CODE,
+      constants.SUCCESS_MSG
     );
   },
 };
