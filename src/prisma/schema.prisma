@@ -119,6 +119,7 @@ model Appointment {
   Patient        Patient            @relation(fields: [patientId], references: [id])
   patientId      String
   status         APPOINTMENT_STATUS @default(PENDING)
+  completed      Boolean            @default(false)
   payment_status PAYMENT_STATUS     @default(PENDING)
   Transactions   Transactions[]
 

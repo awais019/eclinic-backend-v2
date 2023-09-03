@@ -204,32 +204,10 @@ export default {
       );
     }
 
-    const date = new Date();
-    const hours = date.getHours();
-    const minutes = date.getMinutes();
-    if (hours < 10) {
-      hours.toString().padStart(2, "0");
-    } else {
-      hours.toString();
-    }
-
-    if (minutes < 10) {
-      minutes.toString().padStart(2, "0");
-    } else {
-      minutes.toString();
-    }
-
     const appointments = await prisma.appointment.findMany({
       where: {
         doctorId: doctor.id,
-        status: APPOINTMENT_STATUS.ACCEPTED,
-        payment_status: PAYMENT_STATUS.PAID,
-        date: {
-          lte: date,
-        },
-        time: {
-          lte: `${hours}:${minutes}`,
-        },
+        completed: true,
       },
       select: {
         patient_name: true,
