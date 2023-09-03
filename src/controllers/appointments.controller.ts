@@ -92,6 +92,16 @@ export default {
       },
     });
 
+    await prisma.transactions.create({
+      data: {
+        appointment_id: appointment.id,
+        doctor_id: doctorId,
+        patient_id: patient.id,
+        amount: charges.amount,
+        status: PAYMENT_STATUS.PAID,
+      },
+    });
+
     const price = await stripeHelpers.createAppointment(
       `${doctor.user.first_name} ${doctor.user.last_name}`,
       patient_name,
