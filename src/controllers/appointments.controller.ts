@@ -144,7 +144,9 @@ export default {
     const appointments = await prisma.appointment.findMany({
       where: {
         doctorId: doctor.id,
-        date: _date,
+        ...(date && {
+          date: _date,
+        }),
         status: APPOINTMENT_STATUS.ACCEPTED,
         payment_status: PAYMENT_STATUS.PAID,
       },
@@ -154,6 +156,7 @@ export default {
         time: true,
         type: true,
         charges: true,
+        message: true,
         Patient: {
           select: {
             user: {

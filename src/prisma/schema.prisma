@@ -39,6 +39,7 @@ model Patient {
   Appointment  Appointment[]
   Reviews      Reviews[]
   Transactions Transactions[]
+  Prescription Prescription[]
 }
 
 model Doctor {
@@ -58,6 +59,7 @@ model Doctor {
   appointment               Appointment[]
   reviews                   Reviews[]
   Transactions              Transactions[]
+  Prescription              Prescription[]
 }
 
 model Document {
@@ -147,6 +149,25 @@ model Transactions {
   Appointment    Appointment      @relation(fields: [appointment_id], references: [id])
   Patient        Patient          @relation(fields: [patient_id], references: [id])
   Doctor         Doctor           @relation(fields: [doctor_id], references: [id])
+}
+
+model Medication {
+  id             String        @id @default(uuid())
+  name           String        @db.VarChar(255)
+  description    String?       @db.Text
+  Prescription   Prescription? @relation(fields: [prescriptionId], references: [id])
+  prescriptionId String?
+}
+
+model Prescription {
+  id          String       @id @default(uuid())
+  name        String       @db.VarChar(255)
+  description String?      @db.Text
+  Doctor      Doctor       @relation(fields: [doctorId], references: [id])
+  doctorId    String
+  Patient     Patient      @relation(fields: [patientId], references: [id])
+  patientId   String
+  Medication  Medication[]
 }
 
 enum GENDER {
