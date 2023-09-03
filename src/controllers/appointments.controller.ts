@@ -122,6 +122,8 @@ export default {
     const { date } = req.query;
     const _date = new Date(date as string);
     _date.setHours(0, 0, 0, 0);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
 
     const token = req.header(constants.AUTH_HEADER_NAME);
 
@@ -144,9 +146,11 @@ export default {
     const appointments = await prisma.appointment.findMany({
       where: {
         doctorId: doctor.id,
-        ...(date && {
-          date: _date,
-        }),
+        date: date
+          ? _date
+          : {
+              gte: today,
+            },
         status: APPOINTMENT_STATUS.ACCEPTED,
         payment_status: PAYMENT_STATUS.PAID,
       },
@@ -215,7 +219,6 @@ export default {
         time: true,
         type: true,
         charges: true,
-        message: true,
         Patient: {
           select: {
             user: {
