@@ -135,17 +135,18 @@ model Reviews {
 }
 
 model Transactions {
-  id             String         @id @default(uuid())
+  id             String           @id @default(uuid())
   amount         Int
   appointment_id String
   patient_id     String
   doctor_id      String
-  status         PAYMENT_STATUS @default(PENDING)
-  created_at     DateTime       @default(now())
-  updated_at     DateTime       @updatedAt
-  Appointment    Appointment    @relation(fields: [appointment_id], references: [id])
-  Patient        Patient        @relation(fields: [patient_id], references: [id])
-  Doctor         Doctor         @relation(fields: [doctor_id], references: [id])
+  type           Transaction_TYPE @default(RECEIVED)
+  status         PAYMENT_STATUS   @default(PENDING)
+  created_at     DateTime         @default(now())
+  updated_at     DateTime         @updatedAt
+  Appointment    Appointment      @relation(fields: [appointment_id], references: [id])
+  Patient        Patient          @relation(fields: [patient_id], references: [id])
+  Doctor         Doctor           @relation(fields: [doctor_id], references: [id])
 }
 
 enum GENDER {
@@ -181,4 +182,9 @@ enum APPOINTMENT_STATUS {
 enum PAYMENT_STATUS {
   PENDING
   PAID
+}
+
+enum Transaction_TYPE {
+  RECEIVED
+  WITHDRAW
 }

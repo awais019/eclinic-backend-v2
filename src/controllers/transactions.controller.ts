@@ -33,6 +33,7 @@ export default {
         id: true,
         created_at: true,
         amount: true,
+        type: true,
         Appointment: {
           select: {
             patient_name: true,
@@ -49,7 +50,8 @@ export default {
           id: t.id,
           patient_name: t.Appointment.patient_name,
           amount: t.amount,
-          type: t.Appointment.type,
+          type: t.type,
+          appointment_type: t.Appointment.type,
           created_at: t.created_at,
         };
       }),
