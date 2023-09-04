@@ -24,5 +24,35 @@ export default {
         constants.UNAUTHORIZED_CODE
       );
     }
+
+    const { prescription, appointmentId } = req.body;
+
+    await prisma.$transaction(async () => {
+      await prisma.prescription.create({
+        data: {
+          appointmentId,
+          Medication: {
+            createMany: {
+              data: prescription,
+            },
+          },
+        },
+      });
+      await prisma.appointment.update({
+        where: {
+          id: appointmentId,
+        },
+        data: {
+          completed: true,
+        },
+      });
+    });
+
+    helpers.sendAPISuccess(
+      res,
+      null,
+      constants.SUCCESS_CODE,
+      constants.SUCCESS_MSG
+    );
   },
 };

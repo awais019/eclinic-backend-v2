@@ -5,6 +5,6 @@ import trycatchMiddleware from "../middlewares/trycatch";
 
 const router = express.Router();
 
-router.get("/", authMiddleware(), trycatchMiddleware(prescription.create));
+router.post("/", authMiddleware(), trycatchMiddleware(prescription.create));
 
 export default router;

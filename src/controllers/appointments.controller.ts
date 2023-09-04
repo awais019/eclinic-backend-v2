@@ -151,16 +151,19 @@ export default {
           : {
               gte: today,
             },
+        completed: false,
         status: APPOINTMENT_STATUS.ACCEPTED,
         payment_status: PAYMENT_STATUS.PAID,
       },
       select: {
+        id: true,
         patient_name: true,
         date: true,
         time: true,
         type: true,
         charges: true,
         message: true,
+        completed: true,
         Patient: {
           select: {
             user: {
@@ -219,6 +222,7 @@ export default {
         time: true,
         type: true,
         charges: true,
+        completed: true,
         Patient: {
           select: {
             user: {

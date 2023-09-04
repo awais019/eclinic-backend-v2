@@ -39,7 +39,6 @@ model Patient {
   Appointment  Appointment[]
   Reviews      Reviews[]
   Transactions Transactions[]
-  Prescription Prescription[]
 }
 
 model Doctor {
@@ -59,7 +58,6 @@ model Doctor {
   appointment               Appointment[]
   reviews                   Reviews[]
   Transactions              Transactions[]
-  Prescription              Prescription[]
 }
 
 model Document {
@@ -122,6 +120,7 @@ model Appointment {
   completed      Boolean            @default(false)
   payment_status PAYMENT_STATUS     @default(PENDING)
   Transactions   Transactions[]
+  Prescription   Prescription[]
 
   @@unique([doctorId, patientId, date], name: "doctorId_patientId_date")
 }
@@ -153,22 +152,19 @@ model Transactions {
 }
 
 model Medication {
-  id             String        @id @default(uuid())
-  name           String        @db.VarChar(255)
-  description    String?       @db.Text
-  Prescription   Prescription? @relation(fields: [prescriptionId], references: [id])
-  prescriptionId String?
+  id             String       @id @default(uuid())
+  medication     String       @db.VarChar(255)
+  dosage         String       @db.VarChar(255)
+  instructions   String       @db.Text
+  Prescription   Prescription @relation(fields: [prescriptionId], references: [id])
+  prescriptionId String
 }
 
 model Prescription {
-  id          String       @id @default(uuid())
-  name        String       @db.VarChar(255)
-  description String?      @db.Text
-  Doctor      Doctor       @relation(fields: [doctorId], references: [id])
-  doctorId    String
-  Patient     Patient      @relation(fields: [patientId], references: [id])
-  patientId   String
-  Medication  Medication[]
+  id            String       @id @default(uuid())
+  Appointment   Appointment  @relation(fields: [appointmentId], references: [id])
+  appointmentId String
+  Medication    Medication[]
 }
 
 enum GENDER {
