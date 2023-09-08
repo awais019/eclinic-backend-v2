@@ -31,13 +31,19 @@ router.post(
 );
 
 router.post(
-  "/charges/set",
+  "/charges",
   [authMiddleware(), validateMiddleware(validators.charges)],
   trycatchMiddleware(doctors.setCharges)
 );
 
-router.post(
-  "/charges/update",
+router.get(
+  "/charges",
+  authMiddleware(),
+  trycatchMiddleware(doctors.getCharges)
+);
+
+router.put(
+  "/charges",
   [authMiddleware(), validateMiddleware(validators.charges)],
   trycatchMiddleware(doctors.updateCharges)
 );

@@ -290,6 +290,40 @@ export default {
       constants.SUCCESS_MSG
     );
   },
+  getCharges: async (req: Request, res: Response) => {
+    const token = req.header(constants.AUTH_HEADER_NAME);
+    const { _id } = jwtHelpers.decode(token) as JwtPayload;
+    const doctor = await prisma.doctor.findUnique({
+      where: {
+        userId: _id,
+      },
+    });
+
+    if (!doctor) {
+      return helpers.sendAPIError(
+        res,
+        new Error(constants.UNAUTHORIZED_MSG),
+        constants.UNAUTHORIZED_CODE
+      );
+    }
+
+    const charges = await prisma.charges.findMany({
+      where: {
+        doctorId: doctor.id,
+      },
+      select: {
+        appointment_type: true,
+        amount: true,
+      },
+    });
+
+    return helpers.sendAPISuccess(
+      res,
+      charges,
+      constants.SUCCESS_CODE,
+      constants.SUCCESS_MSG
+    );
+  },
   updateCharges: async (req: Request, res: Response) => {
     const token = req.header(constants.AUTH_HEADER_NAME);
     let charges = req.body;
