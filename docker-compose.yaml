@@ -1,0 +1,22 @@
+version: "3.8"
+services:
+  backend:
+    container_name: eclinic-backend
+    build: .
+    ports:
+      - 4000:4000
+    depends_on:
+      - db
+    restart: on-failure
+    command: bash -c "npx yarn migrate:prod && npx yarn generate && npx yarn build && npx yarn start:prod"
+
+  db:
+    container_name: postgres
+    image: postgres
+    ports:
+      - 5432:5432
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: eclinic
