@@ -16,8 +16,6 @@ bower_components
 .idea
 *.iml
 
-# Ignore built ts files
-dist/**/*
 
 # ignore yarn.lock
 yarn.lock
