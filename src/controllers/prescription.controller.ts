@@ -27,6 +27,14 @@ export default {
 
     const { prescription, appointmentId } = req.body;
 
+    if (!appointmentId || !prescription) {
+      return helpers.sendAPIError(
+        res,
+        new Error(constants.BAD_REQUEST_MSG),
+        constants.BAD_REQUEST_CODE
+      );
+    }
+
     await prisma.$transaction(async () => {
       await prisma.prescription.create({
         data: {

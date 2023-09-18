@@ -319,6 +319,13 @@ export default {
   },
   acceptAppointmentRequest: async (req: Request, res: Response) => {
     const { appointmentId } = req.body;
+    if (!appointmentId) {
+      APIHelpers.sendAPIError(
+        res,
+        new Error(constants.BAD_REQUEST_MSG),
+        constants.BAD_REQUEST_CODE
+      );
+    }
     const date = new Date();
     date.setHours(0, 0, 0, 0);
 
@@ -343,6 +350,13 @@ export default {
   },
   rejectAppointmentRequest: async (req: Request, res: Response) => {
     const { appointmentId } = req.body;
+    if (!appointmentId) {
+      APIHelpers.sendAPIError(
+        res,
+        new Error(constants.BAD_REQUEST_MSG),
+        constants.BAD_REQUEST_CODE
+      );
+    }
     const date = new Date();
     date.setHours(0, 0, 0, 0);
 

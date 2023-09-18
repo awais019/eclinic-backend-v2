@@ -19,13 +19,13 @@ router.get(
   trycatchMiddleware(doctors.getFullSchedule)
 );
 router.post(
-  "/schedule/set",
+  "/schedule",
   [authMiddleware(), validateMiddleware(validators.schedule)],
   trycatchMiddleware(doctors.setSchedule)
 );
 
-router.post(
-  "/schedule/update",
+router.put(
+  "/schedule",
   [authMiddleware(), validateMiddleware(validators.schedule)],
   trycatchMiddleware(doctors.updateSchedule)
 );

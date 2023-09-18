@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import constants from "../constants";
 import prisma from "../prisma";
-import { ROLE } from "@prisma/client";
+import { ROLE, VERIFICATION_STATUS } from "@prisma/client";
 import { UploadedFile } from "express-fileupload";
 import helpers from "../helpers";
 import uploadHelpers from "../helpers/upload";
@@ -416,7 +416,7 @@ export default {
             contains: specialization,
             mode: "insensitive",
           },
-          verification: "VERIFIED",
+          verification: VERIFICATION_STATUS.VERIFIED,
           OR: [
             {
               user: {
@@ -528,9 +528,12 @@ export default {
               endTime: workingHours.endTime,
             },
             charges: {
-              physical: charges.find((c) => c.appointment_type === "PHYSICAL")
-                .amount,
-              virtual: charges.find((c) => c.appointment_type === "VIRTUAL")
+              physical: charges.find(
+                (c) => c.appointment_type.toUpperCase() === "PHYSICAL"
+              ).amount,
+              virtual: charges.find(
+                (c) => c.appointment_type.toUpperCase() === "VIRTUAL"
+              )
                 ? charges.find((c) => c.appointment_type === "VIRTUAL").amount
                 : null,
             },
@@ -644,10 +647,13 @@ export default {
           endTime: workingHours.endTime,
         },
         charges: {
-          physical: charges.find((c) => c.appointment_type === "PHYSICAL")
-            .amount,
+          physical: charges.find(
+            (c) => c.appointment_type.toUpperCase() === "PHYSICAL"
+          ).amount,
           virtual: charges.find((c) => c.appointment_type === "VIRTUAL")
-            ? charges.find((c) => c.appointment_type === "VIRTUAL").amount
+            ? charges.find(
+                (c) => c.appointment_type.toUpperCase() === "VIRTUAL"
+              ).amount
             : null,
         },
         appointment_types_allowed: doctor.appointment_types_allowed,
