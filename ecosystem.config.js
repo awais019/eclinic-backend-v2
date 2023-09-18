@@ -5,7 +5,7 @@ module.exports = {
       exec_mode: "cluster",
       port: 3000,
       instances: "1",
-      script: "./src/index.ts",
+      script: "./dist/index.js",
     },
   ],
 };
