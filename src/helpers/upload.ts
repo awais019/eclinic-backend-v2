@@ -8,6 +8,6 @@ export default {
     const uploadPath = path.resolve(`./public/uploads/${folder}/${newName}`);
 
     await file.mv(uploadPath);
-    return newName;
+    return `${process.env.BASE_URL}/${folder}/${newName}`;
   },
 };

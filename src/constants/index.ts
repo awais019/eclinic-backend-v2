@@ -55,7 +55,7 @@ export default {
   VALID_DOCUMENT_FILE_TYPES: ["pdf", "doc", "docx"],
 
   // MAX_FILE_SIZE: 2 * 1024 * 1024, // 2MB
-  MAX_FILE_SIZE: 2 * 1024 * 1024,
+  MAX_FILE_SIZE: 5 * 1024 * 1024,
 
   // cloud folders
   DOCUMENT_FOLDER: "documents",
