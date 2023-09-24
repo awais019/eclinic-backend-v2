@@ -40,7 +40,7 @@ export default {
         },
       ],
       mode: "payment",
-      success_url: `${process.env.CLIENT_URL}/success`,
+      success_url: `${process.env.CLIENT_URL}/success/appointment?appointmentId=${price.product}`,
       cancel_url: `${process.env.CLIENT_URL}/cancel`,
     });
     return session;

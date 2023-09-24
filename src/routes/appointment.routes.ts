@@ -17,6 +17,12 @@ router.get(
   trycatchMiddleware(appointments.getAppointments)
 );
 
+router.put(
+  "/:id",
+  authMiddleware(),
+  trycatchMiddleware(appointments.updatePaymentStatus)
+);
+
 router.get(
   "/completed",
   authMiddleware(),

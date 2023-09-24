@@ -88,7 +88,6 @@ export default {
         type: appointment_type,
         message,
         charges: charges.amount,
-        payment_status: PAYMENT_STATUS.PAID,
       },
     });
 
@@ -188,6 +187,53 @@ export default {
     APIHelpers.sendAPISuccess(
       res,
       _appointments,
+      constants.SUCCESS_CODE,
+      constants.SUCCESS_MSG
+    );
+  },
+  updatePaymentStatus: async (req: Request, res: Response) => {
+    const id = req.params.id;
+    console.log(id);
+
+    const appointment = await prisma.appointment.update({
+      where: {
+        id,
+        payment_status: PAYMENT_STATUS.PENDING,
+      },
+      data: { payment_status: PAYMENT_STATUS.PAID },
+      select: {
+        date: true,
+        time: true,
+        type: true,
+        Doctor: {
+          select: {
+            user: {
+              select: {
+                first_name: true,
+                last_name: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!appointment) {
+      APIHelpers.sendAPIError(
+        res,
+        new Error(constants.NOT_FOUND_MSG),
+        constants.NOT_FOUND_CODE
+      );
+    }
+
+    APIHelpers.sendAPISuccess(
+      res,
+      {
+        date: appointment.date,
+        time: appointment.time,
+        type: appointment.type,
+        doctor: `${appointment.Doctor.user.first_name} ${appointment.Doctor.user.last_name}`,
+      },
       constants.SUCCESS_CODE,
       constants.SUCCESS_MSG
     );
