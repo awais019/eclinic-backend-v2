@@ -77,7 +77,6 @@ exports.default = {
                     type: appointment_type,
                     message,
                     charges: charges.amount,
-                    payment_status: client_1.PAYMENT_STATUS.PAID,
                 },
             });
             yield prisma_1.default.transactions.create({
@@ -94,7 +93,7 @@ exports.default = {
             helpers_1.default.sendAPISuccess(res, { paymentLink: session.url }, constants_1.default.SUCCESS_CODE, constants_1.default.SUCCESS_MSG);
         });
     },
-    getAppointments: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    getDoctorAppointments: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const { date } = req.query;
         const _date = new Date(date);
         _date.setHours(0, 0, 0, 0);
@@ -147,6 +146,121 @@ exports.default = {
             delete appointment.Patient;
         });
         helpers_1.default.sendAPISuccess(res, _appointments, constants_1.default.SUCCESS_CODE, constants_1.default.SUCCESS_MSG);
+    }),
+    getPatientAppointments: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        const { date } = req.query;
+        const _date = new Date(date);
+        _date.setHours(0, 0, 0, 0);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const token = req.header(constants_1.default.AUTH_HEADER_NAME);
+        const { _id } = jwt_1.default.decode(token);
+        const patient = yield prisma_1.default.patient.findUnique({
+            where: {
+                userId: _id,
+            },
+        });
+        if (!patient) {
+            helpers_1.default.sendAPIError(res, new Error(constants_1.default.UNAUTHORIZED_MSG), constants_1.default.UNAUTHORIZED_CODE);
+        }
+        const appointments = yield prisma_1.default.appointment.findMany({
+            where: {
+                patientId: patient.id,
+                date: date
+                    ? _date
+                    : {
+                        gt: today,
+                    },
+                completed: false,
+                status: client_1.APPOINTMENT_STATUS.ACCEPTED,
+                payment_status: client_1.PAYMENT_STATUS.PAID,
+            },
+            select: {
+                id: true,
+                patient_name: true,
+                date: true,
+                time: true,
+                type: true,
+                charges: true,
+                message: true,
+                completed: true,
+                Doctor: {
+                    select: {
+                        specialization: true,
+                        user: {
+                            select: {
+                                first_name: true,
+                                last_name: true,
+                                image: true,
+                            },
+                        },
+                    },
+                },
+            },
+        });
+        const _appointments = appointments.map((appointment) => (Object.assign(Object.assign({}, appointment), { doctor: {
+                first_name: appointment.Doctor.user.first_name,
+                last_name: appointment.Doctor.user.last_name,
+                specialization: appointment.Doctor.specialization,
+            }, image: appointment.Doctor.user.image })));
+        _appointments.forEach((appointment) => {
+            delete appointment.Doctor;
+        });
+        helpers_1.default.sendAPISuccess(res, _appointments, constants_1.default.SUCCESS_CODE, constants_1.default.SUCCESS_MSG);
+    }),
+    cancelAppointment: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        const { appointmentId } = req.body;
+        if (!appointmentId) {
+            helpers_1.default.sendAPIError(res, new Error(constants_1.default.BAD_REQUEST_MSG), constants_1.default.BAD_REQUEST_CODE);
+        }
+        const date = new Date();
+        date.setHours(0, 0, 0, 0);
+        yield prisma_1.default.appointment.update({
+            where: {
+                id: appointmentId,
+                date: {
+                    gt: date,
+                },
+            },
+            data: {
+                status: client_1.APPOINTMENT_STATUS.CANCELLED,
+            },
+        });
+        helpers_1.default.sendAPISuccess(res, null, constants_1.default.SUCCESS_CODE, constants_1.default.SUCCESS_MSG);
+    }),
+    updatePaymentStatus: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        const id = req.params.id;
+        const appointment = yield prisma_1.default.appointment.update({
+            where: {
+                id,
+                payment_status: client_1.PAYMENT_STATUS.PENDING,
+            },
+            data: { payment_status: client_1.PAYMENT_STATUS.PAID },
+            select: {
+                date: true,
+                time: true,
+                type: true,
+                Doctor: {
+                    select: {
+                        user: {
+                            select: {
+                                first_name: true,
+                                last_name: true,
+                            },
+                        },
+                    },
+                },
+            },
+        });
+        if (!appointment) {
+            helpers_1.default.sendAPIError(res, new Error(constants_1.default.NOT_FOUND_MSG), constants_1.default.NOT_FOUND_CODE);
+        }
+        helpers_1.default.sendAPISuccess(res, {
+            date: appointment.date,
+            time: appointment.time,
+            type: appointment.type,
+            doctor: `${appointment.Doctor.user.first_name} ${appointment.Doctor.user.last_name}`,
+        }, constants_1.default.SUCCESS_CODE, constants_1.default.SUCCESS_MSG);
     }),
     getCompletedAppointments: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const token = req.header(constants_1.default.AUTH_HEADER_NAME);

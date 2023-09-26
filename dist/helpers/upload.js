@@ -19,7 +19,7 @@ exports.default = {
         const newName = `${(0, crypto_1.randomUUID)()}${path_1.default.extname(file.name)}`;
         const uploadPath = path_1.default.resolve(`./public/uploads/${folder}/${newName}`);
         yield file.mv(uploadPath);
-        return newName;
+        return `${process.env.BASE_URL}/${folder}/${newName}`;
     }),
 };
 //# sourceMappingURL=upload.js.map
