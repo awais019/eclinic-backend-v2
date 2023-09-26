@@ -117,7 +117,7 @@ export default {
       constants.SUCCESS_MSG
     );
   },
-  getAppointments: async (req: Request, res: Response) => {
+  getDoctorAppointments: async (req: Request, res: Response) => {
     const { date } = req.query;
     const _date = new Date(date as string);
     _date.setHours(0, 0, 0, 0);
@@ -191,9 +191,121 @@ export default {
       constants.SUCCESS_MSG
     );
   },
+  getPatientAppointments: async (req: Request, res: Response) => {
+    const { date } = req.query;
+    const _date = new Date(date as string);
+    _date.setHours(0, 0, 0, 0);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const token = req.header(constants.AUTH_HEADER_NAME);
+
+    const { _id } = JWTHelpers.decode(token) as JwtPayload;
+
+    const patient = await prisma.patient.findUnique({
+      where: {
+        userId: _id,
+      },
+    });
+
+    if (!patient) {
+      APIHelpers.sendAPIError(
+        res,
+        new Error(constants.UNAUTHORIZED_MSG),
+        constants.UNAUTHORIZED_CODE
+      );
+    }
+
+    const appointments = await prisma.appointment.findMany({
+      where: {
+        patientId: patient.id,
+        date: date
+          ? _date
+          : {
+              gt: today,
+            },
+        completed: false,
+        status: APPOINTMENT_STATUS.ACCEPTED,
+        payment_status: PAYMENT_STATUS.PAID,
+      },
+      select: {
+        id: true,
+        patient_name: true,
+        date: true,
+        time: true,
+        type: true,
+        charges: true,
+        message: true,
+        completed: true,
+        Doctor: {
+          select: {
+            specialization: true,
+            user: {
+              select: {
+                first_name: true,
+                last_name: true,
+                image: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    const _appointments = appointments.map((appointment) => ({
+      ...appointment,
+      doctor: {
+        first_name: appointment.Doctor.user.first_name,
+        last_name: appointment.Doctor.user.last_name,
+        specialization: appointment.Doctor.specialization,
+      },
+      image: appointment.Doctor.user.image,
+    }));
+
+    _appointments.forEach((appointment) => {
+      delete appointment.Doctor;
+    });
+
+    APIHelpers.sendAPISuccess(
+      res,
+      _appointments,
+      constants.SUCCESS_CODE,
+      constants.SUCCESS_MSG
+    );
+  },
+  cancelAppointment: async (req: Request, res: Response) => {
+    const { appointmentId } = req.body;
+    if (!appointmentId) {
+      APIHelpers.sendAPIError(
+        res,
+        new Error(constants.BAD_REQUEST_MSG),
+        constants.BAD_REQUEST_CODE
+      );
+    }
+    const date = new Date();
+    date.setHours(0, 0, 0, 0);
+
+    await prisma.appointment.update({
+      where: {
+        id: appointmentId,
+        date: {
+          gt: date,
+        },
+      },
+      data: {
+        status: APPOINTMENT_STATUS.CANCELLED,
+      },
+    });
+
+    APIHelpers.sendAPISuccess(
+      res,
+      null,
+      constants.SUCCESS_CODE,
+      constants.SUCCESS_MSG
+    );
+  },
   updatePaymentStatus: async (req: Request, res: Response) => {
     const id = req.params.id;
-    console.log(id);
 
     const appointment = await prisma.appointment.update({
       where: {

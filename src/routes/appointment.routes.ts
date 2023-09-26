@@ -12,15 +12,27 @@ router.post(
 );
 
 router.get(
-  "/",
+  "/doctor",
   authMiddleware(),
-  trycatchMiddleware(appointments.getAppointments)
+  trycatchMiddleware(appointments.getDoctorAppointments)
+);
+
+router.get(
+  "/patient",
+  authMiddleware(),
+  trycatchMiddleware(appointments.getPatientAppointments)
 );
 
 router.put(
   "/:id",
   authMiddleware(),
   trycatchMiddleware(appointments.updatePaymentStatus)
+);
+
+router.post(
+  "/cancel",
+  authMiddleware(),
+  trycatchMiddleware(appointments.cancelAppointment)
 );
 
 router.get(
