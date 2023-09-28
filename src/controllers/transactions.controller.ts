@@ -6,7 +6,7 @@ import jwtHelpers from "../helpers/jwt";
 import { JwtPayload } from "jsonwebtoken";
 
 export default {
-  getTransactions: async (req: Request, res: Response) => {
+  getDoctorTransactions: async (req: Request, res: Response) => {
     const token = req.header(constants.AUTH_HEADER_NAME);
 
     const { _id } = jwtHelpers.decode(token) as JwtPayload;
@@ -52,6 +52,68 @@ export default {
           amount: t.amount,
           type: t.type,
           appointment_type: t.Appointment.type,
+          created_at: t.created_at,
+        };
+      }),
+      constants.SUCCESS_CODE,
+      constants.SUCCESS_MSG
+    );
+  },
+  getPatientTransactions: async (req: Request, res: Response) => {
+    const token = req.header(constants.AUTH_HEADER_NAME);
+
+    const { _id } = jwtHelpers.decode(token) as JwtPayload;
+
+    const patient = await prisma.patient.findUnique({
+      where: {
+        userId: _id,
+      },
+    });
+
+    if (!patient) {
+      return helpers.sendAPIError(
+        res,
+        new Error(constants.UNAUTHORIZED_MSG),
+        constants.UNAUTHORIZED_CODE
+      );
+    }
+
+    const transactions = await prisma.transactions.findMany({
+      where: {
+        patient_id: patient.id,
+      },
+      select: {
+        id: true,
+        created_at: true,
+        amount: true,
+        Doctor: {
+          select: {
+            user: {
+              select: {
+                first_name: true,
+                last_name: true,
+              },
+            },
+          },
+        },
+        Appointment: {
+          select: {
+            type: true,
+            status: true,
+          },
+        },
+      },
+    });
+
+    return helpers.sendAPISuccess(
+      res,
+      transactions.map((t) => {
+        return {
+          id: t.id,
+          doctor_name: t.Doctor.user.first_name + " " + t.Doctor.user.last_name,
+          amount: t.amount,
+          appointment_type: t.Appointment.type,
+          appointment_status: t.Appointment.status,
           created_at: t.created_at,
         };
       }),

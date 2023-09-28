@@ -6,9 +6,15 @@ import trycatchMiddleware from "../middlewares/trycatch";
 const router = express.Router();
 
 router.get(
-  "/",
+  "/doctor",
   authMiddleware(),
-  trycatchMiddleware(transactions.getTransactions)
+  trycatchMiddleware(transactions.getDoctorTransactions)
+);
+
+router.get(
+  "/patient",
+  authMiddleware(),
+  trycatchMiddleware(transactions.getPatientTransactions)
 );
 
 export default router;
