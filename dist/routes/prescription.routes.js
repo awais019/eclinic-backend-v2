@@ -9,5 +9,6 @@ const prescription_controller_1 = __importDefault(require("../controllers/prescr
 const trycatch_1 = __importDefault(require("../middlewares/trycatch"));
 const router = express_1.default.Router();
 router.post("/", (0, auth_1.default)(), (0, trycatch_1.default)(prescription_controller_1.default.create));
+router.get("/", (0, auth_1.default)(), (0, trycatch_1.default)(prescription_controller_1.default.get));
 exports.default = router;
 //# sourceMappingURL=prescription.routes.js.map

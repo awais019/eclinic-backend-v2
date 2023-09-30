@@ -279,6 +279,7 @@ exports.default = {
                 completed: true,
             },
             select: {
+                id: true,
                 patient_name: true,
                 date: true,
                 time: true,
@@ -296,7 +297,7 @@ exports.default = {
                 },
             },
             orderBy: {
-                date: "asc",
+                date: "desc",
             },
         });
         const _appointments = appointments.map((appointment) => (Object.assign(Object.assign({}, appointment), { image: appointment.Patient.user.image })));

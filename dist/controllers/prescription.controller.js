@@ -54,5 +54,80 @@ exports.default = {
         }));
         helpers_1.default.sendAPISuccess(res, null, constants_1.default.SUCCESS_CODE, constants_1.default.SUCCESS_MSG);
     }),
+    get: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        const token = req.header(constants_1.default.AUTH_HEADER_NAME);
+        const { _id } = jwt_1.default.decode(token);
+        const doctor = yield prisma_1.default.patient.findUnique({
+            where: {
+                userId: _id,
+            },
+        });
+        if (!doctor) {
+            return helpers_1.default.sendAPIError(res, new Error(constants_1.default.UNAUTHORIZED_MSG), constants_1.default.UNAUTHORIZED_CODE);
+        }
+        const appointments = yield prisma_1.default.appointment.findMany({
+            where: {
+                patientId: doctor.id,
+                completed: true,
+            },
+            select: {
+                id: true,
+            },
+        });
+        const prescriptions = yield prisma_1.default.prescription.findMany({
+            where: {
+                appointmentId: {
+                    in: appointments.map((appointment) => appointment.id),
+                },
+            },
+            orderBy: {
+                Appointment: {
+                    date: "desc",
+                },
+            },
+            select: {
+                id: true,
+                Appointment: {
+                    select: {
+                        type: true,
+                        date: true,
+                        Doctor: {
+                            select: {
+                                user: {
+                                    select: {
+                                        first_name: true,
+                                        last_name: true,
+                                        image: true,
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+                Medication: {
+                    select: {
+                        medication: true,
+                        dosage: true,
+                        instructions: true,
+                    },
+                },
+            },
+        });
+        helpers_1.default.sendAPISuccess(res, prescriptions.map((prescription) => {
+            return {
+                id: prescription.id,
+                appointment: {
+                    date: prescription.Appointment.date,
+                    type: prescription.Appointment.type,
+                },
+                doctor: {
+                    first_name: prescription.Appointment.Doctor.user.first_name,
+                    last_name: prescription.Appointment.Doctor.user.last_name,
+                    image: prescription.Appointment.Doctor.user.image,
+                },
+                medication: prescription.Medication,
+            };
+        }), constants_1.default.SUCCESS_CODE, constants_1.default.SUCCESS_MSG);
+    }),
 };
 //# sourceMappingURL=prescription.controller.js.map

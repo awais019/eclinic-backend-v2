@@ -17,7 +17,7 @@ const prisma_1 = __importDefault(require("../prisma"));
 const helpers_1 = __importDefault(require("../helpers"));
 const jwt_1 = __importDefault(require("../helpers/jwt"));
 exports.default = {
-    getTransactions: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    getDoctorTransactions: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const token = req.header(constants_1.default.AUTH_HEADER_NAME);
         const { _id } = jwt_1.default.decode(token);
         const doctor = yield prisma_1.default.doctor.findUnique({
@@ -52,6 +52,54 @@ exports.default = {
                 amount: t.amount,
                 type: t.type,
                 appointment_type: t.Appointment.type,
+                created_at: t.created_at,
+            };
+        }), constants_1.default.SUCCESS_CODE, constants_1.default.SUCCESS_MSG);
+    }),
+    getPatientTransactions: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        const token = req.header(constants_1.default.AUTH_HEADER_NAME);
+        const { _id } = jwt_1.default.decode(token);
+        const patient = yield prisma_1.default.patient.findUnique({
+            where: {
+                userId: _id,
+            },
+        });
+        if (!patient) {
+            return helpers_1.default.sendAPIError(res, new Error(constants_1.default.UNAUTHORIZED_MSG), constants_1.default.UNAUTHORIZED_CODE);
+        }
+        const transactions = yield prisma_1.default.transactions.findMany({
+            where: {
+                patient_id: patient.id,
+            },
+            select: {
+                id: true,
+                created_at: true,
+                amount: true,
+                Doctor: {
+                    select: {
+                        user: {
+                            select: {
+                                first_name: true,
+                                last_name: true,
+                            },
+                        },
+                    },
+                },
+                Appointment: {
+                    select: {
+                        type: true,
+                        status: true,
+                    },
+                },
+            },
+        });
+        return helpers_1.default.sendAPISuccess(res, transactions.map((t) => {
+            return {
+                id: t.id,
+                doctor_name: t.Doctor.user.first_name + " " + t.Doctor.user.last_name,
+                amount: t.amount,
+                appointment_type: t.Appointment.type,
+                appointment_status: t.Appointment.status,
                 created_at: t.created_at,
             };
         }), constants_1.default.SUCCESS_CODE, constants_1.default.SUCCESS_MSG);
