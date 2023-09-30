@@ -375,6 +375,7 @@ export default {
         completed: true,
       },
       select: {
+        id: true,
         patient_name: true,
         date: true,
         time: true,
@@ -392,7 +393,7 @@ export default {
         },
       },
       orderBy: {
-        date: "asc",
+        date: "desc",
       },
     });
 
