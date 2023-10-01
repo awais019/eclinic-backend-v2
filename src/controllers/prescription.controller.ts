@@ -56,7 +56,7 @@ export default {
       });
     });
 
-    helpers.sendAPISuccess(
+    return helpers.sendAPISuccess(
       res,
       null,
       constants.SUCCESS_CODE,
@@ -132,7 +132,7 @@ export default {
       },
     });
 
-    helpers.sendAPISuccess(
+    return helpers.sendAPISuccess(
       res,
       prescriptions.map((prescription) => {
         return {

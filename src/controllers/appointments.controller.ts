@@ -23,7 +23,7 @@ export default {
     });
 
     if (!patient) {
-      APIHelpers.sendAPIError(
+      return APIHelpers.sendAPIError(
         res,
         new Error(constants.NOT_FOUND_MSG),
         constants.NOT_FOUND_CODE
@@ -39,7 +39,7 @@ export default {
     });
 
     if (appointmentExists) {
-      APIHelpers.sendAPIError(
+      return APIHelpers.sendAPIError(
         res,
         new Error(constants.DOCTOR_NOT_AVAILABLE),
         constants.BAD_REQUEST_CODE
@@ -57,7 +57,7 @@ export default {
     });
 
     if (!charges) {
-      APIHelpers.sendAPIError(
+      return APIHelpers.sendAPIError(
         res,
         new Error(constants.NOT_FOUND_MSG),
         constants.NOT_FOUND_CODE
@@ -110,7 +110,7 @@ export default {
 
     const session = await stripeHelpers.createPaymentLink(price);
 
-    APIHelpers.sendAPISuccess(
+    return APIHelpers.sendAPISuccess(
       res,
       { paymentLink: session.url },
       constants.SUCCESS_CODE,
@@ -135,7 +135,7 @@ export default {
     });
 
     if (!doctor) {
-      APIHelpers.sendAPIError(
+      return APIHelpers.sendAPIError(
         res,
         new Error(constants.UNAUTHORIZED_MSG),
         constants.UNAUTHORIZED_CODE
@@ -184,7 +184,7 @@ export default {
       delete appointment.Patient;
     });
 
-    APIHelpers.sendAPISuccess(
+    return APIHelpers.sendAPISuccess(
       res,
       _appointments,
       constants.SUCCESS_CODE,
@@ -209,7 +209,7 @@ export default {
     });
 
     if (!patient) {
-      APIHelpers.sendAPIError(
+      return APIHelpers.sendAPIError(
         res,
         new Error(constants.UNAUTHORIZED_MSG),
         constants.UNAUTHORIZED_CODE
@@ -266,7 +266,7 @@ export default {
       delete appointment.Doctor;
     });
 
-    APIHelpers.sendAPISuccess(
+    return APIHelpers.sendAPISuccess(
       res,
       _appointments,
       constants.SUCCESS_CODE,
@@ -276,7 +276,7 @@ export default {
   cancelAppointment: async (req: Request, res: Response) => {
     const { appointmentId } = req.body;
     if (!appointmentId) {
-      APIHelpers.sendAPIError(
+      return APIHelpers.sendAPIError(
         res,
         new Error(constants.BAD_REQUEST_MSG),
         constants.BAD_REQUEST_CODE
@@ -297,7 +297,7 @@ export default {
       },
     });
 
-    APIHelpers.sendAPISuccess(
+    return APIHelpers.sendAPISuccess(
       res,
       null,
       constants.SUCCESS_CODE,
@@ -331,14 +331,14 @@ export default {
     });
 
     if (!appointment) {
-      APIHelpers.sendAPIError(
+      return APIHelpers.sendAPIError(
         res,
         new Error(constants.NOT_FOUND_MSG),
         constants.NOT_FOUND_CODE
       );
     }
 
-    APIHelpers.sendAPISuccess(
+    return APIHelpers.sendAPISuccess(
       res,
       {
         date: appointment.date,
@@ -362,7 +362,7 @@ export default {
     });
 
     if (!doctor) {
-      APIHelpers.sendAPIError(
+      return APIHelpers.sendAPIError(
         res,
         new Error(constants.UNAUTHORIZED_MSG),
         constants.UNAUTHORIZED_CODE
@@ -406,7 +406,7 @@ export default {
       delete appointment.Patient;
     });
 
-    APIHelpers.sendAPISuccess(
+    return APIHelpers.sendAPISuccess(
       res,
       _appointments,
       constants.SUCCESS_CODE,
@@ -472,7 +472,7 @@ export default {
       delete appointment.Patient;
     });
 
-    APIHelpers.sendAPISuccess(
+    return APIHelpers.sendAPISuccess(
       res,
       _appointments,
       constants.SUCCESS_CODE,
@@ -482,7 +482,7 @@ export default {
   acceptAppointmentRequest: async (req: Request, res: Response) => {
     const { appointmentId } = req.body;
     if (!appointmentId) {
-      APIHelpers.sendAPIError(
+      return APIHelpers.sendAPIError(
         res,
         new Error(constants.BAD_REQUEST_MSG),
         constants.BAD_REQUEST_CODE
@@ -503,7 +503,7 @@ export default {
       },
     });
 
-    APIHelpers.sendAPISuccess(
+    return APIHelpers.sendAPISuccess(
       res,
       null,
       constants.SUCCESS_CODE,
@@ -513,7 +513,7 @@ export default {
   rejectAppointmentRequest: async (req: Request, res: Response) => {
     const { appointmentId } = req.body;
     if (!appointmentId) {
-      APIHelpers.sendAPIError(
+      return APIHelpers.sendAPIError(
         res,
         new Error(constants.BAD_REQUEST_MSG),
         constants.BAD_REQUEST_CODE
@@ -534,7 +534,7 @@ export default {
       },
     });
 
-    APIHelpers.sendAPISuccess(
+    return APIHelpers.sendAPISuccess(
       res,
       null,
       constants.SUCCESS_CODE,

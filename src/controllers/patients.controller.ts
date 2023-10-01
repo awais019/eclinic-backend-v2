@@ -6,7 +6,6 @@ import cryptoHelpers from "../helpers/crypto";
 import jwtHelpers from "../helpers/jwt";
 import emailHelpers from "../helpers/email";
 import ejsHelpers from "../helpers/ejs";
-import { JwtPayload } from "jsonwebtoken";
 
 export default {
   create: async function (req: Request, res: Response) {
