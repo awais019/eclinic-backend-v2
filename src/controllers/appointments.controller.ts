@@ -436,6 +436,9 @@ export default {
       where: {
         doctorId: doctor.id,
         status: APPOINTMENT_STATUS.PENDING,
+        date: {
+          gt: new Date(),
+        },
       },
       select: {
         id: true,
@@ -456,7 +459,7 @@ export default {
         },
       },
       orderBy: {
-        date: "asc",
+        date: "desc",
       },
     });
 
