@@ -52,7 +52,7 @@ exports.default = {
                 },
             });
         }));
-        helpers_1.default.sendAPISuccess(res, null, constants_1.default.SUCCESS_CODE, constants_1.default.SUCCESS_MSG);
+        return helpers_1.default.sendAPISuccess(res, null, constants_1.default.SUCCESS_CODE, constants_1.default.SUCCESS_MSG);
     }),
     get: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const token = req.header(constants_1.default.AUTH_HEADER_NAME);
@@ -113,7 +113,7 @@ exports.default = {
                 },
             },
         });
-        helpers_1.default.sendAPISuccess(res, prescriptions.map((prescription) => {
+        return helpers_1.default.sendAPISuccess(res, prescriptions.map((prescription) => {
             return {
                 id: prescription.id,
                 appointment: {

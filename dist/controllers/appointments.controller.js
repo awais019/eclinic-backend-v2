@@ -30,7 +30,7 @@ exports.default = {
                 },
             });
             if (!patient) {
-                helpers_1.default.sendAPIError(res, new Error(constants_1.default.NOT_FOUND_MSG), constants_1.default.NOT_FOUND_CODE);
+                return helpers_1.default.sendAPIError(res, new Error(constants_1.default.NOT_FOUND_MSG), constants_1.default.NOT_FOUND_CODE);
             }
             const appointmentExists = yield prisma_1.default.appointment.findFirst({
                 where: {
@@ -40,7 +40,7 @@ exports.default = {
                 },
             });
             if (appointmentExists) {
-                helpers_1.default.sendAPIError(res, new Error(constants_1.default.DOCTOR_NOT_AVAILABLE), constants_1.default.BAD_REQUEST_CODE);
+                return helpers_1.default.sendAPIError(res, new Error(constants_1.default.DOCTOR_NOT_AVAILABLE), constants_1.default.BAD_REQUEST_CODE);
             }
             const charges = yield prisma_1.default.charges.findFirst({
                 where: {
@@ -52,7 +52,7 @@ exports.default = {
                 },
             });
             if (!charges) {
-                helpers_1.default.sendAPIError(res, new Error(constants_1.default.NOT_FOUND_MSG), constants_1.default.NOT_FOUND_CODE);
+                return helpers_1.default.sendAPIError(res, new Error(constants_1.default.NOT_FOUND_MSG), constants_1.default.NOT_FOUND_CODE);
             }
             const doctor = yield prisma_1.default.doctor.findUnique({
                 where: {
@@ -90,7 +90,7 @@ exports.default = {
             });
             const price = yield stripe_1.default.createAppointment(`${doctor.user.first_name} ${doctor.user.last_name}`, patient_name, appointment.id, charges.amount);
             const session = yield stripe_1.default.createPaymentLink(price);
-            helpers_1.default.sendAPISuccess(res, { paymentLink: session.url }, constants_1.default.SUCCESS_CODE, constants_1.default.SUCCESS_MSG);
+            return helpers_1.default.sendAPISuccess(res, { paymentLink: session.url }, constants_1.default.SUCCESS_CODE, constants_1.default.SUCCESS_MSG);
         });
     },
     getDoctorAppointments: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -107,7 +107,7 @@ exports.default = {
             },
         });
         if (!doctor) {
-            helpers_1.default.sendAPIError(res, new Error(constants_1.default.UNAUTHORIZED_MSG), constants_1.default.UNAUTHORIZED_CODE);
+            return helpers_1.default.sendAPIError(res, new Error(constants_1.default.UNAUTHORIZED_MSG), constants_1.default.UNAUTHORIZED_CODE);
         }
         const appointments = yield prisma_1.default.appointment.findMany({
             where: {
@@ -145,7 +145,7 @@ exports.default = {
         _appointments.forEach((appointment) => {
             delete appointment.Patient;
         });
-        helpers_1.default.sendAPISuccess(res, _appointments, constants_1.default.SUCCESS_CODE, constants_1.default.SUCCESS_MSG);
+        return helpers_1.default.sendAPISuccess(res, _appointments, constants_1.default.SUCCESS_CODE, constants_1.default.SUCCESS_MSG);
     }),
     getPatientAppointments: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const { date } = req.query;
@@ -161,7 +161,7 @@ exports.default = {
             },
         });
         if (!patient) {
-            helpers_1.default.sendAPIError(res, new Error(constants_1.default.UNAUTHORIZED_MSG), constants_1.default.UNAUTHORIZED_CODE);
+            return helpers_1.default.sendAPIError(res, new Error(constants_1.default.UNAUTHORIZED_MSG), constants_1.default.UNAUTHORIZED_CODE);
         }
         const appointments = yield prisma_1.default.appointment.findMany({
             where: {
@@ -206,12 +206,12 @@ exports.default = {
         _appointments.forEach((appointment) => {
             delete appointment.Doctor;
         });
-        helpers_1.default.sendAPISuccess(res, _appointments, constants_1.default.SUCCESS_CODE, constants_1.default.SUCCESS_MSG);
+        return helpers_1.default.sendAPISuccess(res, _appointments, constants_1.default.SUCCESS_CODE, constants_1.default.SUCCESS_MSG);
     }),
     cancelAppointment: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const { appointmentId } = req.body;
         if (!appointmentId) {
-            helpers_1.default.sendAPIError(res, new Error(constants_1.default.BAD_REQUEST_MSG), constants_1.default.BAD_REQUEST_CODE);
+            return helpers_1.default.sendAPIError(res, new Error(constants_1.default.BAD_REQUEST_MSG), constants_1.default.BAD_REQUEST_CODE);
         }
         const date = new Date();
         date.setHours(0, 0, 0, 0);
@@ -226,7 +226,7 @@ exports.default = {
                 status: client_1.APPOINTMENT_STATUS.CANCELLED,
             },
         });
-        helpers_1.default.sendAPISuccess(res, null, constants_1.default.SUCCESS_CODE, constants_1.default.SUCCESS_MSG);
+        return helpers_1.default.sendAPISuccess(res, null, constants_1.default.SUCCESS_CODE, constants_1.default.SUCCESS_MSG);
     }),
     updatePaymentStatus: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const id = req.params.id;
@@ -253,9 +253,9 @@ exports.default = {
             },
         });
         if (!appointment) {
-            helpers_1.default.sendAPIError(res, new Error(constants_1.default.NOT_FOUND_MSG), constants_1.default.NOT_FOUND_CODE);
+            return helpers_1.default.sendAPIError(res, new Error(constants_1.default.NOT_FOUND_MSG), constants_1.default.NOT_FOUND_CODE);
         }
-        helpers_1.default.sendAPISuccess(res, {
+        return helpers_1.default.sendAPISuccess(res, {
             date: appointment.date,
             time: appointment.time,
             type: appointment.type,
@@ -271,7 +271,7 @@ exports.default = {
             },
         });
         if (!doctor) {
-            helpers_1.default.sendAPIError(res, new Error(constants_1.default.UNAUTHORIZED_MSG), constants_1.default.UNAUTHORIZED_CODE);
+            return helpers_1.default.sendAPIError(res, new Error(constants_1.default.UNAUTHORIZED_MSG), constants_1.default.UNAUTHORIZED_CODE);
         }
         const appointments = yield prisma_1.default.appointment.findMany({
             where: {
@@ -304,7 +304,7 @@ exports.default = {
         _appointments.forEach((appointment) => {
             delete appointment.Patient;
         });
-        helpers_1.default.sendAPISuccess(res, _appointments, constants_1.default.SUCCESS_CODE, constants_1.default.SUCCESS_MSG);
+        return helpers_1.default.sendAPISuccess(res, _appointments, constants_1.default.SUCCESS_CODE, constants_1.default.SUCCESS_MSG);
     }),
     getAppointmentRequests: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const token = req.header(constants_1.default.AUTH_HEADER_NAME);
@@ -321,6 +321,9 @@ exports.default = {
             where: {
                 doctorId: doctor.id,
                 status: client_1.APPOINTMENT_STATUS.PENDING,
+                date: {
+                    gt: new Date(),
+                },
             },
             select: {
                 id: true,
@@ -341,19 +344,19 @@ exports.default = {
                 },
             },
             orderBy: {
-                date: "asc",
+                date: "desc",
             },
         });
         const _appointments = appointments.map((appointment) => (Object.assign(Object.assign({}, appointment), { image: appointment.Patient.user.image })));
         _appointments.forEach((appointment) => {
             delete appointment.Patient;
         });
-        helpers_1.default.sendAPISuccess(res, _appointments, constants_1.default.SUCCESS_CODE, constants_1.default.SUCCESS_MSG);
+        return helpers_1.default.sendAPISuccess(res, _appointments, constants_1.default.SUCCESS_CODE, constants_1.default.SUCCESS_MSG);
     }),
     acceptAppointmentRequest: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const { appointmentId } = req.body;
         if (!appointmentId) {
-            helpers_1.default.sendAPIError(res, new Error(constants_1.default.BAD_REQUEST_MSG), constants_1.default.BAD_REQUEST_CODE);
+            return helpers_1.default.sendAPIError(res, new Error(constants_1.default.BAD_REQUEST_MSG), constants_1.default.BAD_REQUEST_CODE);
         }
         const date = new Date();
         date.setHours(0, 0, 0, 0);
@@ -368,12 +371,12 @@ exports.default = {
                 status: client_1.APPOINTMENT_STATUS.ACCEPTED,
             },
         });
-        helpers_1.default.sendAPISuccess(res, null, constants_1.default.SUCCESS_CODE, constants_1.default.SUCCESS_MSG);
+        return helpers_1.default.sendAPISuccess(res, null, constants_1.default.SUCCESS_CODE, constants_1.default.SUCCESS_MSG);
     }),
     rejectAppointmentRequest: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const { appointmentId } = req.body;
         if (!appointmentId) {
-            helpers_1.default.sendAPIError(res, new Error(constants_1.default.BAD_REQUEST_MSG), constants_1.default.BAD_REQUEST_CODE);
+            return helpers_1.default.sendAPIError(res, new Error(constants_1.default.BAD_REQUEST_MSG), constants_1.default.BAD_REQUEST_CODE);
         }
         const date = new Date();
         date.setHours(0, 0, 0, 0);
@@ -388,7 +391,7 @@ exports.default = {
                 status: client_1.APPOINTMENT_STATUS.REJECTED,
             },
         });
-        helpers_1.default.sendAPISuccess(res, null, constants_1.default.SUCCESS_CODE, constants_1.default.SUCCESS_MSG);
+        return helpers_1.default.sendAPISuccess(res, null, constants_1.default.SUCCESS_CODE, constants_1.default.SUCCESS_MSG);
     }),
 };
 //# sourceMappingURL=appointments.controller.js.map
