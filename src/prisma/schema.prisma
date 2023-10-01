@@ -11,22 +11,23 @@ datasource db {
 }
 
 model User {
-  id             String   @id @default(uuid())
-  first_name     String   @db.VarChar(255)
-  last_name      String   @db.VarChar(255)
-  email          String   @unique
-  phone          String?  @unique
+  id             String        @id @default(uuid())
+  first_name     String        @db.VarChar(255)
+  last_name      String        @db.VarChar(255)
+  email          String        @unique
+  phone          String?       @unique
   gender         GENDER
-  image          String?  @db.VarChar(255)
-  email_verified Boolean  @default(false)
-  phone_verified Boolean  @default(false)
-  profile_setup  Boolean  @default(false)
-  role           ROLE     @default(PATIENT)
-  password       String   @db.VarChar(1000)
-  created_at     DateTime @default(now())
-  updated_at     DateTime @updatedAt
+  image          String?       @db.VarChar(255)
+  email_verified Boolean       @default(false)
+  phone_verified Boolean       @default(false)
+  profile_setup  Boolean       @default(false)
+  role           ROLE          @default(PATIENT)
+  password       String        @db.VarChar(1000)
+  created_at     DateTime      @default(now())
+  updated_at     DateTime      @updatedAt
   patient        Patient?
   Doctor         Doctor?
+  Participant    Participant[]
 
   @@index([email, phone])
 }
@@ -165,6 +166,35 @@ model Prescription {
   Appointment   Appointment  @relation(fields: [appointmentId], references: [id])
   appointmentId String
   Medication    Medication[]
+}
+
+model Message {
+  id             String       @id @default(uuid())
+  message        String       @db.Text
+  Conversation   Conversation @relation(fields: [conversationId], references: [id])
+  conversationId String
+  sender         String
+  receiver       String
+  created_at     DateTime     @default(now())
+  updated_at     DateTime     @updatedAt
+}
+
+model Participant {
+  id             String       @id @default(uuid())
+  Conversation   Conversation @relation(fields: [conversationId], references: [id])
+  conversationId String
+  User           User         @relation(fields: [userId], references: [id])
+  userId         String
+  created_at     DateTime     @default(now())
+  updated_at     DateTime     @updatedAt
+}
+
+model Conversation {
+  id          String        @id @default(uuid())
+  Participant Participant[]
+  Message     Message[]
+  created_at  DateTime      @default(now())
+  updated_at  DateTime      @updatedAt
 }
 
 enum GENDER {
