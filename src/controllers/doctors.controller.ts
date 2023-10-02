@@ -633,6 +633,8 @@ export default {
     return helpers.sendAPISuccess(
       res,
       {
+        id: doctor.id,
+        userId: doctor.userId,
         first_name: user.first_name,
         last_name: user.last_name,
         specialization: doctor.specialization,

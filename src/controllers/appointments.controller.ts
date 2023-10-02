@@ -1,4 +1,4 @@
-import e, { Request, Response } from "express";
+import { Request, Response } from "express";
 import APIHelpers from "../helpers";
 import JWTHelpers from "../helpers/jwt";
 import stripeHelpers from "../helpers/stripe";

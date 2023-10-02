@@ -6,6 +6,7 @@ import auth from "../routes/auth.routes";
 import appointments from "../routes/appointment.routes";
 import transactions from "../routes/transactions.routes";
 import prescription from "../routes/prescription.routes";
+import messages from "../routes/messages.routes";
 
 export default function (app: Express) {
   app.use("/api/", index);
@@ -15,4 +16,5 @@ export default function (app: Express) {
   app.use("/api/appointments", appointments);
   app.use("/api/transactions", transactions);
   app.use("/api/prescription", prescription);
+  app.use("/api/messages", messages);
 }
