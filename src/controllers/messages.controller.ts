@@ -3,7 +3,7 @@ import APIHelpers from "../helpers";
 import JWTHelpers from "../helpers/jwt";
 import constants from "../constants";
 import { JwtPayload } from "jsonwebtoken";
-import prisma from "../prisma";
+import messageService from "../services/message.service";
 
 export default {
   createorGetConversation: async (req: Request, res: Response) => {
@@ -13,11 +13,7 @@ export default {
 
     const { _id } = JWTHelpers.decode(token) as JwtPayload;
 
-    const user = await prisma.user.findUnique({
-      where: {
-        id: userId,
-      },
-    });
+    const user = await messageService.checkIfUserExists(userId);
 
     if (!user) {
       return APIHelpers.sendAPIError(
@@ -27,44 +23,7 @@ export default {
       );
     }
 
-    const oldConversation = await prisma.conversation.findFirst({
-      where: {
-        Participant: {
-          every: {
-            userId: {
-              in: [_id, userId],
-            },
-          },
-        },
-      },
-      include: {
-        Participant: {
-          where: { userId: { not: _id } },
-          select: {
-            User: {
-              select: {
-                id: true,
-                first_name: true,
-                last_name: true,
-                image: true,
-              },
-            },
-          },
-        },
-        Message: {
-          select: {
-            id: true,
-            message: true,
-            created_at: true,
-            sender: true,
-          },
-          orderBy: {
-            created_at: "desc",
-          },
-          take: 1,
-        },
-      },
-    });
+    const oldConversation = await messageService.getConversation(_id, userId);
 
     if (oldConversation) {
       return APIHelpers.sendAPISuccess(
@@ -79,38 +38,10 @@ export default {
       );
     }
 
-    const newConversation = await prisma.conversation.create({
-      data: {
-        Participant: {
-          createMany: {
-            data: [
-              {
-                userId: _id,
-              },
-              {
-                userId: userId,
-              },
-            ],
-          },
-        },
-      },
-      include: {
-        Participant: {
-          where: { userId: { not: _id } },
-          select: {
-            User: {
-              select: {
-                id: true,
-                first_name: true,
-                last_name: true,
-                image: true,
-              },
-            },
-          },
-        },
-      },
-    });
-
+    const newConversation = await messageService.createConversation(
+      _id,
+      userId
+    );
     return APIHelpers.sendAPISuccess(
       res,
       {
@@ -127,46 +58,7 @@ export default {
 
     const { _id } = JWTHelpers.decode(token) as JwtPayload;
 
-    const conversations = await prisma.conversation.findMany({
-      where: {
-        Participant: {
-          some: {
-            userId: _id,
-          },
-        },
-        Message: {
-          some: {},
-        },
-      },
-      select: {
-        id: true,
-        Participant: {
-          select: {
-            User: {
-              select: {
-                id: true,
-                first_name: true,
-                last_name: true,
-                image: true,
-              },
-            },
-          },
-        },
-
-        Message: {
-          select: {
-            id: true,
-            message: true,
-            created_at: true,
-            sender: true,
-          },
-          orderBy: {
-            created_at: "desc",
-          },
-          take: 1,
-        },
-      },
-    });
+    const conversations = await messageService.getConversations(_id);
 
     return APIHelpers.sendAPISuccess(
       res,

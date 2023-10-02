@@ -26,7 +26,7 @@ routes(app);
 app.use(errorMiddleware);
 
 const server = http.createServer(app);
-// const io = socket(server);
+const io = socket(server);
 
 const port = process.env.PORT || 3000;
 
@@ -35,4 +35,4 @@ server.listen(port, () => {
 });
 
 export default server;
-// export { io };
+export { io };
