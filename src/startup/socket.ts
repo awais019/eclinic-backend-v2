@@ -19,8 +19,10 @@ export default function socket(server: any) {
       clients.set(id, socket.id);
     });
 
-    socket.on("join", (conversationId: string) => {
+    socket.on("join", async (conversationId: string, userId: string) => {
       socket.join(conversationId);
+
+      await messageService.updateMessages(conversationId, userId);
       logger.info(`User joined conversation ${conversationId}`);
     });
 
@@ -37,7 +39,6 @@ export default function socket(server: any) {
         const socketsInRoom = io.sockets.adapter.rooms.get(data.conversationId);
 
         if (socketsInRoom && socketsInRoom.size == 1) {
-          console.log("sending notification");
           const conversations = await messageService.getConversations(
             data.receiver
           );

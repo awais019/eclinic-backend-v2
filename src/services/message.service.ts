@@ -167,4 +167,16 @@ export default {
       },
     });
   },
+  updateMessages: (conversationId: string, userId: string) => {
+    return prisma.message.updateMany({
+      where: {
+        conversationId,
+        receiver: userId,
+        read: false,
+      },
+      data: {
+        read: true,
+      },
+    });
+  },
 };
