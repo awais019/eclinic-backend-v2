@@ -94,6 +94,9 @@ export default {
           some: {},
         },
       },
+      orderBy: {
+        updated_at: "desc",
+      },
       select: {
         id: true,
         Participant: {
@@ -125,7 +128,7 @@ export default {
       },
     });
   },
-  createMessage: ({
+  createMessage: async ({
     conversationId,
     message,
     sender,
@@ -136,7 +139,7 @@ export default {
     sender: string;
     receiver: string;
   }) => {
-    return prisma.message.create({
+    const messages = await prisma.message.create({
       data: {
         conversationId,
         message,
@@ -144,6 +147,15 @@ export default {
         receiver,
       },
     });
+    await prisma.conversation.update({
+      where: {
+        id: conversationId,
+      },
+      data: {
+        updated_at: new Date(),
+      },
+    });
+    return messages;
   },
   getMessages: (conversationId: string) => {
     return prisma.message.findMany({

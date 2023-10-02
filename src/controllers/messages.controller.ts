@@ -68,7 +68,7 @@ export default {
         return {
           id: conversation.id,
           Participant: participant,
-          message,
+          Message: message,
         };
       }),
       constants.SUCCESS_CODE,
