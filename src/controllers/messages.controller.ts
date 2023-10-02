@@ -75,4 +75,16 @@ export default {
       constants.SUCCESS_MSG
     );
   },
+  getMessages: async (req: Request, res: Response) => {
+    const { conversationId } = req.params;
+
+    const messages = await messageService.getMessages(conversationId);
+
+    return APIHelpers.sendAPISuccess(
+      res,
+      messages,
+      constants.SUCCESS_CODE,
+      constants.SUCCESS_MSG
+    );
+  },
 };

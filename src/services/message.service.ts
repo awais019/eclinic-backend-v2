@@ -145,4 +145,14 @@ export default {
       },
     });
   },
+  getMessages: (conversationId: string) => {
+    return prisma.message.findMany({
+      where: {
+        conversationId,
+      },
+      orderBy: {
+        created_at: "desc",
+      },
+    });
+  },
 };

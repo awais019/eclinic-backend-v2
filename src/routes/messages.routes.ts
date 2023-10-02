@@ -17,4 +17,10 @@ router.get(
   trycatchMiddleware(messages.getConversations)
 );
 
+router.get(
+  "/:conversationId/messages",
+  authMiddleware(),
+  trycatchMiddleware(messages.getMessages)
+);
+
 export default router;
