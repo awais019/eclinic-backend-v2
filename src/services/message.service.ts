@@ -39,6 +39,7 @@ export default {
             message: true,
             created_at: true,
             sender: true,
+            receiver: true,
           },
           orderBy: {
             created_at: "desc",
@@ -96,6 +97,7 @@ export default {
       select: {
         id: true,
         Participant: {
+          where: { userId: { not: _id } },
           select: {
             User: {
               select: {
@@ -107,19 +109,39 @@ export default {
             },
           },
         },
-
         Message: {
           select: {
             id: true,
             message: true,
             created_at: true,
             sender: true,
+            receiver: true,
           },
           orderBy: {
             created_at: "desc",
           },
           take: 1,
         },
+      },
+    });
+  },
+  createMessage: ({
+    conversationId,
+    message,
+    sender,
+    receiver,
+  }: {
+    conversationId: string;
+    message: string;
+    sender: string;
+    receiver: string;
+  }) => {
+    return prisma.message.create({
+      data: {
+        conversationId,
+        message,
+        sender,
+        receiver,
       },
     });
   },

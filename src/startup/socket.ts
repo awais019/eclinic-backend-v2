@@ -1,7 +1,6 @@
 import { Server } from "socket.io";
 import messageService from "../services/message.service";
 import logger from "./logger";
-import { log } from "util";
 
 export default function socket(server: any) {
   const io = new Server(server, {
@@ -27,9 +26,8 @@ export default function socket(server: any) {
         sender: string;
         receiver: string;
       }) => {
-        const { conversationId, message, sender, receiver } = data;
-
-        io.to(conversationId).emit("message", data);
+        const message = await messageService.createMessage(data);
+        io.to(data.conversationId).emit("message", message);
       }
     );
 

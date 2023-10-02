@@ -67,7 +67,7 @@ export default {
         const message = conversation.Message[0];
         return {
           id: conversation.id,
-          participant,
+          Participant: participant,
           message,
         };
       }),
