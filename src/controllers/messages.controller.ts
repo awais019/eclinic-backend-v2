@@ -69,6 +69,7 @@ export default {
           id: conversation.id,
           Participant: participant,
           Message: message,
+          unreadCount: conversation.unreadCount,
         };
       }),
       constants.SUCCESS_CODE,

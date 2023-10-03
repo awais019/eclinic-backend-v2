@@ -1,3 +1,4 @@
+import Conversation from "../types/conversation";
 import prisma from "../prisma";
 
 export default {
@@ -82,16 +83,13 @@ export default {
       },
     });
   },
-  getConversations: (_id: string) => {
-    return prisma.conversation.findMany({
+  getConversations: async (_id: string) => {
+    const conversations = await prisma.conversation.findMany({
       where: {
         Participant: {
           some: {
             userId: _id,
           },
-        },
-        Message: {
-          some: {},
         },
       },
       orderBy: {
@@ -127,6 +125,19 @@ export default {
         },
       },
     });
+    const _conversations: Conversation[] = [];
+    for (let index = 0; index < conversations.length; index++) {
+      const unreadCount = await prisma.message.count({
+        where: {
+          conversationId: conversations[index].id,
+          receiver: _id,
+          read: false,
+        },
+      });
+      _conversations.push({ ...conversations[index], unreadCount });
+    }
+
+    return _conversations;
   },
   createMessage: async ({
     conversationId,
