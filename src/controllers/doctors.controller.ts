@@ -581,6 +581,10 @@ export default {
     const doctor = await prisma.doctor.findUnique({
       where: {
         id: doctorId,
+        verification: VERIFICATION_STATUS.VERIFIED,
+        user: {
+          profile_setup: true,
+        },
       },
     });
 

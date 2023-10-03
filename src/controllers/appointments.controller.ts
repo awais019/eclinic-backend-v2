@@ -167,6 +167,7 @@ export default {
           select: {
             user: {
               select: {
+                id: true,
                 image: true,
               },
             },
@@ -177,6 +178,7 @@ export default {
 
     const _appointments = appointments.map((appointment) => ({
       ...appointment,
+      userId: appointment.Patient.user.id,
       image: appointment.Patient.user.image,
     }));
 
@@ -242,6 +244,7 @@ export default {
             specialization: true,
             user: {
               select: {
+                id: true,
                 first_name: true,
                 last_name: true,
                 image: true,
@@ -255,6 +258,7 @@ export default {
     const _appointments = appointments.map((appointment) => ({
       ...appointment,
       doctor: {
+        userId: appointment.Doctor.user.id,
         first_name: appointment.Doctor.user.first_name,
         last_name: appointment.Doctor.user.last_name,
         specialization: appointment.Doctor.specialization,
