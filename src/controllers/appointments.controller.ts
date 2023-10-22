@@ -112,7 +112,7 @@ export default {
 
     return APIHelpers.sendAPISuccess(
       res,
-      { paymentLink: session.url },
+      { paymentLink: session.url, id: appointment.id },
       constants.SUCCESS_CODE,
       constants.SUCCESS_MSG
     );
