@@ -90,7 +90,7 @@ exports.default = {
             });
             const price = yield stripe_1.default.createAppointment(`${doctor.user.first_name} ${doctor.user.last_name}`, patient_name, appointment.id, charges.amount);
             const session = yield stripe_1.default.createPaymentLink(price);
-            return helpers_1.default.sendAPISuccess(res, { paymentLink: session.url }, constants_1.default.SUCCESS_CODE, constants_1.default.SUCCESS_MSG);
+            return helpers_1.default.sendAPISuccess(res, { paymentLink: session.url, id: appointment.id }, constants_1.default.SUCCESS_CODE, constants_1.default.SUCCESS_MSG);
         });
     },
     getDoctorAppointments: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -134,6 +134,7 @@ exports.default = {
                     select: {
                         user: {
                             select: {
+                                id: true,
                                 image: true,
                             },
                         },
@@ -141,7 +142,7 @@ exports.default = {
                 },
             },
         });
-        const _appointments = appointments.map((appointment) => (Object.assign(Object.assign({}, appointment), { image: appointment.Patient.user.image })));
+        const _appointments = appointments.map((appointment) => (Object.assign(Object.assign({}, appointment), { userId: appointment.Patient.user.id, image: appointment.Patient.user.image })));
         _appointments.forEach((appointment) => {
             delete appointment.Patient;
         });
@@ -189,6 +190,7 @@ exports.default = {
                         specialization: true,
                         user: {
                             select: {
+                                id: true,
                                 first_name: true,
                                 last_name: true,
                                 image: true,
@@ -199,6 +201,7 @@ exports.default = {
             },
         });
         const _appointments = appointments.map((appointment) => (Object.assign(Object.assign({}, appointment), { doctor: {
+                userId: appointment.Doctor.user.id,
                 first_name: appointment.Doctor.user.first_name,
                 last_name: appointment.Doctor.user.last_name,
                 specialization: appointment.Doctor.specialization,

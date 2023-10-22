@@ -23,5 +23,15 @@ exports.default = {
             code,
         });
     },
+    createVideoRoom: (roomName) => {
+        return twilioClient.video.rooms.create({
+            uniqueName: roomName,
+            type: "peer-to-peer",
+            recordParticipantsOnConnect: true,
+        });
+    },
+    generateToken: (identity, roomName) => {
+        const token = new twilio_1.default.jwt.AccessToken(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_API_KEY_SID, process.env.TWILIO_API_KEY_SECRET, { identity });
+    },
 };
 //# sourceMappingURL=twilio.js.map

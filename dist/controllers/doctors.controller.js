@@ -410,6 +410,10 @@ exports.default = {
         const doctor = yield prisma_1.default.doctor.findUnique({
             where: {
                 id: doctorId,
+                verification: client_1.VERIFICATION_STATUS.VERIFIED,
+                user: {
+                    profile_setup: true,
+                },
             },
         });
         if (!doctor) {
@@ -449,6 +453,8 @@ exports.default = {
             },
         });
         return helpers_1.default.sendAPISuccess(res, {
+            id: doctor.id,
+            userId: doctor.userId,
             first_name: user.first_name,
             last_name: user.last_name,
             specialization: doctor.specialization,
