@@ -10,6 +10,7 @@ export default function socket(server: any) {
       origin: "*",
       methods: ["GET", "POST"],
     },
+    transports: ["websocket", "polling"],
   });
 
   io.on("connection", (socket) => {
