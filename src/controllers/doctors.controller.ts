@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import constants from "../constants";
 import prisma from "../prisma";
-import { ROLE, VERIFICATION_STATUS } from "@prisma/client";
+import { Doctor, ROLE, VERIFICATION_STATUS } from "@prisma/client";
 import { UploadedFile } from "express-fileupload";
 import helpers from "../helpers";
 import uploadHelpers from "../helpers/upload";
@@ -87,8 +87,10 @@ export default {
       );
     }
 
+    let doctor: Doctor;
+
     await prisma.$transaction(async () => {
-      const doctor = await prisma.doctor.create({
+      doctor = await prisma.doctor.create({
         data: {
           specialization,
           hospital_clinic_name,
@@ -106,23 +108,31 @@ export default {
           doctorId: doctor.id,
         },
       });
-
-      if (process.env.NODE_ENV != "test") {
-        const token = jwtHelpers.sign({ _id: doctor.userId, email });
-
-        const html = await ejsHelpers.renderHTMLFile("email", {
-          name: first_name,
-          link: `${process.env.CLIENT_URL}/?token=${token}`,
-        });
-        await emailHelpers.sendMail(
-          email,
-          "Welcome to Eclinic",
-          null,
-          null,
-          html
-        );
-      }
     });
+
+    if (!doctor) {
+      return helpers.sendAPIError(
+        res,
+        new Error(constants.INTERNAL_SERVER_ERROR_MSG),
+        constants.INTERNAL_SERVER_ERROR_CODE
+      );
+    }
+
+    if (process.env.NODE_ENV != "test") {
+      const token = jwtHelpers.sign({ _id: doctor.userId, email });
+
+      const html = await ejsHelpers.renderHTMLFile("email", {
+        name: first_name,
+        link: `${process.env.CLIENT_URL}/?token=${token}`,
+      });
+      await emailHelpers.sendMail(
+        email,
+        "Welcome to Eclinic",
+        null,
+        null,
+        html
+      );
+    }
 
     return helpers.sendAPISuccess(
       res,
@@ -409,139 +419,138 @@ export default {
     }
     const skip = page * constants.PAGE_SIZE;
 
-    const doctors = await prisma.$transaction(async () => {
-      let doctors = await prisma.doctor.findMany({
-        where: {
-          specialization: {
-            contains: specialization,
-            mode: "insensitive",
-          },
-          verification: VERIFICATION_STATUS.VERIFIED,
-          OR: [
-            {
-              user: {
-                first_name: {
-                  contains: q,
-                  mode: "insensitive",
-                },
-              },
-            },
-            {
-              user: {
-                last_name: {
-                  contains: q,
-                  mode: "insensitive",
-                },
-              },
-            },
-            {
-              location: {
-                city: {
-                  contains: q,
-                  mode: "insensitive",
-                },
-              },
-            },
-            {
-              location: {
-                state: {
-                  contains: q,
-                  mode: "insensitive",
-                },
-              },
-            },
-          ],
+    let doctors = await prisma.doctor.findMany({
+      where: {
+        specialization: {
+          contains: specialization,
+          mode: "insensitive",
         },
-      });
-      totalPages = Math.ceil(doctors.length / constants.PAGE_SIZE);
-      if (page >= totalPages) {
-        return [];
-      }
+        verification: VERIFICATION_STATUS.VERIFIED,
+        OR: [
+          {
+            user: {
+              first_name: {
+                contains: q,
+                mode: "insensitive",
+              },
+            },
+          },
+          {
+            user: {
+              last_name: {
+                contains: q,
+                mode: "insensitive",
+              },
+            },
+          },
+          {
+            location: {
+              city: {
+                contains: q,
+                mode: "insensitive",
+              },
+            },
+          },
+          {
+            location: {
+              state: {
+                contains: q,
+                mode: "insensitive",
+              },
+            },
+          },
+        ],
+      },
+    });
+
+    totalPages = Math.ceil(doctors.length / constants.PAGE_SIZE);
+    if (page >= totalPages) {
+      doctors = [];
+    } else {
       doctors = doctors.slice(skip, skip + constants.PAGE_SIZE);
+    }
 
-      if (page === totalPages) {
-        doctors = doctors.slice(skip);
-      }
+    if (page === totalPages) {
+      doctors = doctors.slice(skip);
+    }
 
-      const user = await prisma.user.findMany({
-        where: {
-          id: {
-            in: doctors.map((d) => d.userId),
-          },
-        },
-      });
+    const doctorIds = doctors.map((d) => d.id);
 
-      const location = await prisma.location.findMany({
-        where: {
-          id: {
-            in: doctors.map((d) => d.locationId),
-          },
-        },
-      });
-
-      const workingHours = await prisma.schedule.findFirst({
-        where: {
-          doctorId: {
-            in: doctors.map((d) => d.id),
-          },
-        },
-      });
-
-      const charges = await prisma.charges.findMany({
-        where: {
-          doctorId: {
-            in: doctors.map((d) => d.id),
-          },
-        },
-      });
-
-      const reviewsCount = await prisma.reviews.count({
-        where: {
-          doctorId: {
-            in: doctors.map((d) => d.id),
-          },
-        },
-      });
-      const rating = await prisma.reviews.aggregate({
-        where: {
-          doctorId: {
-            in: doctors.map((d) => d.id),
-          },
-        },
-        _avg: {
-          rating: true,
-        },
-      });
-
-      return [
-        ...doctors.map((d) => {
-          return {
-            ...d,
-            first_name: user.find((u) => u.id === d.userId).first_name,
-            last_name: user.find((u) => u.id === d.userId).last_name,
-            image: user.find((u) => u.id === d.userId).image,
-            address: location.find((l) => l.id === d.locationId).address,
-            city: location.find((l) => l.id === d.locationId).city,
-            state: location.find((l) => l.id === d.locationId).state,
-            workingHours: {
-              startTime: workingHours.startTime,
-              endTime: workingHours.endTime,
+    const [users, locations, workingHours, charges, reviewsCount, rating] =
+      await prisma.$transaction([
+        prisma.user.findMany({
+          where: {
+            id: {
+              in: doctors.map((d) => d.userId),
             },
-            charges: {
-              physical: charges.find(
-                (c) => c.appointment_type.toUpperCase() === "PHYSICAL"
-              ).amount,
-              virtual: charges.find(
-                (c) => c.appointment_type.toUpperCase() === "VIRTUAL"
-              )
-                ? charges.find((c) => c.appointment_type === "VIRTUAL").amount
-                : null,
-            },
-            reviewsCount,
-            rating: rating._avg.rating,
-          };
+          },
         }),
-      ];
+        prisma.location.findMany({
+          where: {
+            id: {
+              in: doctors.map((d) => d.locationId),
+            },
+          },
+        }),
+        prisma.schedule.findFirst({
+          where: {
+            doctorId: {
+              in: doctorIds,
+            },
+          },
+        }),
+        prisma.charges.findMany({
+          where: {
+            doctorId: {
+              in: doctorIds,
+            },
+          },
+        }),
+        prisma.reviews.count({
+          where: {
+            doctorId: {
+              in: doctorIds,
+            },
+          },
+        }),
+        prisma.reviews.aggregate({
+          where: {
+            doctorId: {
+              in: doctorIds,
+            },
+          },
+          _avg: {
+            rating: true,
+          },
+        }),
+      ]);
+
+    doctors = doctors.map((d) => {
+      return {
+        ...d,
+        first_name: users.find((u) => u.id === d.userId).first_name,
+        last_name: users.find((u) => u.id === d.userId).last_name,
+        image: users.find((u) => u.id === d.userId).image,
+        address: locations.find((l) => l.id === d.locationId).address,
+        city: locations.find((l) => l.id === d.locationId).city,
+        state: locations.find((l) => l.id === d.locationId).state,
+        workingHours: {
+          startTime: workingHours.startTime,
+          endTime: workingHours.endTime,
+        },
+        charges: {
+          physical: charges.find(
+            (c) => c.appointment_type.toUpperCase() === "PHYSICAL"
+          ).amount,
+          virtual: charges.find(
+            (c) => c.appointment_type.toUpperCase() === "VIRTUAL"
+          )
+            ? charges.find((c) => c.appointment_type === "VIRTUAL").amount
+            : null,
+        },
+        reviewsCount,
+        rating: rating._avg.rating,
+      };
     });
 
     return helpers.sendAPISuccess(
