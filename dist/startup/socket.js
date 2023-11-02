@@ -22,7 +22,6 @@ function socket(server) {
             origin: "*",
             methods: ["GET", "POST"],
         },
-        transports: ["websocket", "polling"],
     });
     io.on("connection", (socket) => {
         logger_1.default.info("User connected to socket");

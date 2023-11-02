@@ -60,8 +60,9 @@ exports.default = {
             }
             fileName = yield upload_1.default.uploadFile(file, constants_1.default.DOCUMENT_FOLDER);
         }
+        let doctor;
         yield prisma_1.default.$transaction(() => __awaiter(void 0, void 0, void 0, function* () {
-            const doctor = yield prisma_1.default.doctor.create({
+            doctor = yield prisma_1.default.doctor.create({
                 data: {
                     specialization,
                     hospital_clinic_name,
@@ -79,15 +80,18 @@ exports.default = {
                     doctorId: doctor.id,
                 },
             });
-            if (process.env.NODE_ENV != "test") {
-                const token = jwt_1.default.sign({ _id: doctor.userId, email });
-                const html = yield ejs_1.default.renderHTMLFile("email", {
-                    name: first_name,
-                    link: `${process.env.CLIENT_URL}/?token=${token}`,
-                });
-                yield email_1.default.sendMail(email, "Welcome to Eclinic", null, null, html);
-            }
         }));
+        if (!doctor) {
+            return helpers_1.default.sendAPIError(res, new Error(constants_1.default.INTERNAL_SERVER_ERROR_MSG), constants_1.default.INTERNAL_SERVER_ERROR_CODE);
+        }
+        if (process.env.NODE_ENV != "test") {
+            const token = jwt_1.default.sign({ _id: doctor.userId, email });
+            const html = yield ejs_1.default.renderHTMLFile("email", {
+                name: first_name,
+                link: `${process.env.CLIENT_URL}/?token=${token}`,
+            });
+            yield email_1.default.sendMail(email, "Welcome to Eclinic", null, null, html);
+        }
         return helpers_1.default.sendAPISuccess(res, null, constants_1.default.CREATED_CODE, constants_1.default.SUCCESS_MSG);
     }),
     setSchedule: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -275,117 +279,118 @@ exports.default = {
             specialization = req.query.specialization;
         }
         const skip = page * constants_1.default.PAGE_SIZE;
-        const doctors = yield prisma_1.default.$transaction(() => __awaiter(void 0, void 0, void 0, function* () {
-            let doctors = yield prisma_1.default.doctor.findMany({
-                where: {
-                    specialization: {
-                        contains: specialization,
-                        mode: "insensitive",
-                    },
-                    verification: client_1.VERIFICATION_STATUS.VERIFIED,
-                    OR: [
-                        {
-                            user: {
-                                first_name: {
-                                    contains: q,
-                                    mode: "insensitive",
-                                },
-                            },
-                        },
-                        {
-                            user: {
-                                last_name: {
-                                    contains: q,
-                                    mode: "insensitive",
-                                },
-                            },
-                        },
-                        {
-                            location: {
-                                city: {
-                                    contains: q,
-                                    mode: "insensitive",
-                                },
-                            },
-                        },
-                        {
-                            location: {
-                                state: {
-                                    contains: q,
-                                    mode: "insensitive",
-                                },
-                            },
-                        },
-                    ],
+        let doctors = yield prisma_1.default.doctor.findMany({
+            where: {
+                specialization: {
+                    contains: specialization,
+                    mode: "insensitive",
                 },
-            });
-            totalPages = Math.ceil(doctors.length / constants_1.default.PAGE_SIZE);
-            if (page >= totalPages) {
-                return [];
-            }
+                verification: client_1.VERIFICATION_STATUS.VERIFIED,
+                OR: [
+                    {
+                        user: {
+                            first_name: {
+                                contains: q,
+                                mode: "insensitive",
+                            },
+                        },
+                    },
+                    {
+                        user: {
+                            last_name: {
+                                contains: q,
+                                mode: "insensitive",
+                            },
+                        },
+                    },
+                    {
+                        location: {
+                            city: {
+                                contains: q,
+                                mode: "insensitive",
+                            },
+                        },
+                    },
+                    {
+                        location: {
+                            state: {
+                                contains: q,
+                                mode: "insensitive",
+                            },
+                        },
+                    },
+                ],
+            },
+        });
+        totalPages = Math.ceil(doctors.length / constants_1.default.PAGE_SIZE);
+        if (page >= totalPages) {
+            doctors = [];
+        }
+        else {
             doctors = doctors.slice(skip, skip + constants_1.default.PAGE_SIZE);
-            if (page === totalPages) {
-                doctors = doctors.slice(skip);
-            }
-            const user = yield prisma_1.default.user.findMany({
+        }
+        if (page === totalPages) {
+            doctors = doctors.slice(skip);
+        }
+        const doctorIds = doctors.map((d) => d.id);
+        const [users, locations, workingHours, charges, reviewsCount, rating] = yield prisma_1.default.$transaction([
+            prisma_1.default.user.findMany({
                 where: {
                     id: {
                         in: doctors.map((d) => d.userId),
                     },
                 },
-            });
-            const location = yield prisma_1.default.location.findMany({
+            }),
+            prisma_1.default.location.findMany({
                 where: {
                     id: {
                         in: doctors.map((d) => d.locationId),
                     },
                 },
-            });
-            const workingHours = yield prisma_1.default.schedule.findFirst({
+            }),
+            prisma_1.default.schedule.findFirst({
                 where: {
                     doctorId: {
-                        in: doctors.map((d) => d.id),
+                        in: doctorIds,
                     },
                 },
-            });
-            const charges = yield prisma_1.default.charges.findMany({
+            }),
+            prisma_1.default.charges.findMany({
                 where: {
                     doctorId: {
-                        in: doctors.map((d) => d.id),
+                        in: doctorIds,
                     },
                 },
-            });
-            const reviewsCount = yield prisma_1.default.reviews.count({
+            }),
+            prisma_1.default.reviews.count({
                 where: {
                     doctorId: {
-                        in: doctors.map((d) => d.id),
+                        in: doctorIds,
                     },
                 },
-            });
-            const rating = yield prisma_1.default.reviews.aggregate({
+            }),
+            prisma_1.default.reviews.aggregate({
                 where: {
                     doctorId: {
-                        in: doctors.map((d) => d.id),
+                        in: doctorIds,
                     },
                 },
                 _avg: {
                     rating: true,
                 },
-            });
-            return [
-                ...doctors.map((d) => {
-                    return Object.assign(Object.assign({}, d), { first_name: user.find((u) => u.id === d.userId).first_name, last_name: user.find((u) => u.id === d.userId).last_name, image: user.find((u) => u.id === d.userId).image, address: location.find((l) => l.id === d.locationId).address, city: location.find((l) => l.id === d.locationId).city, state: location.find((l) => l.id === d.locationId).state, workingHours: {
-                            startTime: workingHours.startTime,
-                            endTime: workingHours.endTime,
-                        }, charges: {
-                            physical: charges.find((c) => c.appointment_type.toUpperCase() === "PHYSICAL").amount,
-                            virtual: charges.find((c) => c.appointment_type.toUpperCase() === "VIRTUAL")
-                                ? charges.find((c) => c.appointment_type === "VIRTUAL").amount
-                                : null,
-                        }, reviewsCount, rating: rating._avg.rating });
-                }),
-            ];
-        }));
+            }),
+        ]);
+        doctors = doctors.map((d) => {
+            return Object.assign(Object.assign({}, d), { first_name: users.find((u) => u.id === d.userId).first_name, last_name: users.find((u) => u.id === d.userId).last_name, image: users.find((u) => u.id === d.userId).image, address: locations.find((l) => l.id === d.locationId).address, city: locations.find((l) => l.id === d.locationId).city, state: locations.find((l) => l.id === d.locationId).state, workingHours: {
+                    startTime: workingHours.startTime,
+                    endTime: workingHours.endTime,
+                }, charges: {
+                    physical: charges.find((c) => c.appointment_type.toUpperCase() === "PHYSICAL").amount,
+                    virtual: charges.find((c) => c.appointment_type.toUpperCase() === "VIRTUAL")
+                        ? charges.find((c) => c.appointment_type === "VIRTUAL").amount
+                        : null,
+                }, reviewsCount, rating: rating._avg.rating });
+        });
         return helpers_1.default.sendAPISuccess(res, {
             page,
             pageSize: constants_1.default.PAGE_SIZE,
