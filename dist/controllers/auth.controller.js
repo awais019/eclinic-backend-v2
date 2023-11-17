@@ -36,6 +36,21 @@ exports.default = {
             const user = yield prisma_1.default.user.findUnique({
                 where: { id: _id },
             });
+            if (!user) {
+                const lab = prisma_1.default.lab.findUnique({
+                    where: { id: _id },
+                });
+                if (lab) {
+                    yield prisma_1.default.lab.update({
+                        where: { id: _id },
+                        data: {
+                            email,
+                            email_verified: true,
+                        },
+                    });
+                }
+                return helpers_1.default.sendAPISuccess(res, email, constants_1.default.SUCCESS_CODE, constants_1.default.EMAIL_VERIFIED);
+            }
             if (email) {
                 yield prisma_1.default.user.update({
                     where: { id: _id },

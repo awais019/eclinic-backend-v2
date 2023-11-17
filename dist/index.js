@@ -24,6 +24,7 @@ app.use((0, compression_1.default)());
 app.use((0, helmet_1.default)());
 app.use("/images", [(0, static_1.default)()], express_1.default.static("public/uploads/images"));
 app.use("/documents", [(0, static_1.default)()], express_1.default.static("public/uploads/documents"));
+app.use("/reports", [(0, static_1.default)()], express_1.default.static("public/uploads/reports"));
 app.set("view engine", "ejs");
 (0, cors_1.default)(app);
 (0, routes_1.default)(app);

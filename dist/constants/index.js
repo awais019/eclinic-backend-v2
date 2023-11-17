@@ -53,6 +53,7 @@ exports.default = {
     // cloud folders
     DOCUMENT_FOLDER: "documents",
     IMAGES_FOLDER: "images",
+    REPORTS_FOLDER: "reports",
     // Twilio
     TWILIO_CHANNEL: "sms",
     COMPANY_NAME: "E-Clinic",

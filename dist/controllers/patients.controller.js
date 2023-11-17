@@ -60,5 +60,60 @@ exports.default = {
             return helpers_1.default.sendAPISuccess(res, null, constants_1.default.CREATED_CODE, constants_1.default.SUCCESS_MSG);
         });
     },
+    getTests: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        const token = req.header(constants_1.default.AUTH_HEADER_NAME);
+        const { _id } = jwt_1.default.decode(token);
+        const patient = yield prisma_1.default.patient.findUnique({
+            where: { userId: _id },
+        });
+        if (!patient) {
+            return helpers_1.default.sendAPIError(res, new Error("Patient not found"), constants_1.default.BAD_REQUEST_CODE);
+        }
+        const tests = yield prisma_1.default.test.findMany({
+            where: {
+                patientId: patient.id,
+            },
+            include: {
+                Lab: {
+                    select: {
+                        name: true,
+                        address: true,
+                        city: true,
+                        state: true,
+                    },
+                },
+            },
+        });
+        return helpers_1.default.sendAPISuccess(res, tests);
+    }),
+    getReports: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        const token = req.header(constants_1.default.AUTH_HEADER_NAME);
+        const { _id } = jwt_1.default.decode(token);
+        const patient = yield prisma_1.default.patient.findUnique({
+            where: { userId: _id },
+        });
+        if (!patient) {
+            return helpers_1.default.sendAPIError(res, new Error("Patient not found"), constants_1.default.BAD_REQUEST_CODE);
+        }
+        const tests = yield prisma_1.default.test.findMany({
+            where: {
+                patientId: patient.id,
+            },
+            select: {
+                id: true,
+            },
+            orderBy: {
+                created_at: "desc",
+            },
+        });
+        const reports = yield prisma_1.default.report.findMany({
+            where: {
+                testId: {
+                    in: tests.map((test) => test.id),
+                },
+            },
+        });
+        return helpers_1.default.sendAPISuccess(res, reports);
+    }),
 };
 //# sourceMappingURL=patients.controller.js.map
