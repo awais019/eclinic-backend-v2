@@ -15,4 +15,10 @@ router.post(
 
 router.get("/tests", authMiddleware(), trycatchMiddleware(patients.getTests));
 
+router.get(
+  "/reports",
+  authMiddleware(),
+  trycatchMiddleware(patients.getReports)
+);
+
 export default router;

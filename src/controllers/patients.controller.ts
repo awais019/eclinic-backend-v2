@@ -103,4 +103,42 @@ export default {
     });
     return helpers.sendAPISuccess(res, tests);
   },
+  getReports: async (req: Request, res: Response) => {
+    const token = req.header(constants.AUTH_HEADER_NAME);
+    const { _id } = jwtHelpers.decode(token) as JwtPayload;
+
+    const patient = await prisma.patient.findUnique({
+      where: { userId: _id },
+    });
+
+    if (!patient) {
+      return helpers.sendAPIError(
+        res,
+        new Error("Patient not found"),
+        constants.BAD_REQUEST_CODE
+      );
+    }
+
+    const tests = await prisma.test.findMany({
+      where: {
+        patientId: patient.id,
+      },
+      select: {
+        id: true,
+      },
+      orderBy: {
+        created_at: "desc",
+      },
+    });
+
+    const reports = await prisma.report.findMany({
+      where: {
+        testId: {
+          in: tests.map((test) => test.id),
+        },
+      },
+    });
+
+    return helpers.sendAPISuccess(res, reports);
+  },
 };
