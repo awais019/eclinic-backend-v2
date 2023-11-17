@@ -218,12 +218,14 @@ model Lab {
 }
 
 model Test {
-  id        String   @id @default(uuid())
-  name      String
-  Lab       Lab      @relation(fields: [labId], references: [id])
-  labId     String
-  Patient   Patient? @relation(fields: [patientId], references: [id])
-  patientId String?
+  id          String   @id @default(uuid())
+  name        String
+  description String
+  Lab         Lab      @relation(fields: [labId], references: [id])
+  labId       String
+  Patient     Patient? @relation(fields: [patientId], references: [id])
+  patientId   String?
+  created_at  DateTime @default(now())
 }
 
 enum GENDER {

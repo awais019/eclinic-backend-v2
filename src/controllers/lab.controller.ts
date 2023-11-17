@@ -149,4 +149,60 @@ export default {
       constants.SUCCESS_MSG
     );
   },
+
+  requestTest: async (req: Request, res: Response) => {
+    const { labId, patientId, test, description } = req.body;
+
+    const lab = await prisma.lab.findFirst({
+      where: {
+        id: labId,
+      },
+    });
+
+    if (!lab) {
+      return APIHelpers.sendAPIError(
+        res,
+        new Error("Lab not found"),
+        constants.NOT_FOUND_CODE
+      );
+    }
+
+    const patient = await prisma.patient.findFirst({
+      where: {
+        id: patientId,
+      },
+    });
+
+    if (!patient) {
+      return APIHelpers.sendAPIError(
+        res,
+        new Error("Patient not found"),
+        constants.NOT_FOUND_CODE
+      );
+    }
+
+    const testRequest = await prisma.test.create({
+      data: {
+        labId,
+        patientId,
+        name: test,
+        description,
+      },
+    });
+
+    if (!testRequest) {
+      return APIHelpers.sendAPIError(
+        res,
+        new Error("Test request not created"),
+        constants.BAD_REQUEST_CODE
+      );
+    }
+
+    return APIHelpers.sendAPISuccess(
+      res,
+      { testRequest },
+      constants.CREATED_CODE,
+      constants.SUCCESS_MSG
+    );
+  },
 };

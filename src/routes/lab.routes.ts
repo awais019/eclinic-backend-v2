@@ -9,6 +9,8 @@ router.post("/", trycatch(labController.register));
 
 router.post("/signin", trycatch(labController.signIn));
 
-router.get("/", labController.getLabs);
+router.get("/", authMiddleware(), trycatch(labController.getLabs));
+
+router.post("/test", authMiddleware(), trycatch(labController.requestTest));
 
 export default router;
