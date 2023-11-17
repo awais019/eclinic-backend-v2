@@ -9,6 +9,7 @@ import emailHelpers from "../helpers/email";
 import uploadHelpers from "../helpers/upload";
 import { UploadedFile } from "express-fileupload";
 import { Lab } from "@prisma/client";
+import { JwtPayload } from "jsonwebtoken";
 
 export default {
   register: async (req: Request, res: Response) => {
@@ -151,7 +152,7 @@ export default {
   },
 
   requestTest: async (req: Request, res: Response) => {
-    const { labId, patientId, test, description } = req.body;
+    const { labId, test, description } = req.body;
 
     const lab = await prisma.lab.findFirst({
       where: {
@@ -167,9 +168,13 @@ export default {
       );
     }
 
+    const token = req.header(constants.AUTH_HEADER_NAME);
+
+    const { _id } = jwtHelpers.decode(token) as JwtPayload;
+
     const patient = await prisma.patient.findFirst({
       where: {
-        id: patientId,
+        userId: _id,
       },
     });
 
@@ -184,7 +189,7 @@ export default {
     const testRequest = await prisma.test.create({
       data: {
         labId,
-        patientId,
+        patientId: patient.id,
         name: test,
         description,
       },

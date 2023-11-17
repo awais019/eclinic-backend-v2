@@ -6,6 +6,7 @@ import cryptoHelpers from "../helpers/crypto";
 import jwtHelpers from "../helpers/jwt";
 import emailHelpers from "../helpers/email";
 import ejsHelpers from "../helpers/ejs";
+import { JwtPayload } from "jsonwebtoken";
 
 export default {
   create: async function (req: Request, res: Response) {
@@ -68,5 +69,38 @@ export default {
       constants.CREATED_CODE,
       constants.SUCCESS_MSG
     );
+  },
+  getTests: async (req: Request, res: Response) => {
+    const token = req.header(constants.AUTH_HEADER_NAME);
+
+    const { _id } = jwtHelpers.decode(token) as JwtPayload;
+
+    const patient = await prisma.patient.findUnique({
+      where: { userId: _id },
+    });
+
+    if (!patient) {
+      return helpers.sendAPIError(
+        res,
+        new Error("Patient not found"),
+        constants.BAD_REQUEST_CODE
+      );
+    }
+    const tests = await prisma.test.findMany({
+      where: {
+        patientId: patient.id,
+      },
+      include: {
+        Lab: {
+          select: {
+            name: true,
+            address: true,
+            city: true,
+            state: true,
+          },
+        },
+      },
+    });
+    return helpers.sendAPISuccess(res, tests);
   },
 };
