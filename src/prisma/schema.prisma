@@ -226,6 +226,15 @@ model Test {
   Patient     Patient? @relation(fields: [patientId], references: [id])
   patientId   String?
   created_at  DateTime @default(now())
+  Report      Report[]
+}
+
+model Report {
+  id         String   @id @default(uuid())
+  name       String
+  Test       Test     @relation(fields: [testId], references: [id])
+  testId     String
+  created_at DateTime @default(now())
 }
 
 enum GENDER {

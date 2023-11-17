@@ -210,4 +210,41 @@ export default {
       constants.SUCCESS_MSG
     );
   },
+  uploadReport: async (req: Request, res: Response) => {
+    const { testId } = req.params;
+
+    const test = await prisma.test.findFirst({
+      where: {
+        id: testId,
+      },
+    });
+
+    if (!test) {
+      return APIHelpers.sendAPIError(
+        res,
+        new Error("Test not found"),
+        constants.NOT_FOUND_CODE
+      );
+    }
+
+    const file = Object.values(req.files)[0] as UploadedFile;
+    if (file.size > constants.MAX_FILE_SIZE) {
+      return APIHelpers.sendAPIError(
+        res,
+        new Error(constants.FILE_TOO_LARGE),
+        constants.BAD_REQUEST_CODE
+      );
+    }
+    const fileName = await uploadHelpers.uploadFile(
+      file,
+      constants.REPORTS_FOLDER
+    );
+
+    return APIHelpers.sendAPISuccess(
+      res,
+      null,
+      constants.SUCCESS_CODE,
+      constants.SUCCESS_MSG
+    );
+  },
 };

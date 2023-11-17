@@ -13,4 +13,6 @@ router.get("/", authMiddleware(), trycatch(labController.getLabs));
 
 router.post("/test", authMiddleware(), trycatch(labController.requestTest));
 
+router.post("/report", authMiddleware(), trycatch(labController.uploadReport));
+
 export default router;
