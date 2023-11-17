@@ -247,4 +247,25 @@ export default {
       constants.SUCCESS_MSG
     );
   },
+  getTests: async (req: Request, res: Response) => {
+    const token = req.header(constants.AUTH_HEADER_NAME);
+
+    const { _id } = jwtHelpers.decode(token) as JwtPayload;
+
+    const tests = await prisma.test.findMany({
+      where: {
+        labId: _id,
+      },
+      orderBy: {
+        created_at: "desc",
+      },
+    });
+
+    return APIHelpers.sendAPISuccess(
+      res,
+      { tests },
+      constants.SUCCESS_CODE,
+      constants.SUCCESS_MSG
+    );
+  },
 };

@@ -7,6 +7,8 @@ const router = express.Router();
 
 router.post("/", trycatch(labController.register));
 
+router.get("/tests", authMiddleware(), trycatch(labController.getTests));
+
 router.post("/signin", trycatch(labController.signIn));
 
 router.get("/", authMiddleware(), trycatch(labController.getLabs));
