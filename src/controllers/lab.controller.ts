@@ -107,4 +107,46 @@ export default {
       constants.SUCCESS_MSG
     );
   },
+  getLabs: async (req: Request, res: Response) => {
+    const q = req.query.q as string;
+
+    const labs = await prisma.lab.findMany({
+      select: {
+        id: true,
+        name: true,
+        address: true,
+        city: true,
+        state: true,
+      },
+      where: {
+        OR: [
+          {
+            name: {
+              contains: q,
+              mode: "insensitive",
+            },
+          },
+          {
+            city: {
+              contains: q,
+              mode: "insensitive",
+            },
+          },
+          {
+            state: {
+              contains: q,
+              mode: "insensitive",
+            },
+          },
+        ],
+      },
+    });
+
+    return APIHelpers.sendAPISuccess(
+      res,
+      { labs },
+      constants.SUCCESS_CODE,
+      constants.SUCCESS_MSG
+    );
+  },
 };
