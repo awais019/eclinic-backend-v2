@@ -31,6 +31,27 @@ export default {
       where: { id: _id },
     });
 
+    if (!user) {
+      const lab = prisma.lab.findUnique({
+        where: { id: _id },
+      });
+      if (lab) {
+        await prisma.lab.update({
+          where: { id: _id },
+          data: {
+            email,
+            email_verified: true,
+          },
+        });
+      }
+      return APIHelpers.sendAPISuccess(
+        res,
+        email,
+        constants.SUCCESS_CODE,
+        constants.EMAIL_VERIFIED
+      );
+    }
+
     if (email) {
       await prisma.user.update({
         where: { id: _id },

@@ -67,8 +67,6 @@ model Document {
   name     String       @db.VarChar(255)
   Doctor   Doctor       @relation(fields: [doctorId], references: [id])
   doctorId String       @unique
-  Lab      Lab?         @relation(fields: [labId], references: [id])
-  labId    String?
 
   @@index([doctorId, type], name: "doctorId_type")
 }
@@ -208,12 +206,13 @@ model Lab {
   state          String              @db.VarChar(255)
   phone          String?             @db.VarChar(255)
   email          String              @db.VarChar(255)
+  password       String              @db.VarChar(1000)
   email_verified Boolean             @default(false)
   phone_verified Boolean             @default(false)
   verification   VERIFICATION_STATUS @default(PENDING)
   created_at     DateTime            @default(now())
   updated_at     DateTime            @updatedAt
-  license        Document[]
+  documentId     String?
 }
 
 enum GENDER {
