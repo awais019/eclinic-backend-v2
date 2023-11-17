@@ -240,9 +240,16 @@ export default {
       constants.REPORTS_FOLDER
     );
 
+    const report = await prisma.report.create({
+      data: {
+        testId,
+        name: fileName,
+      },
+    });
+
     return APIHelpers.sendAPISuccess(
       res,
-      null,
+      report,
       constants.SUCCESS_CODE,
       constants.SUCCESS_MSG
     );

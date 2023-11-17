@@ -20,6 +20,7 @@ app.use(compression());
 app.use(helmet());
 app.use("/images", [_static()], express.static("public/uploads/images"));
 app.use("/documents", [_static()], express.static("public/uploads/documents"));
+app.use("/reports", [_static()], express.static("public/uploads/reports"));
 app.set("view engine", "ejs");
 cors(app);
 routes(app);
