@@ -6,4 +6,6 @@ const router = express.Router();
 
 router.post("/", trycatch(labController.register));
 
+router.post("/signin", trycatch(labController.signIn));
+
 export default router;

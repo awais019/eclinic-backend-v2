@@ -63,4 +63,48 @@ export default {
       constants.SUCCESS_MSG
     );
   },
+  signIn: async (req: Request, res: Response) => {
+    const { email, password } = req.body;
+
+    const lab = await prisma.lab.findFirst({
+      where: {
+        email,
+      },
+    });
+
+    if (!lab.email_verified) {
+      return APIHelpers.sendAPIError(
+        res,
+        new Error("Email not verified"),
+        constants.BAD_REQUEST_CODE
+      );
+    }
+
+    if (!lab) {
+      return APIHelpers.sendAPIError(
+        res,
+        new Error("Invalid credentials"),
+        constants.NOT_FOUND_CODE
+      );
+    }
+
+    const isMatch = cryptoHelpers.comparePassword(password, lab.password);
+
+    if (!isMatch) {
+      return APIHelpers.sendAPIError(
+        res,
+        new Error("Invalid credentials"),
+        constants.BAD_REQUEST_CODE
+      );
+    }
+
+    const token = jwtHelpers.sign({ _id: lab.id, email });
+
+    return APIHelpers.sendAPISuccess(
+      res,
+      { token },
+      constants.SUCCESS_CODE,
+      constants.SUCCESS_MSG
+    );
+  },
 };
