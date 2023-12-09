@@ -15,4 +15,10 @@ router.get(
   trycatchMiddleware(adminController.getDoctors)
 );
 
+router.get(
+  "/doctors/:id",
+  adminMiddleware(),
+  trycatchMiddleware(adminController.getDoctor)
+);
+
 export default router;

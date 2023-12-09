@@ -113,4 +113,44 @@ export default {
       constants.SUCCESS_MSG
     );
   },
+  getDoctor: async (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    const doctor = await prisma.doctor.findFirst({
+      where: {
+        id,
+        verification: VERIFICATION_STATUS.PENDING,
+      },
+    });
+
+    const user = await prisma.user.findFirst({
+      where: {
+        id: doctor.userId,
+      },
+    });
+
+    const location = await prisma.location.findFirst({
+      where: {
+        id: doctor.locationId,
+      },
+    });
+
+    const document = await prisma.document.findFirst({
+      where: {
+        doctorId: doctor.id,
+      },
+    });
+
+    APIHelpers.sendAPISuccess(
+      res,
+      {
+        ...user,
+        ...location,
+        ...doctor,
+        document: document ? document.name : null,
+      },
+      constants.SUCCESS_CODE,
+      constants.SUCCESS_MSG
+    );
+  },
 };
