@@ -7,6 +7,7 @@ import { JwtPayload } from "jsonwebtoken";
 export default function () {
   return function (req: Request, res: Response, next: NextFunction) {
     const token = req.header(constants.AUTH_HEADER_NAME);
+
     if (!token) {
       return helpers.sendAPIError(
         res,

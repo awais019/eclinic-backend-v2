@@ -225,7 +225,11 @@ export default {
       }
     }
 
-    const token = jwtHelpers.sign({ _id: user.id, email: user.email });
+    const token = jwtHelpers.sign({
+      _id: user.id,
+      email: user.email,
+      role: user.role,
+    });
 
     return APIHelpers.sendAPISuccess(
       res,

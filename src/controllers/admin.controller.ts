@@ -54,6 +54,12 @@ export default {
         email_verified: true,
         role: ROLE.DOCTOR,
       },
+      select: {
+        id: true,
+        first_name: true,
+        last_name: true,
+        gender: true,
+      },
     });
     const doctors = await Promise.all(
       users.map(async (user) => {
@@ -62,11 +68,20 @@ export default {
             userId: user.id,
             verification: VERIFICATION_STATUS.PENDING,
           },
+          select: {
+            id: true,
+            specialization: true,
+            hospital_clinic_name: true,
+            locationId: true,
+          },
         });
         if (doctor == null) return null;
         const location = await prisma.location.findFirst({
           where: {
             id: doctor.locationId,
+          },
+          select: {
+            city: true,
           },
         });
         const document = await prisma.document.findFirst({
@@ -77,9 +92,12 @@ export default {
         if (document) {
           return {
             ...user,
+            id: doctor.id,
             ...location,
-            ...doctor,
-            documentURL: document.name,
+            first_name: user.first_name,
+            last_name: user.last_name,
+            specialization: doctor.specialization,
+            hospital_clinic_name: doctor.hospital_clinic_name,
           };
         }
         return null;
@@ -88,7 +106,11 @@ export default {
 
     APIHelpers.sendAPISuccess(
       res,
-      doctors.filter((doctor) => doctor != null)
+      {
+        doctors: doctors.filter((doctor) => doctor != null),
+      },
+      constants.SUCCESS_CODE,
+      constants.SUCCESS_MSG
     );
   },
 };
