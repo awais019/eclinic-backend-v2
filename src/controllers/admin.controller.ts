@@ -153,4 +153,21 @@ export default {
       constants.SUCCESS_MSG
     );
   },
+  verifyDoctor: async (req: Request, res: Response) => {
+    const { id, status } = req.body;
+    await prisma.doctor.update({
+      where: {
+        id,
+      },
+      data: {
+        verification: status.toUpperCase() as VERIFICATION_STATUS,
+      },
+    });
+    APIHelpers.sendAPISuccess(
+      res,
+      null,
+      constants.SUCCESS_CODE,
+      constants.SUCCESS_MSG
+    );
+  },
 };
