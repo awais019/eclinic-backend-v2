@@ -34,6 +34,7 @@ export default {
         password: hashedPassword,
         role: ROLE.ADMIN,
         gender,
+        email_verified: true,
       },
     });
 
