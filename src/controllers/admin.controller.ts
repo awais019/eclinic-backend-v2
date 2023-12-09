@@ -3,7 +3,7 @@ import prisma from "../prisma";
 import jwtHelpers from "../helpers/jwt";
 import cryptoHelpers from "../helpers/crypto";
 import APIHelpers from "../helpers";
-import { ROLE } from "@prisma/client";
+import { ROLE, VERIFICATION_STATUS } from "@prisma/client";
 import constants from "../constants";
 
 export default {
@@ -46,5 +46,48 @@ export default {
     APIHelpers.sendAPISuccess(res, {
       token,
     });
+  },
+  getDoctors: async (req: Request, res: Response) => {
+    const users = await prisma.user.findMany({
+      where: {
+        email_verified: true,
+        role: ROLE.DOCTOR,
+      },
+    });
+    const doctors = await Promise.all(
+      users.map(async (user) => {
+        const doctor = await prisma.doctor.findFirst({
+          where: {
+            userId: user.id,
+            verification: VERIFICATION_STATUS.PENDING,
+          },
+        });
+        if (doctor == null) return null;
+        const location = await prisma.location.findFirst({
+          where: {
+            id: doctor.locationId,
+          },
+        });
+        const document = await prisma.document.findFirst({
+          where: {
+            doctorId: doctor.id,
+          },
+        });
+        if (document) {
+          return {
+            ...user,
+            ...location,
+            ...doctor,
+            documentURL: document.name,
+          };
+        }
+        return null;
+      })
+    );
+
+    APIHelpers.sendAPISuccess(
+      res,
+      doctors.filter((doctor) => doctor != null)
+    );
   },
 };

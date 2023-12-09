@@ -9,4 +9,10 @@ const router = express.Router();
 
 router.post("/", trycatchMiddleware(adminController.create));
 
+router.get(
+  "/doctors",
+  adminMiddleware(),
+  trycatchMiddleware(adminController.getDoctors)
+);
+
 export default router;
