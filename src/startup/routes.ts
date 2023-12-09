@@ -8,12 +8,14 @@ import transactions from "../routes/transactions.routes";
 import prescription from "../routes/prescription.routes";
 import lab from "../routes/lab.routes";
 import messages from "../routes/messages.routes";
+import admin from "../routes/admin.routes";
 import calls from "../routes/calls.routes";
 
 export default function (app: Express) {
   app.use("/api/", index);
   app.use("/api/patients", patients);
   app.use("/api/doctors", doctors);
+  app.use("/api/admin", admin);
   app.use("/api/auth", auth);
   app.use("/api/appointments", appointments);
   app.use("/api/transactions", transactions);
