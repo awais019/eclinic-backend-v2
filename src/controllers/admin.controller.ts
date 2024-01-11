@@ -154,7 +154,8 @@ export default {
     );
   },
   verifyDoctor: async (req: Request, res: Response) => {
-    const { id, status } = req.body;
+    const id = req.params.id;
+    const { status } = req.body;
     await prisma.doctor.update({
       where: {
         id,
