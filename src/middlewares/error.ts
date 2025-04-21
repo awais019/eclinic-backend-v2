@@ -8,9 +8,9 @@ export default function (
   req: Request,
   res: Response,
   next: NextFunction
-) {
+): void {
   errorLogger.error(err.message, err);
-  return helpers.sendAPIError(
+  helpers.sendAPIError(
     res,
     new Error(constants.INTERNAL_SERVER_ERROR_MSG),
     constants.INTERNAL_SERVER_ERROR_CODE

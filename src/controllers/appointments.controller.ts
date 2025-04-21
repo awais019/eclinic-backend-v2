@@ -110,7 +110,7 @@ export default {
 
     const session = await stripeHelpers.createPaymentLink(price);
 
-    return APIHelpers.sendAPISuccess(
+    APIHelpers.sendAPISuccess(
       res,
       { paymentLink: session.url, id: appointment.id },
       constants.SUCCESS_CODE,
@@ -186,7 +186,7 @@ export default {
       delete appointment.Patient;
     });
 
-    return APIHelpers.sendAPISuccess(
+    APIHelpers.sendAPISuccess(
       res,
       _appointments,
       constants.SUCCESS_CODE,
@@ -270,7 +270,7 @@ export default {
       delete appointment.Doctor;
     });
 
-    return APIHelpers.sendAPISuccess(
+    APIHelpers.sendAPISuccess(
       res,
       _appointments,
       constants.SUCCESS_CODE,
@@ -301,7 +301,7 @@ export default {
       },
     });
 
-    return APIHelpers.sendAPISuccess(
+    APIHelpers.sendAPISuccess(
       res,
       null,
       constants.SUCCESS_CODE,
@@ -342,7 +342,7 @@ export default {
       );
     }
 
-    return APIHelpers.sendAPISuccess(
+    APIHelpers.sendAPISuccess(
       res,
       {
         date: appointment.date,
@@ -410,7 +410,7 @@ export default {
       delete appointment.Patient;
     });
 
-    return APIHelpers.sendAPISuccess(
+    APIHelpers.sendAPISuccess(
       res,
       _appointments,
       constants.SUCCESS_CODE,
@@ -476,7 +476,7 @@ export default {
       delete appointment.Patient;
     });
 
-    return APIHelpers.sendAPISuccess(
+    APIHelpers.sendAPISuccess(
       res,
       _appointments,
       constants.SUCCESS_CODE,
@@ -507,7 +507,7 @@ export default {
       },
     });
 
-    return APIHelpers.sendAPISuccess(
+    APIHelpers.sendAPISuccess(
       res,
       null,
       constants.SUCCESS_CODE,
@@ -538,7 +538,7 @@ export default {
       },
     });
 
-    return APIHelpers.sendAPISuccess(
+    APIHelpers.sendAPISuccess(
       res,
       null,
       constants.SUCCESS_CODE,

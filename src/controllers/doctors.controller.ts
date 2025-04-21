@@ -16,7 +16,7 @@ import { DoctorSchedule } from "doctor";
 export default {
   create: async (req: Request, res: Response) => {
     if (!req.files && process.env.NODE_ENV !== "test") {
-      return helpers.sendAPIError(
+      helpers.sendAPIError(
         res,
         new Error(constants.FILE_NOT_UPLOADED),
         constants.BAD_REQUEST_CODE
@@ -43,7 +43,7 @@ export default {
     });
 
     if (userExists) {
-      return helpers.sendAPIError(
+      helpers.sendAPIError(
         res,
         new Error("Account already exists with this email."),
         constants.BAD_REQUEST_CODE
@@ -75,7 +75,7 @@ export default {
     ) {
       const file = Object.values(req.files)[0] as UploadedFile;
       if (file.size > constants.MAX_FILE_SIZE) {
-        return helpers.sendAPIError(
+        helpers.sendAPIError(
           res,
           new Error(constants.FILE_TOO_LARGE),
           constants.BAD_REQUEST_CODE
@@ -111,7 +111,7 @@ export default {
     });
 
     if (!doctor) {
-      return helpers.sendAPIError(
+      helpers.sendAPIError(
         res,
         new Error(constants.INTERNAL_SERVER_ERROR_MSG),
         constants.INTERNAL_SERVER_ERROR_CODE
@@ -160,7 +160,7 @@ export default {
     });
 
     if (!doctor) {
-      return helpers.sendAPIError(
+      helpers.sendAPIError(
         res,
         new Error(constants.UNAUTHORIZED_MSG),
         constants.UNAUTHORIZED_CODE
@@ -172,7 +172,7 @@ export default {
         data: schedule,
       });
     } catch (error) {
-      return helpers.sendAPIError(
+      helpers.sendAPIError(
         res,
         new Error(constants.INTERNAL_SERVER_ERROR_MSG),
         constants.INTERNAL_SERVER_ERROR_CODE
@@ -205,7 +205,7 @@ export default {
     });
 
     if (!doctor) {
-      return helpers.sendAPIError(
+      helpers.sendAPIError(
         res,
         new Error(constants.UNAUTHORIZED_MSG),
         constants.UNAUTHORIZED_CODE
@@ -222,7 +222,7 @@ export default {
         data: schedule,
       });
     } catch (error) {
-      return helpers.sendAPIError(
+      helpers.sendAPIError(
         res,
         new Error(constants.INTERNAL_SERVER_ERROR_MSG),
         constants.INTERNAL_SERVER_ERROR_CODE
@@ -254,7 +254,7 @@ export default {
     });
 
     if (!doctor) {
-      return helpers.sendAPIError(
+      helpers.sendAPIError(
         res,
         new Error(constants.UNAUTHORIZED_MSG),
         constants.UNAUTHORIZED_CODE
@@ -277,7 +277,7 @@ export default {
         data: charges,
       });
     } catch (error) {
-      return helpers.sendAPIError(
+      helpers.sendAPIError(
         res,
         new Error(constants.INTERNAL_SERVER_ERROR_MSG),
         constants.INTERNAL_SERVER_ERROR_CODE
@@ -310,7 +310,7 @@ export default {
     });
 
     if (!doctor) {
-      return helpers.sendAPIError(
+      helpers.sendAPIError(
         res,
         new Error(constants.UNAUTHORIZED_MSG),
         constants.UNAUTHORIZED_CODE
@@ -352,7 +352,7 @@ export default {
     });
 
     if (!doctor) {
-      return helpers.sendAPIError(
+      helpers.sendAPIError(
         res,
         new Error(constants.UNAUTHORIZED_MSG),
         constants.UNAUTHORIZED_CODE
@@ -389,7 +389,7 @@ export default {
         data: charges,
       });
     } catch (error) {
-      return helpers.sendAPIError(
+      helpers.sendAPIError(
         res,
         new Error(constants.INTERNAL_SERVER_ERROR_MSG),
         constants.INTERNAL_SERVER_ERROR_CODE
@@ -598,7 +598,7 @@ export default {
     });
 
     if (!doctor) {
-      return helpers.sendAPIError(
+      helpers.sendAPIError(
         res,
         new Error(constants.NOT_FOUND_MSG),
         constants.NOT_FOUND_CODE
@@ -839,7 +839,7 @@ export default {
     });
 
     if (!doctor) {
-      return helpers.sendAPIError(
+      helpers.sendAPIError(
         res,
         new Error(constants.UNAUTHORIZED_MSG),
         constants.UNAUTHORIZED_CODE

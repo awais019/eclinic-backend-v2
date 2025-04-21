@@ -18,7 +18,7 @@ export default {
     });
 
     if (!doctor) {
-      return helpers.sendAPIError(
+      helpers.sendAPIError(
         res,
         new Error(constants.UNAUTHORIZED_MSG),
         constants.UNAUTHORIZED_CODE
@@ -28,7 +28,7 @@ export default {
     const { prescription, appointmentId } = req.body;
 
     if (!appointmentId || !prescription) {
-      return helpers.sendAPIError(
+      helpers.sendAPIError(
         res,
         new Error(constants.BAD_REQUEST_MSG),
         constants.BAD_REQUEST_CODE
@@ -75,7 +75,7 @@ export default {
     });
 
     if (!doctor) {
-      return helpers.sendAPIError(
+      helpers.sendAPIError(
         res,
         new Error(constants.UNAUTHORIZED_MSG),
         constants.UNAUTHORIZED_CODE

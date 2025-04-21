@@ -6,7 +6,7 @@ export default function (handler: any) {
     try {
       await handler(req, res);
     } catch (error) {
-      return helpers.sendAPIError(res, error);
+      helpers.sendAPIError(res, error);
     }
   };
 }

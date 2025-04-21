@@ -57,7 +57,7 @@ export default {
     });
     await emailHelpers.sendMail(email, "Welcome to Eclinic", null, null, html);
 
-    return APIHelpers.sendAPISuccess(
+    APIHelpers.sendAPISuccess(
       res,
       null,
       constants.CREATED_CODE,
@@ -101,7 +101,7 @@ export default {
 
     const token = jwtHelpers.sign({ _id: lab.id, email });
 
-    return APIHelpers.sendAPISuccess(
+    APIHelpers.sendAPISuccess(
       res,
       { token },
       constants.SUCCESS_CODE,
@@ -143,7 +143,7 @@ export default {
       },
     });
 
-    return APIHelpers.sendAPISuccess(
+    APIHelpers.sendAPISuccess(
       res,
       { labs },
       constants.SUCCESS_CODE,
@@ -203,7 +203,7 @@ export default {
       );
     }
 
-    return APIHelpers.sendAPISuccess(
+    APIHelpers.sendAPISuccess(
       res,
       { testRequest },
       constants.CREATED_CODE,
@@ -247,7 +247,7 @@ export default {
       },
     });
 
-    return APIHelpers.sendAPISuccess(
+    APIHelpers.sendAPISuccess(
       res,
       report,
       constants.SUCCESS_CODE,
@@ -268,7 +268,7 @@ export default {
       },
     });
 
-    return APIHelpers.sendAPISuccess(
+    APIHelpers.sendAPISuccess(
       res,
       { tests },
       constants.SUCCESS_CODE,

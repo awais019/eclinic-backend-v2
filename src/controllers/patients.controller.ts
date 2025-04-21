@@ -20,7 +20,7 @@ export default {
     });
 
     if (userExists) {
-      return helpers.sendAPIError(
+      helpers.sendAPIError(
         res,
         new Error("Account already exists with this email."),
         constants.BAD_REQUEST_CODE
@@ -80,7 +80,7 @@ export default {
     });
 
     if (!patient) {
-      return helpers.sendAPIError(
+      helpers.sendAPIError(
         res,
         new Error("Patient not found"),
         constants.BAD_REQUEST_CODE
@@ -112,7 +112,7 @@ export default {
     });
 
     if (!patient) {
-      return helpers.sendAPIError(
+      helpers.sendAPIError(
         res,
         new Error("Patient not found"),
         constants.BAD_REQUEST_CODE

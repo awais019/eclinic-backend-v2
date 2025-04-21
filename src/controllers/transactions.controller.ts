@@ -18,7 +18,7 @@ export default {
     });
 
     if (!doctor) {
-      return helpers.sendAPIError(
+      helpers.sendAPIError(
         res,
         new Error(constants.UNAUTHORIZED_MSG),
         constants.UNAUTHORIZED_CODE
@@ -71,7 +71,7 @@ export default {
     });
 
     if (!patient) {
-      return helpers.sendAPIError(
+      helpers.sendAPIError(
         res,
         new Error(constants.UNAUTHORIZED_MSG),
         constants.UNAUTHORIZED_CODE

@@ -26,7 +26,7 @@ export default {
     const oldConversation = await messageService.getConversation(_id, userId);
 
     if (oldConversation) {
-      return APIHelpers.sendAPISuccess(
+      APIHelpers.sendAPISuccess(
         res,
         {
           id: oldConversation.id,
@@ -42,7 +42,7 @@ export default {
       _id,
       userId
     );
-    return APIHelpers.sendAPISuccess(
+    APIHelpers.sendAPISuccess(
       res,
       {
         id: newConversation.id,
@@ -60,7 +60,7 @@ export default {
 
     const conversations = await messageService.getConversations(_id);
 
-    return APIHelpers.sendAPISuccess(
+    APIHelpers.sendAPISuccess(
       res,
       conversations.map((conversation) => {
         const participant = conversation.Participant[0].User;
@@ -81,7 +81,7 @@ export default {
 
     const messages = await messageService.getMessages(conversationId);
 
-    return APIHelpers.sendAPISuccess(
+    APIHelpers.sendAPISuccess(
       res,
       messages,
       constants.SUCCESS_CODE,

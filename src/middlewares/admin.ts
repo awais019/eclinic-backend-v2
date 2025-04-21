@@ -9,7 +9,7 @@ export default function () {
     const token = req.header(constants.AUTH_HEADER_NAME);
 
     if (!token) {
-      return helpers.sendAPIError(
+      helpers.sendAPIError(
         res,
         new Error(constants.AUTH_REQUIRED),
         constants.UNAUTHORIZED_CODE
@@ -20,14 +20,14 @@ export default function () {
       if (role == "ADMIN") {
         next();
       } else {
-        return helpers.sendAPIError(
+        helpers.sendAPIError(
           res,
           new Error(constants.AUTH_REQUIRED),
           constants.UNAUTHORIZED_CODE
         );
       }
     } catch (error) {
-      return helpers.sendAPIError(
+      helpers.sendAPIError(
         res,
         new Error(constants.INVALID_TOKEN),
         constants.BAD_REQUEST_CODE

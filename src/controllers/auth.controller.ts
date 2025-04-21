@@ -44,7 +44,7 @@ export default {
           },
         });
       }
-      return APIHelpers.sendAPISuccess(
+      APIHelpers.sendAPISuccess(
         res,
         email,
         constants.SUCCESS_CODE,
@@ -57,7 +57,7 @@ export default {
         where: { id: _id },
         data: { email, email_verified: true },
       });
-      return APIHelpers.sendAPISuccess(
+      APIHelpers.sendAPISuccess(
         res,
         email,
         constants.SUCCESS_CODE,
@@ -66,7 +66,7 @@ export default {
     }
 
     if (user.email_verified) {
-      return APIHelpers.sendAPISuccess(
+      APIHelpers.sendAPISuccess(
         res,
         null,
         constants.SUCCESS_CODE,
@@ -78,7 +78,7 @@ export default {
       where: { id: _id },
       data: { email_verified: true },
     });
-    return APIHelpers.sendAPISuccess(
+    APIHelpers.sendAPISuccess(
       res,
       null,
       constants.SUCCESS_CODE,
@@ -106,7 +106,7 @@ export default {
     });
 
     if (user.email_verified) {
-      return APIHelpers.sendAPISuccess(
+      APIHelpers.sendAPISuccess(
         res,
         null,
         constants.SUCCESS_CODE,
@@ -129,7 +129,7 @@ export default {
       html
     );
 
-    return APIHelpers.sendAPISuccess(
+    APIHelpers.sendAPISuccess(
       res,
       null,
       constants.SUCCESS_CODE,
@@ -147,7 +147,7 @@ export default {
     });
 
     if (user.email == email) {
-      return APIHelpers.sendAPISuccess(
+      APIHelpers.sendAPISuccess(
         res,
         null,
         constants.SUCCESS_CODE,
@@ -164,7 +164,7 @@ export default {
 
     await emailHelpers.sendMail(email, "Welcome to Eclinic", null, null, html);
 
-    return APIHelpers.sendAPISuccess(
+    APIHelpers.sendAPISuccess(
       res,
       null,
       constants.SUCCESS_CODE,
@@ -231,7 +231,7 @@ export default {
       role: user.role,
     });
 
-    return APIHelpers.sendAPISuccess(
+    APIHelpers.sendAPISuccess(
       res,
       { token },
       constants.SUCCESS_CODE,
@@ -260,7 +260,7 @@ export default {
 
     await emailHelpers.sendMail(user.email, "Reset password", null, null, html);
 
-    return APIHelpers.sendAPISuccess(
+    APIHelpers.sendAPISuccess(
       res,
       null,
       constants.SUCCESS_CODE,
@@ -293,7 +293,7 @@ export default {
       data: { password: hashedPassword },
     });
 
-    return APIHelpers.sendAPISuccess(
+    APIHelpers.sendAPISuccess(
       res,
       null,
       constants.SUCCESS_CODE,
@@ -343,7 +343,7 @@ export default {
       data: { password: hashedPassword },
     });
 
-    return APIHelpers.sendAPISuccess(
+    APIHelpers.sendAPISuccess(
       res,
       null,
       constants.SUCCESS_CODE,
@@ -380,7 +380,7 @@ export default {
       data: { image: imageName },
     });
 
-    return APIHelpers.sendAPISuccess(
+    APIHelpers.sendAPISuccess(
       res,
       null,
       constants.SUCCESS_CODE,
@@ -450,7 +450,7 @@ export default {
       };
     }
 
-    return APIHelpers.sendAPISuccess(
+    APIHelpers.sendAPISuccess(
       res,
       { ...user, ...additionalData },
       constants.SUCCESS_CODE,
@@ -491,7 +491,7 @@ export default {
       },
     });
 
-    return APIHelpers.sendAPISuccess(
+    APIHelpers.sendAPISuccess(
       res,
       null,
       constants.SUCCESS_CODE,
@@ -520,7 +520,7 @@ export default {
       },
     });
 
-    return APIHelpers.sendAPISuccess(
+    APIHelpers.sendAPISuccess(
       res,
       null,
       constants.SUCCESS_CODE,
@@ -533,7 +533,7 @@ export default {
 
     await twilioHelpers.sendCode(phone);
 
-    return APIHelpers.sendAPISuccess(
+    APIHelpers.sendAPISuccess(
       res,
       {
         phone,
@@ -564,7 +564,7 @@ export default {
       data: { phone_verified: true, phone },
     });
 
-    return APIHelpers.sendAPISuccess(
+    APIHelpers.sendAPISuccess(
       res,
       null,
       constants.SUCCESS_CODE,
